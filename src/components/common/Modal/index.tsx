@@ -54,7 +54,7 @@ const ModalBox = styled.div((props: { size: 'small' | 'big' }) => ({
 }));
 
 const Header = styled.div((props: { size: 'small' | 'big' }) => ({
-  height: '20%',
+  height: props.size === 'small' ? '20%' : '10%',
   fontWeight: 'bold',
   display: 'flex',
   justifyContent: 'center',

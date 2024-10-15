@@ -29,7 +29,7 @@ const Wrapper = styled.div`
   gap: 20px;
   align-items: center;
   justify-content: center;
-  margin: 20px 40px;
+  margin: 20px 0;
 `;
 
 const DescriptWrapper = styled.div`
