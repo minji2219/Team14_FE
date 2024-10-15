@@ -36,22 +36,4 @@ const Wrapper = styled.div`
   justify-content: end;
 `;
 
-// TODO:Button컴포넌트 style 물어본 뒤에 지울 코드
-const Button1 = styled.div((props: { cancle?: boolean }) => ({
-  borderRadius: '20px',
-  backgroundColor: props.cancle
-    ? `${Common.colors.primary05}`
-    : `${Common.colors.primary}`,
-  fontWeight: 'bold',
-  color: 'white',
-  width: '100px',
-  height: '40px',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  '&:hover': {
-    cursor: 'pointer',
-  },
-}));
-
 export default AlertDialog;

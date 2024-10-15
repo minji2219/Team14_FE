@@ -5,6 +5,7 @@ import { BsPlusCircleFill } from 'react-icons/bs';
 import styled from 'styled-components';
 import { Common } from '@styles/globalStyle';
 import Modal from '@components/common/Modal';
+import RecruitDialog from '../RecruitmentDialog';
 
 const KakaoMap = () => {
   const { location } = useContext(LocationContext);
@@ -29,7 +30,7 @@ const KakaoMap = () => {
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
         title="모집"
-        content={<div></div>}
+        content={<RecruitDialog onRequestClose={() => setIsOpen(false)} />}
       />
     </Map>
   );
