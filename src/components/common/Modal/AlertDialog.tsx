@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Common } from '@styles/globalStyle';
-import Button from '../Button/Button';
+import Button from '../Button';
 
 interface Props {
   content: string;
