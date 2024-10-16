@@ -14,10 +14,12 @@ export const Common = {
     button2: '#73BEAA', //이름을 뭐로 해야될지 모르겠음..
     button3: '#D9D9D9',
     lightGray: '#BBB',
+    warning: '#C91432',
   },
   zIndex: {
     common: 100,
     header: 9999,
+    modal: 10000,
     dropdown: 1000,
   },
 };

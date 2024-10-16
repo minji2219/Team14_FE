@@ -15,8 +15,15 @@ const AlertDialog = ({ content, onRequestClose }: Props) => {
           label="취소"
           onClick={onRequestClose}
           bgColor={Common.colors.primary05}
+          padding="10px 30px"
+          radius="20px"
         />
-        <Button label="확인" bgColor={Common.colors.primary} />
+        <Button
+          label="확인"
+          bgColor={Common.colors.primary}
+          padding="10px 30px"
+          radius="20px"
+        />
       </Wrapper>
     </div>
   );

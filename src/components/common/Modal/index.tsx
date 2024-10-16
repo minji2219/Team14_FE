@@ -6,7 +6,7 @@ interface Props {
   size?: 'small' | 'big';
   isOpen: boolean;
   onRequestClose: () => void;
-  title: string;
+  title: string | ReactNode;
   content: ReactNode;
 }
 
@@ -43,11 +43,12 @@ const Overlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: ${Common.zIndex.common};
+  z-index: ${Common.zIndex.modal};
 `;
 
 const ModalBox = styled.div((props: { size: 'small' | 'big' }) => ({
-  width: props.size === 'small' ? '650px' : '700px',
+  // minWidth로 해도 상관없는지?
+  minWidth: props.size === 'small' ? '650px' : '700px',
   height: props.size === 'small' ? '350px' : '800px',
   backgroundColor: 'white',
   borderRadius: '30px',
