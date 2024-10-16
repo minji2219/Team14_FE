@@ -5,7 +5,7 @@ import { BsPlusCircleFill } from 'react-icons/bs';
 import styled from 'styled-components';
 import { Common } from '@styles/globalStyle';
 import Modal from '@components/common/Modal';
-import RecruitDialog from '../RecruitmentDialog';
+import RecruitDialog from '../RecruitDialog';
 
 const KakaoMap = () => {
   const { location } = useContext(LocationContext);

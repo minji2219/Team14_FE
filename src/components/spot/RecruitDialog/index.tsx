@@ -2,8 +2,11 @@ import Button from '@components/common/Button';
 import InputField from '@components/common/InputField';
 import { Common } from '@styles/globalStyle';
 import styled from 'styled-components';
-import SelectCategory from './storelist/selectCategory';
+import SelectCategory from '../storelist/selectCategory';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { BsGeoAltFill } from 'react-icons/bs';
+import { useState } from 'react';
+import Modal from '@components/common/Modal';
 
 interface Props {
   onRequestClose: () => void;
@@ -20,6 +23,8 @@ interface FormValues {
 }
 
 const RecruitDialog = ({ onRequestClose }: Props) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const {
     register,
     control,
@@ -31,10 +36,6 @@ const RecruitDialog = ({ onRequestClose }: Props) => {
     console.log(data);
   };
 
-  if (errors) {
-    console.log('error', errors);
-  }
-
   return (
     <Form onSubmit={handleSubmit(createRecruit)}>
       <Controller
@@ -43,16 +44,19 @@ const RecruitDialog = ({ onRequestClose }: Props) => {
         rules={{ required: true }}
         render={({ field }) => <SelectCategory setCategory={field.onChange} />}
       />
+
       <Label>가게 이름</Label>
       <InputField
         placeholder="가게 이름을 입력해주세요."
         {...register('storename', { required: true })}
       />
+
       <Label>최소 주문 금액</Label>
       <InputField
         placeholder="주문에 필요한 최소한의 가격을 입력해주세요."
         {...register('price', { required: true })}
       />
+
       <Label>주문 마감 시간</Label>
       <TimeWrpper>
         <InputField
@@ -66,17 +70,33 @@ const RecruitDialog = ({ onRequestClose }: Props) => {
         />
         분
       </TimeWrpper>
+
       <Label>함께 주문 링크</Label>
       <InputField
         placeholder="배민 함께 주문 링크를 입력해주세요."
         {...register('orderLink', { required: true })}
       />
-      <Label>픽업 장소</Label>
-      <InputField
-        placeholder="픽업 장소를 선택해주세요."
-        {...register('spot', { required: true })}
-      />
 
+      <Label>픽업 장소</Label>
+      <LocationWrapper>
+        <InputField
+          placeholder="픽업 장소를 선택해주세요."
+          {...register('spot', { required: true })}
+        />
+        <LocationPin onClick={() => setIsOpen(true)}>
+          <BsGeoAltFill size={20} />
+        </LocationPin>
+        <Modal
+          isOpen={isOpen}
+          onRequestClose={() => setIsOpen(false)}
+          title={<div></div>}
+          content={<div></div>}
+        />
+      </LocationWrapper>
+
+      {Object.keys(errors).length > 0 && (
+        <ErrorMsg>모든 항목을 채워주세요.</ErrorMsg>
+      )}
       <BtnWrapper>
         <Button
           label="취소"
@@ -97,9 +117,7 @@ const RecruitDialog = ({ onRequestClose }: Props) => {
 };
 export default RecruitDialog;
 
-const Form = styled.form`
-  // width: 100%;
-`;
+const Form = styled.form``;
 
 const Label = styled.div`
   font-size: 20px;
@@ -113,10 +131,28 @@ const TimeWrpper = styled.div`
   gap: 10px;
 `;
 
+const LocationWrapper = styled.div`
+  position: relative;
+`;
+
+const LocationPin = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: ${Common.colors.primary};
+  cursor: pointer;
+`;
+
 const BtnWrapper = styled.div`
   display: flex;
   gap: 20px;
   position: absolute;
   right: 50px;
   bottom: -20px;
+`;
+
+const ErrorMsg = styled.div`
+  text-align: center;
+  margin-top: 10px;
+  color: ${Common.colors.warning};
 `;
