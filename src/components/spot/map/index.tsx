@@ -16,9 +16,10 @@ const KakaoMap = () => {
       style={{ width: '100%', height: '100%' }}
       level={3}
     >
-      <PlusBtn onClick={() => setIsOpen(true)}>
+      <PlusBtnIcon onClick={() => setIsOpen(true)}>
         <BsPlusCircleFill size="50" />
-      </PlusBtn>
+      </PlusBtnIcon>
+
       <MapMarker
         position={{
           lat: location.lat,
@@ -37,7 +38,7 @@ const KakaoMap = () => {
 };
 export default KakaoMap;
 
-const PlusBtn = styled.div`
+const PlusBtnIcon = styled.div`
   position: absolute;
   right: 20px;
   top: 10px;

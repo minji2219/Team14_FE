@@ -31,12 +31,12 @@ const AlertDialog = ({ content, onRequestClose }: Props) => {
 
 const Content = styled.div`
   font-size: 24px;
-  margin-bottom: 20px;
+  margin: 80px 80px 100px;
 `;
 
 const Wrapper = styled.div`
   position: absolute;
-  bottom: 30px;
+  bottom: 20px;
   right: 30px;
   display: flex;
   gap: 10px;

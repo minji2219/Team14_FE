@@ -21,7 +21,7 @@ const Modal = ({
     <Wrapper>
       {isOpen && (
         <Overlay onClick={onRequestClose}>
-          <ModalBox size={size} onClick={(e) => e.stopPropagation()}>
+          <ModalBox onClick={(e) => e.stopPropagation()}>
             <Header size={size}>{title}</Header>
             <Contents>{content}</Contents>
           </ModalBox>
@@ -46,16 +46,13 @@ const Overlay = styled.div`
   z-index: ${Common.zIndex.modal};
 `;
 
-const ModalBox = styled.div((props: { size: 'small' | 'big' }) => ({
-  // minWidth로 해도 상관없는지?
-  minWidth: props.size === 'small' ? '650px' : '700px',
-  height: props.size === 'small' ? '350px' : '800px',
-  backgroundColor: 'white',
-  borderRadius: '30px',
-}));
+const ModalBox = styled.div`
+  background-color: white;
+  border-radius: 30px;
+`;
 
 const Header = styled.div((props: { size: 'small' | 'big' }) => ({
-  height: props.size === 'small' ? '20%' : '10%',
+  height: props.size === 'small' ? '50px' : '80px',
   fontWeight: 'bold',
   display: 'flex',
   justifyContent: 'center',
@@ -68,7 +65,7 @@ const Header = styled.div((props: { size: 'small' | 'big' }) => ({
 }));
 
 const Contents = styled.div`
-  height: 80%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -9,6 +9,7 @@ export const Common = {
   colors: {
     primary: '#059770',
     primary05: 'rgba(5,151,112,.5)',
+    primary08: 'rgba(5,151,112,.8)',
     yellow: '#F1CF06',
     yellowBg: '#F7F7F7',
     button2: '#73BEAA', //이름을 뭐로 해야될지 모르겠음..
