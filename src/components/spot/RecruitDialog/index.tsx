@@ -5,8 +5,11 @@ import styled from 'styled-components';
 import SelectCategory from '../storelist/selectCategory';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { BsGeoAltFill } from 'react-icons/bs';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Modal from '@components/common/Modal';
+import SearchBar from './PickupModal.tsx/SearchBar';
+import SearchMap from './PickupModal.tsx/searchMap';
+import { SearchSpotContext } from '@provider/SearchSpot';
 
 interface Props {
   onRequestClose: () => void;
@@ -19,11 +22,16 @@ interface FormValues {
   endHour: number;
   endMinute: number;
   orderLink: string;
-  spot: string;
+  address: {
+    address: string;
+    lat: number;
+    lng: number;
+  };
 }
 
 const RecruitDialog = ({ onRequestClose }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { address } = useContext(SearchSpotContext);
 
   const {
     register,
@@ -36,8 +44,14 @@ const RecruitDialog = ({ onRequestClose }: Props) => {
     console.log(data);
   };
 
+  const preventKeydown = (e: React.KeyboardEvent) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+    }
+  };
+
   return (
-    <Form onSubmit={handleSubmit(createRecruit)}>
+    <Form onSubmit={handleSubmit(createRecruit)} onKeyDown={preventKeydown}>
       <Controller
         name="category"
         control={control}
@@ -81,22 +95,26 @@ const RecruitDialog = ({ onRequestClose }: Props) => {
       <LocationWrapper>
         <InputField
           placeholder="픽업 장소를 선택해주세요."
-          {...register('spot', { required: true })}
+          value={address?.address}
+          disabled
+          {...register('address', { required: true })}
         />
-        <LocationPin onClick={() => setIsOpen(true)}>
+        <LocationPinIcon onClick={() => setIsOpen(true)}>
           <BsGeoAltFill size={20} />
-        </LocationPin>
+        </LocationPinIcon>
+
         <Modal
           isOpen={isOpen}
           onRequestClose={() => setIsOpen(false)}
-          title={<div></div>}
-          content={<div></div>}
+          title={<SearchBar onRequestClose={() => setIsOpen(false)} />}
+          content={<SearchMap onRequestClose={() => setIsOpen(false)} />}
         />
       </LocationWrapper>
 
       {Object.keys(errors).length > 0 && (
         <ErrorMsg>모든 항목을 채워주세요.</ErrorMsg>
       )}
+
       <BtnWrapper>
         <Button
           label="취소"
@@ -117,7 +135,9 @@ const RecruitDialog = ({ onRequestClose }: Props) => {
 };
 export default RecruitDialog;
 
-const Form = styled.form``;
+const Form = styled.form`
+  margin: 50px 50px 120px;
+`;
 
 const Label = styled.div`
   font-size: 20px;
@@ -135,7 +155,7 @@ const LocationWrapper = styled.div`
   position: relative;
 `;
 
-const LocationPin = styled.div`
+const LocationPinIcon = styled.div`
   position: absolute;
   right: 10px;
   top: 10px;
@@ -148,7 +168,7 @@ const BtnWrapper = styled.div`
   gap: 20px;
   position: absolute;
   right: 50px;
-  bottom: -20px;
+  bottom: 40px;
 `;
 
 const ErrorMsg = styled.div`
