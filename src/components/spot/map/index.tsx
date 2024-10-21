@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Common } from '@styles/globalStyle';
 import Modal from '@components/common/Modal';
 import RecruitDialog from '../RecruitDialog';
+import { SearchSpotProvider } from '@provider/SearchSpot';
 
 const KakaoMap = () => {
   const { location } = useContext(LocationContext);
@@ -31,7 +32,11 @@ const KakaoMap = () => {
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
         title="모집"
-        content={<RecruitDialog onRequestClose={() => setIsOpen(false)} />}
+        content={
+          <SearchSpotProvider>
+            <RecruitDialog onRequestClose={() => setIsOpen(false)} />
+          </SearchSpotProvider>
+        }
       />
     </Map>
   );

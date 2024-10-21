@@ -2,7 +2,7 @@ import InputField from '@components/common/InputField';
 import styled from 'styled-components';
 import { BsSearch } from 'react-icons/bs';
 import { Common } from '@styles/globalStyle';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { SearchSpotContext } from '@provider/SearchSpot';
 
 interface Props {
@@ -10,8 +10,8 @@ interface Props {
 }
 
 const SearchBar = ({ onRequestClose }: Props) => {
-  const { setKeyword, keyword, setBound, bound } =
-    useContext(SearchSpotContext);
+  const { setBound } = useContext(SearchSpotContext);
+  const [keyword, setKeyword] = useState<string>();
 
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
