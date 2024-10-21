@@ -4,19 +4,44 @@ import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { SearchSpotContext } from '@provider/SearchSpot';
 import styled from 'styled-components';
 import { Common } from '@styles/globalStyle';
+import Button from '@components/common/Button';
 
-const SearchMap = () => {
+interface Props {
+  onRequestClose: () => void;
+}
+
+const SearchMap = ({ onRequestClose }: Props) => {
   const { location } = useContext(LocationContext);
-  const { bound } = useContext(SearchSpotContext);
+  const { bound, address, setAddress } = useContext(SearchSpotContext);
 
   const [map, setMap] = useState();
   const [marker, setMarker] = useState({
     lat: location.lat,
     lng: location.lng,
   });
+
   const dragEnd = (marker: any) => {
-    //위도(lat,La), 경도(lng,Ma)
-    console.log(marker.getPosition());
+    //위도(lat,Ma), 경도(lng,La)
+    const { La, Ma } = marker.getPosition();
+    setAddress({ lat: Ma, lng: La, address: '' });
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      let geocoder = new kakao.maps.services.Geocoder();
+      if (address) {
+        geocoder.coord2Address(address.lng, address.lat, (result, status) => {
+          if (status === kakao.maps.services.Status.OK) {
+            setAddress({ ...address, address: result[0].address.address_name });
+          }
+        });
+      }
+    } catch (e) {
+      //TODO: 에러 발생시 대체 코드 구현 필요
+    } finally {
+      onRequestClose();
+    }
   };
 
   useEffect(() => {
@@ -28,6 +53,7 @@ const SearchMap = () => {
       //@ts-ignore
       const lat = (map?.getBounds(bound).pa + map?.getBounds(bound).qa) / 2;
       setMarker({ lat: lat, lng: lng });
+      setAddress({ lat: lat, lng: lng, address: '' });
     }
   }, [bound]);
 
@@ -52,6 +78,15 @@ const SearchMap = () => {
         draggable={true}
         onDragEnd={(marker) => dragEnd(marker)}
       />
+      <BtnWrapper>
+        <Button
+          label="확인"
+          bgColor={Common.colors.primary}
+          padding="10px 20px"
+          radius="20px"
+          onClick={handleClick}
+        />
+      </BtnWrapper>
     </Map>
   );
 };
@@ -65,4 +100,11 @@ const Explain = styled.div`
   background-color: ${Common.colors.primary08};
   padding: 10px;
   color: white;
+`;
+
+const BtnWrapper = styled.div`
+  z-index: ${Common.zIndex.common};
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
 `;
