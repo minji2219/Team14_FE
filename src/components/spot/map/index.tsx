@@ -10,6 +10,7 @@ import { SearchSpotProvider } from '@provider/SearchSpot';
 
 const KakaoMap = () => {
   const { location } = useContext(LocationContext);
+
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Map
