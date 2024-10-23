@@ -5,6 +5,8 @@ import AlertDialog from '@components/common/Modal/AlertDialog';
 import styled from '@emotion/styled';
 import { Common } from '@styles/globalStyle';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { RouterPath } from '@routes/path';
 
 interface Props {
   image: string;
@@ -14,6 +16,8 @@ interface Props {
 }
 const Store = ({ image, storeName, address, category }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const navigate = useNavigate();
   return (
     <Wrapper>
       <Logo image={image} />
@@ -36,6 +40,7 @@ const Store = ({ image, storeName, address, category }: Props) => {
           <AlertDialog
             content="로그인 페이지로 이동하시겠습니까?"
             onRequestClose={() => setIsOpen(false)}
+            onRequestConfirm={() => navigate(RouterPath.login)}
           />
         }
       />

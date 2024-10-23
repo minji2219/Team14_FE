@@ -5,8 +5,9 @@ import Button from '../Button';
 interface Props {
   content: string;
   onRequestClose: () => void;
+  onRequestConfirm: () => void;
 }
-const AlertDialog = ({ content, onRequestClose }: Props) => {
+const AlertDialog = ({ content, onRequestClose, onRequestConfirm }: Props) => {
   return (
     <div>
       <Content>{content}</Content>
@@ -20,6 +21,7 @@ const AlertDialog = ({ content, onRequestClose }: Props) => {
         />
         <Button
           label="확인"
+          onClick={onRequestConfirm}
           bgColor={Common.colors.primary}
           padding="10px 30px"
           radius="20px"
