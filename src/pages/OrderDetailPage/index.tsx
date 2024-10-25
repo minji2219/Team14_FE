@@ -41,7 +41,7 @@ const OrderDetailPage = () => {
             radius="20px"
             bgColor={Common.colors.primary}
           />
-          <Space />
+          <Space1 />
           <Button label="?" radius="50%" bgColor={Common.colors.button3} />
         </ButtonContainer>
         <ParticipantContainer>
@@ -53,6 +53,17 @@ const OrderDetailPage = () => {
             />
           ))}
         </ParticipantContainer>
+        <Button
+          label="수정하기"
+          radius="20px"
+          bgColor={Common.colors.primary}
+        />
+        <Space2 />
+        <Button
+          label="삭제하기"
+          radius="20px"
+          bgColor={Common.colors.primary05}
+        />
       </InnerWrapper>
     </Wrapper>
   );
@@ -68,6 +79,10 @@ const Wrapper = styled.div`
 
 const InnerWrapper = styled.div`
   width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
 `;
 
 const ButtonContainer = styled.div`
@@ -78,11 +93,14 @@ const ButtonContainer = styled.div`
   margin-top: 10px;
 `;
 
-const Space = styled.div`
+const Space1 = styled.div`
   width: 10px;
+`;
+const Space2 = styled.div`
+  height: 10px;
 `;
 
 const ParticipantContainer = styled.div`
   width: 100%;
-  margin: 20px 0;
+  margin: 20px 0 30px;
 `;
