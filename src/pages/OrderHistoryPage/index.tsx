@@ -14,7 +14,7 @@ interface Post {
   category: string;
   storeName: string;
   pickUpLocation: string;
-  price: number;
+  price?: number;
 }
 interface OrderHistory {
   totalPages: number; //전체 페이지 수
