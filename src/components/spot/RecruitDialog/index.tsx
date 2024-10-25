@@ -5,14 +5,15 @@ import styled from 'styled-components';
 import SelectCategory from '../storelist/selectCategory';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { BsGeoAltFill } from 'react-icons/bs';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Modal from '@components/common/Modal';
 import SearchBar from './PickupModal.tsx/SearchBar';
-import SearchMap from './PickupModal.tsx/searchMap';
+import SearchMap from './PickupModal.tsx/SearchMap';
 import { SearchSpotContext } from '@provider/SearchSpot';
 
 interface Props {
   onRequestClose: () => void;
+  onRequestConfirm: () => void;
 }
 
 interface FormValues {
@@ -22,14 +23,10 @@ interface FormValues {
   endHour: number;
   endMinute: number;
   orderLink: string;
-  address: {
-    address: string;
-    lat: number;
-    lng: number;
-  };
+  address: string;
 }
 
-const RecruitDialog = ({ onRequestClose }: Props) => {
+const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { address } = useContext(SearchSpotContext);
 
@@ -37,11 +34,15 @@ const RecruitDialog = ({ onRequestClose }: Props) => {
     register,
     control,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>();
 
   const createRecruit: SubmitHandler<FormValues> = (data) => {
     console.log(data);
+    // 정상적으로 폼 전송이 완료 됐다면 폼꺼지고, 완료 폼 켜짐
+    onRequestClose();
+    onRequestConfirm();
   };
 
   const preventKeydown = (e: React.KeyboardEvent) => {
@@ -49,6 +50,12 @@ const RecruitDialog = ({ onRequestClose }: Props) => {
       e.preventDefault();
     }
   };
+
+  useEffect(() => {
+    if (address) {
+      setValue('address', address.address);
+    }
+  }, [address]);
 
   return (
     <Form onSubmit={handleSubmit(createRecruit)} onKeyDown={preventKeydown}>
@@ -58,7 +65,6 @@ const RecruitDialog = ({ onRequestClose }: Props) => {
         rules={{ required: true }}
         render={({ field }) => <SelectCategory setCategory={field.onChange} />}
       />
-
       <Label>가게 이름</Label>
       <InputField
         placeholder="가게 이름을 입력해주세요."
@@ -95,7 +101,7 @@ const RecruitDialog = ({ onRequestClose }: Props) => {
       <LocationWrapper>
         <InputField
           placeholder="픽업 장소를 선택해주세요."
-          value={address?.address}
+          // value={address?.address}
           disabled
           {...register('address', { required: true })}
         />
