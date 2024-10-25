@@ -57,7 +57,11 @@ const OrderHistoryPage = () => {
         <Menubar />
         <OrderListContainer>
           {currentPosts.map((post) => (
-            <Link key={post.id} to={getDynamicPath.orderDetail(post.id)}>
+            <Link
+              key={post.id}
+              to={getDynamicPath.orderDetail(post.id)}
+              style={{ textDecoration: 'none', color: '#000' }}
+            >
               <OrderListItem
                 category={post.category}
                 storeName={post.storeName}
