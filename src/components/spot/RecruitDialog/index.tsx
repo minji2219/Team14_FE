@@ -39,7 +39,6 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
   } = useForm<FormValues>();
 
   const createRecruit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
     // 정상적으로 폼 전송이 완료 됐다면 폼꺼지고, 완료 폼 켜짐
     onRequestClose();
     onRequestConfirm();

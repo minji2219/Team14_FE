@@ -10,7 +10,7 @@ import { BsChevronRight } from 'react-icons/bs';
 const Swiper = () => {
   const [carouselList, setCarouselList] = useState(storeList);
   const [slideNumber, setSlideNumber] = useState<number>(1);
-  const [isEndSlide, setIsEndSlide] = useState(false);
+  const [isEndSlide, setIsEndSlide] = useState(true);
 
   useEffect(() => {
     const startData = { ...storeList[0] };
@@ -42,6 +42,7 @@ const Swiper = () => {
 
   const clickLeftArrow = () => {
     if (slideNumber === 1) {
+      if (isEndSlide) setIsEndSlide(false);
       setSlideNumber(slideNumber - 1);
       moveToNthSlide(carouselList.length - 2);
     } else {
@@ -91,8 +92,8 @@ const Slide = styled.div(
     display: 'flex',
     alignItems: 'center',
     transform:
-      slideNumber === 1
-        ? `translateX(calc(-80%))`
+      slideNumber === 0
+        ? `translateX(calc(10%))`
         : `translateX(calc(-80% + -${slideNumber - 1}*90%))`,
     transition: endSlide ? '' : 'all 0.5s ease-in-out',
   }),
