@@ -7,8 +7,8 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { BsGeoAltFill } from 'react-icons/bs';
 import { useContext, useEffect, useState } from 'react';
 import Modal from '@components/common/Modal';
-import SearchBar from './PickupModal.tsx/SearchBar';
-import SearchMap from './PickupModal.tsx/SearchMap';
+import SearchBar from './PickupModal/SearchBar';
+import SearchMap from './PickupModal/SearchMap';
 import { SearchSpotContext } from '@provider/SearchSpot';
 
 interface Props {
