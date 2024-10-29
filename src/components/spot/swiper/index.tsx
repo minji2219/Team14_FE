@@ -16,8 +16,8 @@ const Swiper = () => {
     const startData = { ...storeList[0] };
     const endData = { ...storeList[storeList.length - 1] };
 
-    startData.key = startData.key + '_fake';
-    endData.key = endData.key + '_fake';
+    startData.id = startData.id + '_fake';
+    endData.id = endData.id + '_fake';
 
     const newList = [endData, ...storeList, startData];
     setCarouselList(newList);
@@ -60,7 +60,7 @@ const Swiper = () => {
         {carouselList.map((store, index) => {
           return (
             <SlideItem
-              key={store.key}
+              key={store.id}
               category={store.category}
               title={store.storeName}
               address={store.pickUpLocation}

@@ -19,11 +19,13 @@ const StoreList = () => {
       <SelectCategory setCategory={setCategory} />
       {filterList.length > 0 ? (
         filterList.map((store) => (
-          <div key={store.key}>
+          <div key={store.id}>
             <Store
+              spotId={store.id}
               image={store.image}
               category={store.category}
               storeName={store.storeName}
+              deadlineTime={store.deadlineTime}
               address={store.pickUpLocation}
             />
             <Line />
