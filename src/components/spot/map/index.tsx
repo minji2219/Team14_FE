@@ -11,9 +11,12 @@ import AlertDialog from '@components/common/Modal/AlertDialog';
 import { useNavigate } from 'react-router-dom';
 import { RouterPath } from '@routes/path';
 import { storeList } from '../swiper/data';
+import { ClickedLocationContext } from '@provider/ClickedLocation';
 
 const KakaoMap = () => {
   const { location } = useContext(LocationContext);
+  const { setClickedLocation } = useContext(ClickedLocationContext);
+
   const navigate = useNavigate();
   const datas = storeList;
 
@@ -51,7 +54,9 @@ const KakaoMap = () => {
           }}
           clickable={true}
           // 해당 스팟에 있는 배달 리스트를 리스트에서 보여주기
-          onClick={() => {}}
+          onClick={() => {
+            setClickedLocation({ lat: data.lat, lng: data.lng });
+          }}
         />
       ))}
 
