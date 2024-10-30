@@ -1,4 +1,4 @@
-import { LocationContext } from '@provider/Location';
+import { LocationContext } from '@provider/PresentLocation';
 import { useContext, useEffect, useState } from 'react';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { SearchSpotContext } from '@provider/SearchSpot';

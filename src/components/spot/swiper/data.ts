@@ -7,6 +7,8 @@ export const storeList = [
     minimumOrderAmount: 10000,
     pickUpLocation: '경기 용인시 수지구 용구대로 2770',
     deadlineTime: '오후 1시 50분',
+    lat: 35.17850990539263,
+    lng: 126.89726037410793,
   },
   {
     id: '2',
@@ -16,6 +18,8 @@ export const storeList = [
     minimumOrderAmount: 10000,
     pickUpLocation: '경기 용인시 수지구 용구대로 2770',
     deadlineTime: '오후 1시 50분',
+    lat: 35.178670347920985,
+    lng: 126.89515784069745,
   },
   {
     id: '3',
@@ -25,6 +29,8 @@ export const storeList = [
     minimumOrderAmount: 10000,
     pickUpLocation: '경기 용인시 수지구 용구대로 2770',
     deadlineTime: '오후 1시 50분',
+    lat: 35.17858109179427,
+    lng: 126.89617892980773,
   },
   {
     id: '4',
@@ -34,5 +40,7 @@ export const storeList = [
     minimumOrderAmount: 10000,
     pickUpLocation: '경기 용인시 수지구 용구대로 2770',
     deadlineTime: '오후 1시 50분',
+    lat: 35.17858109179427,
+    lng: 126.89617892980773,
   },
 ];
