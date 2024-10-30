@@ -12,9 +12,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <GlobalStyle />
-    <LocationProvider>
-      <App />
-    </LocationProvider>
+    <QueryClientProvider client={queryClient}>
+      <GlobalStyle />
+      <LocationProvider>
+        <App />
+      </LocationProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );
