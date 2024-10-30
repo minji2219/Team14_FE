@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useState, useRef } from 'react';
 import Button from '@components/common/Button';
 import { Common } from '@styles/globalStyle';
 
@@ -6,13 +7,51 @@ import { OrderDetailCreator } from '@components/OrderHistoryDetail/data';
 import OrderHistoryDetailItem from '@components/OrderHistoryDetail/OrderHistoryDetailItem';
 
 const OrderDetailCreater = () => {
+  const imageInput = useRef<HTMLInputElement>(null);
+  const [uploadImgUrl, setUploadImgUrl] = useState<string>('');
+  const [uploadFileName, setUploadFileName] = useState<string>('');
+
+  const onchangeImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    const uploadFile = files?.[0];
+
+    if (uploadFile) {
+      setUploadFileName(uploadFile.name);
+    }
+
+    if (!uploadFile) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(uploadFile);
+    reader.onloadend = () => {
+      const result = reader.result;
+      if (typeof result === 'string') {
+        setUploadImgUrl(result);
+      }
+    };
+  };
+
+  const handleUploadClick = () => {
+    imageInput.current?.click();
+  };
+
   return (
     <Wrapper>
       <ButtonContainer>
+        <span>{uploadFileName}</span>
+        <Space1 />
         <Button
           label="+ 결제 주문서 등록"
           radius="20px"
           bgColor={Common.colors.primary}
+          onClick={handleUploadClick}
+        />
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          onChange={onchangeImageUpload}
+          ref={imageInput}
         />
         <Space1 />
         <Button label="?" radius="50%" bgColor={Common.colors.button3} />
