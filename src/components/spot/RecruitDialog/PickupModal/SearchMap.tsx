@@ -45,6 +45,10 @@ const SearchMap = ({ onRequestClose }: Props) => {
   };
 
   useEffect(() => {
+    setAddress({ lat: location.lat, lng: location.lng, address: '' });
+  }, []);
+
+  useEffect(() => {
     if (bound) {
       //@ts-ignore
       map?.setBounds(bound);
