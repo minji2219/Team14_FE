@@ -3,13 +3,19 @@ import { useState, useRef } from 'react';
 import Button from '@components/common/Button';
 import { Common } from '@styles/globalStyle';
 
+import Modal from '@components/common/Modal';
 import { OrderDetailCreator } from '@components/OrderHistoryDetail/data';
 import OrderHistoryDetailItem from '@components/OrderHistoryDetail/OrderHistoryDetailItem';
+import RecruitDialog from '@components/spot/RecruitDialog';
+import { SearchSpotProvider } from '@provider/SearchSpot';
 
 const OrderDetailCreater = () => {
   const imageInput = useRef<HTMLInputElement>(null);
   const [uploadImgUrl, setUploadImgUrl] = useState<string>('');
   const [uploadFileName, setUploadFileName] = useState<string>('');
+
+  const [recruitIsOpen, setRecruitIsOpen] = useState(false);
+  const [completeModalIsOpen, setCompleteModalIsOpen] = useState(false);
 
   const onchangeImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -56,6 +62,21 @@ const OrderDetailCreater = () => {
         <Space1 />
         <Button label="?" radius="50%" bgColor={Common.colors.button3} />
       </ButtonContainer>
+      <Modal
+        size="big"
+        type="transparent"
+        isOpen={recruitIsOpen}
+        onRequestClose={() => setRecruitIsOpen(false)}
+        title="모집"
+        content={
+          <SearchSpotProvider>
+            <RecruitDialog
+              onRequestClose={() => setRecruitIsOpen(false)}
+              onRequestConfirm={() => setCompleteModalIsOpen(true)}
+            />
+          </SearchSpotProvider>
+        }
+      />
       <ParticipantContainer>
         {OrderDetailCreator.memberInfo.map((data) => (
           <OrderHistoryDetailItem
@@ -65,7 +86,12 @@ const OrderDetailCreater = () => {
           />
         ))}
       </ParticipantContainer>
-      <Button label="수정하기" radius="20px" bgColor={Common.colors.primary} />
+      <Button
+        label="수정하기"
+        radius="20px"
+        bgColor={Common.colors.primary}
+        onClick={() => setRecruitIsOpen(true)}
+      />
       <Space2 />
       <Button
         label="삭제하기"
