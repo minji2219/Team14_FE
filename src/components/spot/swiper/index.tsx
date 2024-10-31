@@ -8,20 +8,40 @@ import { BsChevronLeft } from 'react-icons/bs';
 import { BsChevronRight } from 'react-icons/bs';
 
 const Swiper = () => {
-  const [carouselList, setCarouselList] = useState(storeList);
+  const getDeadlineImminentList = () => {
+    const calculateDiff = (deadlineHour: number, deadlineMinute: number) => {
+      const date = new Date();
+      const nowHour = date.getHours();
+      const nowMinute = date.getMinutes();
+
+      const nowTotalMinute = nowHour * 60 + nowMinute;
+      const deadlineTotalMinute = deadlineHour * 60 + deadlineMinute;
+
+      return deadlineTotalMinute - nowTotalMinute;
+    };
+
+    return storeList.filter((store) => {
+      const hour = Number(store.deadlineTime.split(':')[0]);
+      const minute = Number(store.deadlineTime.split(':')[1]);
+
+      if (calculateDiff(hour, minute) <= 30) return store;
+    });
+  };
+
+  const [carouselList, setCarouselList] = useState(getDeadlineImminentList());
   const [slideNumber, setSlideNumber] = useState<number>(1);
   const [isEndSlide, setIsEndSlide] = useState(true);
 
   useEffect(() => {
-    const startData = { ...storeList[0] };
-    const endData = { ...storeList[storeList.length - 1] };
+    const startData = { ...carouselList[0] };
+    const endData = { ...carouselList[carouselList.length - 1] };
 
     startData.id = startData.id + '_fake';
     endData.id = endData.id + '_fake';
 
-    const newList = [endData, ...storeList, startData];
+    const newList = [endData, ...carouselList, startData];
     setCarouselList(newList);
-  }, [storeList]);
+  }, []);
 
   const moveToNthSlide = (index: number) => {
     setTimeout(() => {

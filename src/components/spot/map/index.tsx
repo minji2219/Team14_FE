@@ -48,6 +48,7 @@ const KakaoMap = () => {
       {/* 배달 스팟들의 위치_파란색 마커 */}
       {datas.map((data) => (
         <MapMarker
+          key={data.id}
           position={{
             lat: data.lat,
             lng: data.lng,
