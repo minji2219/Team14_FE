@@ -38,7 +38,6 @@ const StoreList = () => {
           <div key={store.id}>
             <Store
               spotId={store.id}
-              image={store.image}
               category={store.category}
               storeName={store.storeName}
               deadlineTime={store.deadlineTime}
@@ -59,7 +58,7 @@ const Wrapper = styled.div`
   height: 50%;
   width: 100%;
   box-sizing: border-box;
-  padding: 0 40px;
+  padding: 0 20px;
   overflow: scroll;
   &::-webkit-scrollbar {
     display: none;

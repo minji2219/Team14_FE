@@ -10,7 +10,6 @@ import { getDynamicPath, RouterPath } from '@routes/path';
 
 interface Props {
   spotId: string;
-  image: string;
   category: string;
   storeName: string;
   deadlineTime: string;
@@ -18,7 +17,6 @@ interface Props {
 }
 const Store = ({
   spotId,
-  image,
   storeName,
   address,
   deadlineTime,
@@ -42,7 +40,7 @@ const Store = ({
   };
   return (
     <Wrapper>
-      <Logo image={image} />
+      <Logo image={`/image/categories/${category}.png`} />
       <DescriptWrapper>
         <Category>[{category}]</Category>
         <Title>{storeName}</Title>
@@ -92,10 +90,10 @@ const Store = ({
 export default Store;
 
 const Wrapper = styled.div`
+  width: 100%;
   display: flex;
-  gap: 20px;
   align-items: end;
-  justify-content: center;
+  justify-content: space-between;
   margin: 20px 0;
   line-height: 1.3;
 `;
