@@ -24,7 +24,8 @@ const Swiper = () => {
       const hour = Number(store.deadlineTime.split(':')[0]);
       const minute = Number(store.deadlineTime.split(':')[1]);
 
-      if (calculateDiff(hour, minute) <= 30) return store;
+      const timeDiff = calculateDiff(hour, minute);
+      if (timeDiff <= 30 && timeDiff >= 0) return store;
     });
   };
 
@@ -33,6 +34,7 @@ const Swiper = () => {
   const [isEndSlide, setIsEndSlide] = useState(true);
 
   useEffect(() => {
+    if (carouselList.length === 0) return;
     const startData = { ...carouselList[0] };
     const endData = { ...carouselList[carouselList.length - 1] };
 
@@ -52,6 +54,7 @@ const Swiper = () => {
 
   const clickRightArrow = () => {
     if (slideNumber === carouselList.length - 2) {
+      if (isEndSlide) setIsEndSlide(false);
       setSlideNumber(slideNumber + 1);
       moveToNthSlide(1);
     } else {
@@ -72,31 +75,41 @@ const Swiper = () => {
   };
 
   return (
-    <SwiperWrapper>
-      <LeftArrow onClick={() => clickLeftArrow()}>
-        <BsChevronLeft size="40" />
-      </LeftArrow>
-      <Slide slideNumber={slideNumber} endSlide={isEndSlide}>
-        {carouselList.map((store, index) => {
-          return (
-            <SlideItem
-              key={store.id}
-              category={store.category}
-              title={store.storeName}
-              address={store.pickUpLocation}
-              center={index === slideNumber}
-              endSlide={isEndSlide}
-            />
-          );
-        })}
-      </Slide>
-      <RightArrow onClick={() => clickRightArrow()}>
-        <BsChevronRight size="40" />
-      </RightArrow>
-    </SwiperWrapper>
+    <Wrapper>
+      {carouselList.length > 0 ? (
+        <SwiperWrapper>
+          <LeftArrow onClick={() => clickLeftArrow()}>
+            <BsChevronLeft size="40" />
+          </LeftArrow>
+          <Slide slideNumber={slideNumber} endSlide={isEndSlide}>
+            {carouselList.map((store, index) => {
+              return (
+                <SlideItem
+                  key={store.id}
+                  category={store.category}
+                  title={store.storeName}
+                  address={store.pickUpLocation}
+                  center={index === slideNumber}
+                  endSlide={isEndSlide}
+                />
+              );
+            })}
+          </Slide>
+          <RightArrow onClick={() => clickRightArrow()}>
+            <BsChevronRight size="40" />
+          </RightArrow>
+        </SwiperWrapper>
+      ) : (
+        <Description>주문 마감 30분 전 스팟이 존재하지 않습니다.</Description>
+      )}
+    </Wrapper>
   );
 };
 export default Swiper;
+
+const Wrapper = styled.div`
+  width: 100%;
+`;
 const SwiperWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -135,4 +148,19 @@ const RightArrow = styled.div`
   right: 30px;
   top: 35%;
   z-index: ${Common.zIndex.common};
+`;
+
+const Description = styled.div`
+  width: 90%;
+  height: 200px;
+  margin: 30px auto;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.16),
+    0 3px 6px rgba(0, 0, 0, 0.23);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
 `;
