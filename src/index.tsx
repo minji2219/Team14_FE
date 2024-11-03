@@ -5,7 +5,7 @@ import { GlobalStyle } from '@styles/globalStyle';
 import App from './App';
 import { LocationProvider } from '@provider/PresentLocation';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from '@api/instance';
+import { queryClient } from '@api/QueryClient';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
