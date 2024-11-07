@@ -1,4 +1,3 @@
-import { QueryClient } from '@tanstack/react-query';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
@@ -26,16 +25,5 @@ export const fetchAuthInstance = initInstance({
   baseURL: BASE_URL,
   headers: {
     Authorization: `Bearer ${TOKEN}`,
-  },
-});
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
-    },
   },
 });

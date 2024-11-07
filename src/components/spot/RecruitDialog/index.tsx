@@ -23,7 +23,11 @@ interface FormValues {
   endHour: number;
   endMinute: number;
   orderLink: string;
-  address: string;
+  address: {
+    address: string;
+    lng: number;
+    lat: number;
+  };
 }
 
 const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
@@ -40,6 +44,7 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
 
   const createRecruit: SubmitHandler<FormValues> = (data) => {
     // 정상적으로 폼 전송이 완료 됐다면 폼꺼지고, 완료 폼 켜짐
+    console.log(data);
     onRequestClose();
     onRequestConfirm();
   };
@@ -52,7 +57,7 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
 
   useEffect(() => {
     if (address) {
-      setValue('address', address.address);
+      setValue('address', address);
     }
   }, [address]);
 
@@ -100,8 +105,12 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
       <LocationWrapper>
         <InputField
           placeholder="픽업 장소를 선택해주세요."
-          // value={address?.address}
+          value={address?.address}
           disabled
+          // {...register('address', { required: true })}
+        />
+        <InputField
+          style={{ visibility: 'hidden' }}
           {...register('address', { required: true })}
         />
         <LocationPinIcon onClick={() => setIsOpen(true)}>
