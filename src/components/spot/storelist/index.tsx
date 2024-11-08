@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import { Common } from '@styles/globalStyle';
 import { useContext, useState } from 'react';
 import { ClickedLocationContext } from '@provider/ClickedLocation';
+import { useGetSpotInfo } from '@api/hooks/useGetSpotInfo';
+import { LocationContext } from '@provider/PresentLocation';
 import { storeList } from '../swiper/data';
 import Store from './store';
 import SelectCategory from './selectCategory';
@@ -12,6 +14,7 @@ const StoreList = () => {
   const { clickedLocation, setClickedLocation } = useContext(
     ClickedLocationContext,
   );
+  const { location } = useContext(LocationContext);
 
   const filterList = () => {
     if (clickedLocation) {
@@ -26,6 +29,8 @@ const StoreList = () => {
     }
     return storeList.filter((store) => category === store.category);
   };
+
+  // const { data } = useGetSpotInfo({ lat: location.lat, lng: location.lng });
 
   return (
     <Wrapper>

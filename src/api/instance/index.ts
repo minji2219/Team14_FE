@@ -14,15 +14,15 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
 };
 
 //TODO: 임시
-const BASE_URL = '';
+// const BASE_URL = 'http://3.34.191.43';
 const TOKEN = 'token';
 
 export const fetchInstance = initInstance({
-  baseURL: BASE_URL,
+  // baseURL: BASE_URL,
 });
 
 export const fetchAuthInstance = initInstance({
-  baseURL: BASE_URL,
+  // baseURL: BASE_URL,
   headers: {
     Authorization: `Bearer ${TOKEN}`,
   },
