@@ -4,8 +4,8 @@ import './index.css';
 import { GlobalStyle } from '@styles/globalStyle';
 import { LocationProvider } from '@provider/PresentLocation';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from '@api/instance';
 import { AuthProvider } from '@provider/AuthProvider';
+import { queryClient } from '@api/QueryClient';
 import App from './App';
 
 const root = ReactDOM.createRoot(
