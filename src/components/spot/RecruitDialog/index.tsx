@@ -10,6 +10,7 @@ import Modal from '@components/common/Modal';
 import SearchBar from './PickupModal/SearchBar';
 import SearchMap from './PickupModal/SearchMap';
 import { SearchSpotContext } from '@provider/SearchSpot';
+import { usePostSpot } from '@api/hooks/usePostSpot';
 
 interface Props {
   onRequestClose: () => void;
@@ -18,7 +19,7 @@ interface Props {
 
 interface FormValues {
   category: string;
-  storename: string;
+  storeName: string;
   price: number;
   endHour: number;
   endMinute: number;
@@ -33,6 +34,7 @@ interface FormValues {
 const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { address } = useContext(SearchSpotContext);
+  const { mutate } = usePostSpot();
 
   const {
     register,
@@ -44,7 +46,16 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
 
   const createRecruit: SubmitHandler<FormValues> = (data) => {
     // 정상적으로 폼 전송이 완료 됐다면 폼꺼지고, 완료 폼 켜짐
-    console.log(data);
+    mutate({
+      lat: data.address.lat,
+      lng: data.address.lng,
+      category: data.category,
+      storeName: data.storeName,
+      minimumOrderAmount: data.price,
+      togetherOrderLink: data.orderLink,
+      pickUpLocation: data.address.address,
+    });
+
     onRequestClose();
     onRequestConfirm();
   };
@@ -72,7 +83,7 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
       <Label>가게 이름</Label>
       <InputField
         placeholder="가게 이름을 입력해주세요."
-        {...register('storename', { required: true })}
+        {...register('storeName', { required: true })}
       />
 
       <Label>최소 주문 금액</Label>
