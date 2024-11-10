@@ -15,7 +15,7 @@ const OrderListItem = ({
 }: Props) => {
   return (
     <Wrapper>
-      <img src="/image/restaurant.png" alt="식당 이미지" />
+      <img src={`/image/categories/${category}.png`} alt="식당 이미지" />
       <Container>
         <div>
           <img src="/image/ing.png" alt="진행중" />
