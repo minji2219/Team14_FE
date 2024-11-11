@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
-import { storeList } from '../swiper/data';
-import Store from './store';
 import { Common } from '@styles/globalStyle';
-import SelectCategory from './selectCategory';
 import { useContext, useState } from 'react';
 import { ClickedLocationContext } from '@provider/ClickedLocation';
 import { StoreListParams, useGetSpotInfo } from '@api/hooks/useGetSpotInfo';
 import { LocationContext } from '@provider/PresentLocation';
+import { storeList } from '../swiper/data';
+import Store from './store';
+import SelectCategory from './selectCategory';
 
 const StoreList = () => {
   const SELECT_CATEOGRY = '카테고리 선택';

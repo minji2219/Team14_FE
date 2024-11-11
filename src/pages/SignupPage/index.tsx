@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import styled from '@emotion/styled';
 import Background from '@components/common/Background/index';
 import { HEADER_HEIGHT } from '@components/features/Layout/Header';
 import InputField from '@components/common/InputField';
 import Button from '@components/common/Button';
 import { Common } from '@styles/globalStyle';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { fetchInstance } from '@api/instance/index';
+import Cookies from 'js-cookie';
+import { AuthContext } from '@provider/AuthProvider';
 
 const SignupPage: React.FC = () => {
   const location = useLocation();
@@ -51,15 +55,38 @@ const SignupPage: React.FC = () => {
               radius="30px"
               padding="20px 25px"
             />
-          </CheckboxWrapper>
-        </Form>
-      </Content>
-    </Background>
-    <Background />
-  </Wrapper>
-);
+            <StyledInputField
+              placeholder="배달의 민족 닉네임"
+              value={deliveryName}
+              onChange={(e) => setDeliveryName(e.target.value)}
+              width="90%"
+              radius="30px"
+              padding="20px 25px"
+            />
+            <CheckboxWrapper>
+              <CheckboxLabelWrapper>
+                <input type="checkbox" id="marketingConsent" />
+                <Label htmlFor="marketingConsent">
+                  (필수) 마케팅 정보 수신 동의
+                </Label>
+              </CheckboxLabelWrapper>
+              <Button
+                label="완료"
+                onClick={handleSubmit}
+                bgColor={Common.colors.primary}
+                radius="20px"
+                padding="10px 30px"
+              />
+            </CheckboxWrapper>
+          </Form>
+        </Content>
+      </Background>
+      <Background />
+    </Wrapper>
+  );
+};
 
-export default signupPage;
+export default SignupPage;
 
 const Wrapper = styled.div`
   display: flex;
@@ -111,6 +138,7 @@ const CheckboxLabelWrapper = styled.div`
   align-items: center;
   gap: 10px;
 `;
+
 const Label = styled.label`
   font-size: 14px;
   color: #333;
