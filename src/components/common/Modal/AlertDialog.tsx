@@ -6,7 +6,7 @@ import { ReactNode } from 'react';
 interface Props {
   type?: 'alert' | 'complete' | 'warning';
   content: string | ReactNode;
-  onRequestClose: () => void;
+  onRequestClose?: () => void;
   onRequestConfirm: () => void;
 }
 const AlertDialog = ({
@@ -38,13 +38,15 @@ const AlertDialog = ({
     <div>
       <Content>{content}</Content>
       <Wrapper>
-        <Button
-          label="취소"
-          onClick={onRequestClose}
-          bgColor={btnBgColor().cancelBtn}
-          padding="10px 30px"
-          radius="20px"
-        />
+        {onRequestClose && (
+          <Button
+            label="취소"
+            onClick={onRequestClose}
+            bgColor={btnBgColor().cancelBtn}
+            padding="10px 30px"
+            radius="20px"
+          />
+        )}
         <Button
           label="확인"
           onClick={onRequestConfirm}

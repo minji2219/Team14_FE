@@ -15,6 +15,7 @@ import { usePostSpot } from '@api/hooks/usePostSpot';
 interface Props {
   onRequestClose: () => void;
   onRequestConfirm: () => void;
+  onRequestError: () => void;
 }
 
 interface FormValues {
@@ -31,7 +32,11 @@ interface FormValues {
   };
 }
 
-const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
+const RecruitDialog = ({
+  onRequestClose,
+  onRequestConfirm,
+  onRequestError,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { address } = useContext(SearchSpotContext);
   const { mutate, data } = usePostSpot();
@@ -44,10 +49,15 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
     formState: { errors },
   } = useForm<FormValues>();
 
-  const createRecruit: SubmitHandler<FormValues> = async (data) => {
-    // 정상적으로 폼 전송이 완료 됐다면 폼꺼지고, 완료 폼 켜짐
-    const deadlineTime = `0${data.endHour}:0${data.endMinute}:59`;
+  const getFormatTime = (hour: number, minute: number) => {
+    const hours = hour >= 10 ? hour : '0' + hour;
+    const minutes = minute > 10 ? minute : '0' + minute;
 
+    return hours + ':' + minutes + ':' + '59';
+  };
+
+  const createRecruit: SubmitHandler<FormValues> = async (data) => {
+    const deadlineTime = getFormatTime(data.endHour, data.endMinute);
     mutate(
       {
         lat: data.address.lat,
@@ -66,7 +76,7 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
           onRequestConfirm();
         },
         //TODO:문제 발생 안내 띄우기
-        onError: (error) => console.log(error),
+        onError: (error) => onRequestError(),
       },
     );
   };

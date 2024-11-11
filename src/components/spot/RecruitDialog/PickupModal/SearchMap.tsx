@@ -79,6 +79,10 @@ const SearchMap = ({ onRequestClose }: Props) => {
           lat: marker.lat,
           lng: marker.lng,
         }}
+        image={{
+          src: '/image/myLocation.png',
+          size: { width: 33, height: 45 },
+        }}
         draggable={true}
         onDragEnd={(marker) => dragEnd(marker)}
       />

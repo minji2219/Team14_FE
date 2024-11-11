@@ -81,6 +81,8 @@ const OrderDetailCreater = () => {
             <RecruitDialog
               onRequestClose={() => setRecruitIsOpen(false)}
               onRequestConfirm={() => setCompleteModalIsOpen(true)}
+              //TODO임시
+              onRequestError={() => {}}
             />
           </SearchSpotProvider>
         }

@@ -2,9 +2,8 @@ import styled from '@emotion/styled';
 import { Common } from '@styles/globalStyle';
 import { useContext, useState } from 'react';
 import { ClickedLocationContext } from '@provider/ClickedLocation';
-import { StoreListParams, useGetSpotInfo } from '@api/hooks/useGetSpotInfo';
+import { useGetSpotInfo } from '@api/hooks/useGetSpotInfo';
 import { LocationContext } from '@provider/PresentLocation';
-import { storeList } from '../swiper/data';
 import Store from './store';
 import SelectCategory from './selectCategory';
 
