@@ -1,6 +1,17 @@
 import { fetchInstance } from '@api/instance';
 import { useQuery } from '@tanstack/react-query';
 
+export interface StoreListParams {
+  id: number;
+  category: string;
+  minimumOrderAmount: number;
+  deadlineTime: string;
+  pickUpLocation: string;
+  storeName: string;
+  lat: number;
+  lng: number;
+}
+
 interface RequestParams {
   lat: number;
   lng: number;
@@ -11,7 +22,10 @@ const getPath = ({ lat, lng }: RequestParams) => {
 };
 
 const getSpotInfo = async ({ lat, lng }: RequestParams) => {
-  return await fetchInstance.get(getPath({ lat, lng }));
+  const response = await fetchInstance.get<StoreListParams[]>(
+    getPath({ lat, lng }),
+  );
+  return response.data;
 };
 
 export const useGetSpotInfo = ({ lat, lng }: RequestParams) => {

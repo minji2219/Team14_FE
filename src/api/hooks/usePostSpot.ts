@@ -9,6 +9,7 @@ interface PostData {
   minimumOrderAmount: number;
   togetherOrderLink: string;
   pickUpLocation: string;
+  deadlineTime: string;
 }
 
 const getPath = () => {

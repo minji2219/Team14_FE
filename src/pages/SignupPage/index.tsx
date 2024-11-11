@@ -6,36 +6,50 @@ import InputField from '@components/common/InputField';
 import Button from '@components/common/Button';
 import { Common } from '@styles/globalStyle';
 
-const signupPage: React.FC = () => (
-  <Wrapper>
-    <Background left>
-      <Content>
-        <Title>회원정보 입력</Title>
-        <Form>
-          <StyledInputField
-            placeholder="전화번호"
-            width="90%"
-            radius="30px"
-            padding="20px 25px"
-          />
-          <StyledInputField
-            placeholder="배달의 민족 닉네임"
-            width="90%"
-            radius="30px"
-            padding="20px 25px"
-          />
-          <CheckboxWrapper>
-            <CheckboxLabelWrapper>
-              <input type="checkbox" id="marketingConsent" />
-              <Label htmlFor="marketingConsent">
-                (필수) 마케팅 정보 수신 동의
-              </Label>
-            </CheckboxLabelWrapper>
-            <Button
-              label="완료"
-              bgColor={Common.colors.primary}
-              radius="20px"
-              padding="10px 30px"
+const SignupPage: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { setIsLoggedIn } = useContext(AuthContext);
+  const [phoneNumber, setPhoneNumber] = useState<string>('01097019200');
+  const [deliveryName, setDeliveryName] = useState<string>('wlghks');
+
+  const handleSubmit = () => {
+    const query = new URLSearchParams(location.search);
+    const email = query.get('email');
+
+    const requestData = {
+      deliveryName,
+      phoneNumber,
+    };
+
+    fetchInstance
+      .post(
+        `http://3.39.23.121:8080/api/v1/auth/signup?email=${email}`,
+        requestData,
+      )
+      .then((response) => {
+        if (response.status === 200 && response.data) {
+          const accessToken = response.data.data;
+          Cookies.set('access_token', accessToken);
+          setIsLoggedIn(true);
+          navigate('/');
+        }
+      });
+  };
+
+  return (
+    <Wrapper>
+      <Background left>
+        <Content>
+          <Title>회원정보 입력</Title>
+          <Form>
+            <StyledInputField
+              placeholder="전화번호"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              width="90%"
+              radius="30px"
+              padding="20px 25px"
             />
           </CheckboxWrapper>
         </Form>

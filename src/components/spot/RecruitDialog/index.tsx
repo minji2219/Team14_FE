@@ -34,7 +34,7 @@ interface FormValues {
 const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { address } = useContext(SearchSpotContext);
-  const { mutate } = usePostSpot();
+  const { mutate, data } = usePostSpot();
 
   const {
     register,
@@ -44,20 +44,31 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
     formState: { errors },
   } = useForm<FormValues>();
 
-  const createRecruit: SubmitHandler<FormValues> = (data) => {
+  const createRecruit: SubmitHandler<FormValues> = async (data) => {
     // 정상적으로 폼 전송이 완료 됐다면 폼꺼지고, 완료 폼 켜짐
-    mutate({
-      lat: data.address.lat,
-      lng: data.address.lng,
-      category: data.category,
-      storeName: data.storeName,
-      minimumOrderAmount: data.price,
-      togetherOrderLink: data.orderLink,
-      pickUpLocation: data.address.address,
-    });
+    const deadlineTime = `0${data.endHour}:0${data.endMinute}:59`;
 
-    onRequestClose();
-    onRequestConfirm();
+    mutate(
+      {
+        lat: data.address.lat,
+        lng: data.address.lng,
+        category: data.category,
+        storeName: data.storeName,
+        minimumOrderAmount: Number(data.price),
+        togetherOrderLink: data.orderLink,
+        pickUpLocation: data.address.address,
+        deadlineTime: deadlineTime,
+      },
+      {
+        onSuccess: () => {
+          console.log(data);
+          onRequestClose();
+          onRequestConfirm();
+        },
+        //TODO:문제 발생 안내 띄우기
+        onError: (error) => console.log(error),
+      },
+    );
   };
 
   const preventKeydown = (e: React.KeyboardEvent) => {
@@ -118,7 +129,6 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
           placeholder="픽업 장소를 선택해주세요."
           value={address?.address}
           disabled
-          // {...register('address', { required: true })}
         />
         <InputField
           style={{ visibility: 'hidden' }}

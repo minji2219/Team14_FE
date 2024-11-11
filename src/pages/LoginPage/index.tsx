@@ -18,13 +18,20 @@ const LoginPage: React.FC = () => {
     const query = new URLSearchParams(location.search);
     const code = query.get('code');
 
-    if (code) {
-      axios
-        .post(
-          BACKEND_API_URL,
-          { code },
-          { headers: { 'Content-Type': 'application/json' } },
-        )
+    if (code && !isCodeProcessed) {
+      if (sessionStorage.getItem('codeProcessed')) return;
+
+      setIsCodeProcessed(true);
+      sessionStorage.setItem('codeProcessed', 'true');
+
+      fetchInstance
+        .get('http://3.39.23.121:8080/api/v1/auth/login', {
+          headers: {
+            Authorization: `Bearer ${code}`,
+            'Content-Type': 'application/json',
+          },
+          maxRedirects: 0,
+        })
         .then((response) => {
           const accessToken = response.data.access_token;
           Cookies.set('access_token', accessToken);
