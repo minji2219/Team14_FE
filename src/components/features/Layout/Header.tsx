@@ -54,11 +54,13 @@ export const Header: React.FC = () => {
   };
 
   const handleLogout = () => {
-    fetchAuthInstance.post('/auth/logout').then(() => {
-      Cookies.remove('access_token');
-      setIsLoggedIn(false);
-      navigate('/');
-    });
+    fetchAuthInstance
+      .post('http://3.39.23.121:8080/api/v1/auth/logout')
+      .then(() => {
+        Cookies.remove('access_token');
+        setIsLoggedIn(false);
+        navigate('/');
+      });
   };
 
   useEffect(() => {

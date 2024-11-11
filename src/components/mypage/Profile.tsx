@@ -4,10 +4,12 @@ import { Common } from '@styles/globalStyle';
 import Button from '@components/common/Button';
 
 interface Props {
+  name: string;
+  phoneNumber: string;
   editMode: () => void;
 }
 
-const Profile = ({ editMode }: Props) => {
+const Profile = ({ editMode, name, phoneNumber }: Props) => {
   return (
     <div>
       <MyPageContainerMiddle>
@@ -17,9 +19,9 @@ const Profile = ({ editMode }: Props) => {
           <LeftContent>전화번호</LeftContent>
         </MyPageInfoDescription>
         <MyPageInfo>
-          <RightContent>우먹마</RightContent>
+          <RightContent>{name}</RightContent>
           <br />
-          <RightContent>010-0000-0000</RightContent>
+          <RightContent>{phoneNumber}</RightContent>
         </MyPageInfo>
       </MyPageContainerMiddle>
       <MyPageContainerBottom>

@@ -27,7 +27,10 @@ const SignupPage: React.FC = () => {
     };
 
     fetchInstance
-      .post(`/auth/signup?email=${email}`, requestData)
+      .post(
+        `http://3.39.23.121:8080/api/v1/auth/signup?email=${email}`,
+        requestData,
+      )
       .then((response) => {
         if (response.status === 200 && response.data) {
           const accessToken = response.data.data;
@@ -72,7 +75,7 @@ const SignupPage: React.FC = () => {
                 onClick={handleSubmit}
                 bgColor={Common.colors.primary}
                 radius="20px"
-                padding="10px 30px"
+                padding="10px 100px"
               />
             </CheckboxWrapper>
           </Form>
