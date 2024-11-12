@@ -6,6 +6,7 @@ import { fetchInstance } from '@api/instance/index';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { AuthContext } from '@provider/AuthProvider';
+import { RouterPath } from '@routes/path';
 
 const KAKAO_CLIENT_ID = '709c9edf5275cd3bedfb03c7f92e7af5';
 const KAKAO_REDIRECT_URI = 'http://localhost:3000/login';
@@ -40,7 +41,7 @@ const LoginPage: React.FC = () => {
           if (accessToken) {
             Cookies.set('access_token', accessToken);
             setIsLoggedIn(true);
-            navigate('/');
+            navigate(RouterPath.root);
           }
         })
         .catch((error) => {
@@ -51,10 +52,10 @@ const LoginPage: React.FC = () => {
                 window.location.href = redirectUrl;
               }
             } else {
-              navigate('/');
+              navigate(RouterPath.root);
             }
           } else {
-            navigate('/');
+            navigate(RouterPath.root);
           }
         });
     }

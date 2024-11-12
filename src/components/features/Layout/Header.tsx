@@ -60,7 +60,7 @@ export const Header: React.FC = () => {
       .then(() => {
         Cookies.remove('access_token');
         setIsLoggedIn(false);
-        navigate('/');
+        navigate(RouterPath.root);
       });
   };
 
@@ -83,7 +83,7 @@ export const Header: React.FC = () => {
     <Wrapper>
       <Container>
         <HeaderLeft>
-          <LogoWrapper onClick={() => navigate('/')}>
+          <LogoWrapper onClick={() => navigate(RouterPath.spot)}>
             <Logo src="/image/logo.png" alt="로고" />
             <Location>요기 먹때</Location>
           </LogoWrapper>
@@ -121,7 +121,7 @@ export const Header: React.FC = () => {
             label="로그인"
             bgColor="#ffd500"
             radius="5px"
-            onClick={() => navigate('/login')}
+            onClick={() => navigate(RouterPath.login)}
           />
         )}
       </Container>
