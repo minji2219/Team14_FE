@@ -27,7 +27,9 @@ const LoginPage: React.FC = () => {
 
       setIsCodeProcessed(true);
       sessionStorage.setItem('codeProcessed', 'true');
-
+      // http://3.39.23.121:8080/api/v1/auth/login
+      // https://order-together.duckdns.org/api/v1/auth/login
+      // http://43.203.132.224:8080/api/v1/auth/login
       fetchInstance
         .get('http://3.39.23.121:8080/api/v1/auth/login', {
           headers: {
@@ -45,8 +47,10 @@ const LoginPage: React.FC = () => {
           }
         })
         .catch((error) => {
+          console.log(error);
           if (error.response) {
             if (error.response.status === 404) {
+              console.log(error.request.responseURL);
               const redirectUrl = error.request.responseURL;
               if (redirectUrl) {
                 window.location.href = redirectUrl;

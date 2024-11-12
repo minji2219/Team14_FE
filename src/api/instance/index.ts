@@ -23,8 +23,11 @@ export const fetchInstance = initInstance({
   // baseURL: BASE_URL,
 });
 
+// const token = useContext(AuthContext);
+
 export const fetchAuthInstance = initInstance({
   // baseURL: BASE_URL,
+
   headers: {
     Authorization: `Bearer ${Cookies.get('access_token')}`,
   },

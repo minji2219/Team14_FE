@@ -1,4 +1,4 @@
-import { fetchInstance } from '@api/instance';
+import { fetchAuthInstance, fetchInstance } from '@api/instance';
 import { useQuery } from '@tanstack/react-query';
 
 export interface StoreListParams {
@@ -23,7 +23,7 @@ const getPath = ({ lat, lng }: RequestParams) => {
 };
 
 const getSpotInfo = async ({ lat, lng }: RequestParams) => {
-  const response = await fetchInstance.get<StoreListParams[]>(
+  const response = await fetchAuthInstance.get<StoreListParams[]>(
     getPath({ lat, lng }),
   );
   return response.data;
