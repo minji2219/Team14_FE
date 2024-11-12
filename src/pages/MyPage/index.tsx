@@ -22,22 +22,22 @@ const MyPage = () => {
   };
 
   useEffect(() => {
+    const token = Cookies.get('access_token');
     fetchInstance
       .get('http://3.39.23.121:8080/api/v1/members', {
         headers: {
-          'access-token': Cookies.get('access_token'),
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
         if (response.status === 200 && response.data) {
           setData(response.data.data);
-          console.log(data);
         }
       })
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [isEdit]);
 
   return (
     <Wrapper>

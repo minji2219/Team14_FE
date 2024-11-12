@@ -18,19 +18,19 @@ const ProfileEdit = ({ editMode, phoneNumber, name }: Props) => {
   const [editName, setEditName] = useState<string>(name);
 
   const editInfo = () => {
+    const token = Cookies.get('access_token');
     fetchInstance
       .put(
         'http://3.39.23.121:8080/api/v1/members',
-        { nickName: editName, phoneNumber: editPhoneNumber },
+        { deliveryName: editName, phoneNumber: editPhoneNumber },
         {
           headers: {
-            'access-token': Cookies.get('access_token'),
+            Authorization: `Bearer ${token}`,
           },
         },
       )
       .then((response) => {
         if (response.status === 200 && response.data) {
-          console.log(response.data.message);
           editMode();
         }
       });
@@ -48,14 +48,14 @@ const ProfileEdit = ({ editMode, phoneNumber, name }: Props) => {
           <InputField
             width="65%"
             bgColor="#EDEDED"
-            value={name}
+            value={editName}
             onChange={(e) => setEditName(e.target.value)}
           />
           <Space />
           <InputField
             width="65%"
             bgColor="#EDEDED"
-            value={phoneNumber}
+            value={editPhoneNumber}
             onChange={(e) => setEditPhoneNumber(e.target.value)}
           />
         </MyPageInfo>
