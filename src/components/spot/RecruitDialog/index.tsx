@@ -16,6 +16,16 @@ interface Props {
   onRequestClose: () => void;
   onRequestConfirm: () => void;
   onRequestError: () => void;
+  modify?: {
+    category: string;
+    storeName: string;
+    minimumOrderAmount: number;
+    deadlineTime: string;
+    togetherOrderLink: string;
+    pickUpLocation: string;
+    lat: number;
+    lng: number;
+  };
 }
 
 interface FormValues {
@@ -36,18 +46,11 @@ const RecruitDialog = ({
   onRequestClose,
   onRequestConfirm,
   onRequestError,
+  modify,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { address } = useContext(SearchSpotContext);
   const { mutate, data } = usePostSpot();
-
-  const {
-    register,
-    control,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<FormValues>();
 
   const getFormatTime = (hour: number, minute: number) => {
     const hours = hour >= 10 ? hour : '0' + hour;
@@ -56,7 +59,35 @@ const RecruitDialog = ({
     return hours + ':' + minutes + ':' + '59';
   };
 
+  const parsingTime = (time: string) => {
+    const hours = time.split(':')[0];
+    const minutes = time.split(':')[1];
+
+    return { hours: Number(hours), minutes: Number(minutes) };
+  };
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormValues>(
+    modify && {
+      defaultValues: {
+        category: modify.category,
+        storeName: modify.storeName,
+        price: modify.minimumOrderAmount,
+        endHour: parsingTime(modify.deadlineTime).hours,
+        endMinute: parsingTime(modify.deadlineTime).minutes,
+        orderLink: modify.togetherOrderLink,
+      },
+    },
+  );
+
   const createRecruit: SubmitHandler<FormValues> = async (data) => {
+    //TODO:modify인 경우 다른 mutate 진행
+    console.log(data);
     const deadlineTime = getFormatTime(data.endHour, data.endMinute);
     mutate(
       {
@@ -75,7 +106,6 @@ const RecruitDialog = ({
           onRequestClose();
           onRequestConfirm();
         },
-        //TODO:문제 발생 안내 띄우기
         onError: (error) => onRequestError(),
       },
     );
@@ -88,6 +118,13 @@ const RecruitDialog = ({
   };
 
   useEffect(() => {
+    if (modify) {
+      setValue('address', {
+        address: modify?.pickUpLocation,
+        lat: modify?.lat,
+        lng: modify?.lng,
+      });
+    }
     if (address) {
       setValue('address', address);
     }
@@ -99,7 +136,9 @@ const RecruitDialog = ({
         name="category"
         control={control}
         rules={{ required: true }}
-        render={({ field }) => <SelectCategory setCategory={field.onChange} />}
+        render={({ field }) => (
+          <SelectCategory setCategory={field.onChange} value={field.value} />
+        )}
       />
       <Label>가게 이름</Label>
       <InputField
@@ -137,7 +176,7 @@ const RecruitDialog = ({
       <LocationWrapper>
         <InputField
           placeholder="픽업 장소를 선택해주세요."
-          value={address?.address}
+          value={address?.address ? address?.address : modify?.pickUpLocation}
           disabled
         />
         <InputField
@@ -169,7 +208,7 @@ const RecruitDialog = ({
           onClick={onRequestClose}
         />
         <Button
-          label="완료"
+          label={modify ? '수정' : '완료'}
           bgColor={Common.colors.primary}
           padding="9px 25px"
           radius="20px"
