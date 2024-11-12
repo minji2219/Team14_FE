@@ -5,6 +5,7 @@ import { Common } from '@styles/globalStyle';
 import Button from '@components/common/Button';
 import Background from '@components/common/Background/index';
 import { HEADER_HEIGHT } from '@components/features/Layout/Header';
+import { RouterPath } from '@routes/path';
 
 const IntroducePage: React.FC = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const IntroducePage: React.FC = () => {
                 label="주문하러가기"
                 bgColor={Common.colors.yellow}
                 radius="25px"
-                onClick={() => navigate('/spot')}
+                onClick={() => navigate(RouterPath.spot)}
               />
             </ButtonWrapper>
           </TextWrapper>

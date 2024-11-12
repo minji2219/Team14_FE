@@ -7,9 +7,10 @@ import { Common } from '@styles/globalStyle';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDynamicPath, RouterPath } from '@routes/path';
+import Cookies from 'js-cookie';
 
 interface Props {
-  spotId: string;
+  spotId: number;
   category: string;
   storeName: string;
   deadlineTime: string;
@@ -24,13 +25,11 @@ const Store = ({
 }: Props) => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [sendLinkIsOpen, setSendLinkIsOpen] = useState(false);
-  //TODO: 로그인 여부 확인 만들어질 때까지 임시 사용
-  const [login, setLogin] = useState(true);
 
   const navigate = useNavigate();
 
   const handleClick = () => {
-    if (login) {
+    if (Cookies.get('access_token')) {
       //로그인이 되어있을 경우
       setSendLinkIsOpen(true);
     } else {
@@ -38,9 +37,10 @@ const Store = ({
       setIsLoginOpen(true);
     }
   };
+
   return (
     <Wrapper>
-      <Logo image={`/image/categories/${category}.png`} />
+      <Logo image={`/image/categories/${category.replace(', ', ',')}.png`} />
       <DescriptWrapper>
         <Category>[{category}]</Category>
         <Title>{storeName}</Title>

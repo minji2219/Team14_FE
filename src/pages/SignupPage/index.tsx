@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchInstance } from '@api/instance/index';
 import Cookies from 'js-cookie';
 import { AuthContext } from '@provider/AuthProvider';
+import { RouterPath } from '@routes/path';
 
 const SignupPage: React.FC = () => {
   const location = useLocation();
@@ -27,13 +28,16 @@ const SignupPage: React.FC = () => {
     };
 
     fetchInstance
-      .post(`/auth/signup?email=${email}`, requestData)
+      .post(
+        `http://3.39.23.121:8080/api/v1/auth/signup?email=${email}`,
+        requestData,
+      )
       .then((response) => {
         if (response.status === 200 && response.data) {
           const accessToken = response.data.data;
           Cookies.set('access_token', accessToken);
           setIsLoggedIn(true);
-          navigate('/');
+          navigate(RouterPath.root);
         }
       });
   };

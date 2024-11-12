@@ -4,7 +4,6 @@ import { useContext, useState } from 'react';
 import { ClickedLocationContext } from '@provider/ClickedLocation';
 import { useGetSpotInfo } from '@api/hooks/useGetSpotInfo';
 import { LocationContext } from '@provider/PresentLocation';
-import { storeList } from '../swiper/data';
 import Store from './store';
 import SelectCategory from './selectCategory';
 
@@ -16,21 +15,24 @@ const StoreList = () => {
   );
   const { location } = useContext(LocationContext);
 
+  const { data = [] } = useGetSpotInfo({
+    lat: location.lat,
+    lng: location.lng,
+  });
+
   const filterList = () => {
-    if (clickedLocation) {
-      return storeList.filter(
+    if (clickedLocation && data) {
+      return data.filter(
         (store) =>
           store.lat === clickedLocation.lat &&
           store.lng === clickedLocation.lng,
       );
     }
     if (category === SELECT_CATEOGRY) {
-      return storeList;
+      return data;
     }
-    return storeList.filter((store) => category === store.category);
+    return data?.filter((store) => category === store.category);
   };
-
-  // const { data } = useGetSpotInfo({ lat: location.lat, lng: location.lng });
 
   return (
     <Wrapper>
@@ -39,7 +41,7 @@ const StoreList = () => {
         setClickedLocation={setClickedLocation}
       />
       {filterList().length > 0 ? (
-        filterList().map((store) => (
+        filterList()?.map((store) => (
           <div key={store.id}>
             <Store
               spotId={store.id}

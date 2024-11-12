@@ -11,10 +11,22 @@ import SearchBar from './PickupModal/SearchBar';
 import SearchMap from './PickupModal/SearchMap';
 import { SearchSpotContext } from '@provider/SearchSpot';
 import { usePostSpot } from '@api/hooks/usePostSpot';
+import { usePutSpot } from '@api/hooks/usePutSpot';
 
 interface Props {
   onRequestClose: () => void;
   onRequestConfirm: () => void;
+  onRequestError: () => void;
+  modify?: {
+    category: string;
+    storeName: string;
+    minimumOrderAmount: number;
+    deadlineTime: string;
+    togetherOrderLink: string;
+    pickUpLocation: string;
+    lat: number;
+    lng: number;
+  };
 }
 
 interface FormValues {
@@ -31,10 +43,30 @@ interface FormValues {
   };
 }
 
-const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
+const RecruitDialog = ({
+  onRequestClose,
+  onRequestConfirm,
+  onRequestError,
+  modify,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { address } = useContext(SearchSpotContext);
-  const { mutate } = usePostSpot();
+  const { mutate: postMutate, data } = usePostSpot();
+  const { mutate: putMutate } = usePutSpot();
+
+  const getFormatTime = (hour: number, minute: number) => {
+    const hours = hour >= 10 ? hour : '0' + hour;
+    const minutes = minute > 10 ? minute : '0' + minute;
+
+    return hours + ':' + minutes + ':' + '00';
+  };
+
+  const parsingTime = (time: string) => {
+    const hours = time.split(':')[0];
+    const minutes = time.split(':')[1];
+
+    return { hours: Number(hours), minutes: Number(minutes) };
+  };
 
   const {
     register,
@@ -42,22 +74,53 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FormValues>(
+    modify && {
+      defaultValues: {
+        category: modify.category,
+        storeName: modify.storeName,
+        price: modify.minimumOrderAmount,
+        endHour: parsingTime(modify.deadlineTime).hours,
+        endMinute: parsingTime(modify.deadlineTime).minutes,
+        orderLink: modify.togetherOrderLink,
+        address: {
+          address: modify.pickUpLocation,
+          lat: modify.lat,
+          lng: modify.lng,
+        },
+      },
+    },
+  );
 
-  const createRecruit: SubmitHandler<FormValues> = (data) => {
-    // 정상적으로 폼 전송이 완료 됐다면 폼꺼지고, 완료 폼 켜짐
-    mutate({
+  const createRecruit: SubmitHandler<FormValues> = async (data) => {
+    //TODO:modify인 경우 다른 mutate 진행
+    const deadlineTime = getFormatTime(data.endHour, data.endMinute);
+
+    const requestData = {
       lat: data.address.lat,
       lng: data.address.lng,
       category: data.category,
       storeName: data.storeName,
-      minimumOrderAmount: data.price,
+      minimumOrderAmount: Number(data.price),
       togetherOrderLink: data.orderLink,
       pickUpLocation: data.address.address,
-    });
+      deadlineTime: deadlineTime,
+    };
 
-    onRequestClose();
-    onRequestConfirm();
+    const requestOptions = {
+      onSuccess: () => {
+        console.log(data);
+        onRequestClose();
+        onRequestConfirm();
+      },
+      onError: () => onRequestError(),
+    };
+
+    if (modify) {
+      putMutate(requestData, requestOptions);
+    } else {
+      postMutate(requestData, requestOptions);
+    }
   };
 
   const preventKeydown = (e: React.KeyboardEvent) => {
@@ -67,6 +130,13 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
   };
 
   useEffect(() => {
+    if (modify) {
+      setValue('address', {
+        address: modify?.pickUpLocation,
+        lat: modify?.lat,
+        lng: modify?.lng,
+      });
+    }
     if (address) {
       setValue('address', address);
     }
@@ -78,7 +148,9 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
         name="category"
         control={control}
         rules={{ required: true }}
-        render={({ field }) => <SelectCategory setCategory={field.onChange} />}
+        render={({ field }) => (
+          <SelectCategory setCategory={field.onChange} value={field.value} />
+        )}
       />
       <Label>가게 이름</Label>
       <InputField
@@ -116,9 +188,8 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
       <LocationWrapper>
         <InputField
           placeholder="픽업 장소를 선택해주세요."
-          value={address?.address}
+          value={address?.address ? address?.address : modify?.pickUpLocation}
           disabled
-          // {...register('address', { required: true })}
         />
         <InputField
           style={{ visibility: 'hidden' }}
@@ -132,7 +203,12 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
           isOpen={isOpen}
           onRequestClose={() => setIsOpen(false)}
           title={<SearchBar onRequestClose={() => setIsOpen(false)} />}
-          content={<SearchMap onRequestClose={() => setIsOpen(false)} />}
+          content={
+            <SearchMap
+              onRequestClose={() => setIsOpen(false)}
+              modify={modify && { lat: modify?.lat, lng: modify?.lng }}
+            />
+          }
         />
       </LocationWrapper>
 
@@ -149,7 +225,7 @@ const RecruitDialog = ({ onRequestClose, onRequestConfirm }: Props) => {
           onClick={onRequestClose}
         />
         <Button
-          label="완료"
+          label={modify ? '수정' : '완료'}
           bgColor={Common.colors.primary}
           padding="9px 25px"
           radius="20px"

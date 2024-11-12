@@ -16,12 +16,12 @@ const getPath = () => {
   return `http://3.34.191.43:8080/api/v1/spot`;
 };
 
-const postSpot = async (postData: PostData) => {
-  return await fetchAuthInstance.post(getPath(), postData);
+const putSpot = async (postData: PostData) => {
+  return await fetchAuthInstance.put(getPath(), postData);
 };
 
-export const usePostSpot = () => {
+export const usePutSpot = () => {
   return useMutation({
-    mutationFn: (postData: PostData) => postSpot(postData),
+    mutationFn: (postData: PostData) => putSpot(postData),
   });
 };

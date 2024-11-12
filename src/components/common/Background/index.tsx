@@ -44,7 +44,6 @@ const ImageWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
-  margin-right: 20px;
 `;
 
 const Image = styled.img`

@@ -10,18 +10,23 @@ import { SearchSpotProvider } from '@provider/SearchSpot';
 import AlertDialog from '@components/common/Modal/AlertDialog';
 import { useNavigate } from 'react-router-dom';
 import { RouterPath } from '@routes/path';
-import { storeList } from '../swiper/data';
 import { ClickedLocationContext } from '@provider/ClickedLocation';
+import { useGetSpotInfo } from '@api/hooks/useGetSpotInfo';
 
 const KakaoMap = () => {
   const { location } = useContext(LocationContext);
   const { setClickedLocation } = useContext(ClickedLocationContext);
 
   const navigate = useNavigate();
-  const datas = storeList;
+
+  const { data = [] } = useGetSpotInfo({
+    lat: location.lat,
+    lng: location.lng,
+  });
 
   const [recruitIsOpen, setRecruitIsOpen] = useState(false);
   const [completeModalIsOpen, setCompleteModalIsOpen] = useState(false);
+  const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
 
   return (
     <Map
@@ -46,7 +51,7 @@ const KakaoMap = () => {
       />
 
       {/* 배달 스팟들의 위치_파란색 마커 */}
-      {datas.map((data) => (
+      {data.map((data) => (
         <MapMarker
           key={data.id}
           position={{
@@ -72,6 +77,7 @@ const KakaoMap = () => {
             <RecruitDialog
               onRequestClose={() => setRecruitIsOpen(false)}
               onRequestConfirm={() => setCompleteModalIsOpen(true)}
+              onRequestError={() => setErrorModalIsOpen(true)}
             />
           </SearchSpotProvider>
         }
@@ -97,6 +103,20 @@ const KakaoMap = () => {
             onRequestConfirm={() => {
               navigate(RouterPath.myPageOrderDetail);
             }}
+          />
+        }
+      />
+      <Modal
+        size="small"
+        type="warning"
+        isOpen={errorModalIsOpen}
+        onRequestClose={() => setErrorModalIsOpen(false)}
+        title={<div style={{ color: 'white' }}>에러 발생</div>}
+        content={
+          <AlertDialog
+            type="warning"
+            content="스팟 생성 중 에러가 발생했습니다."
+            onRequestConfirm={() => setErrorModalIsOpen(false)}
           />
         }
       />
