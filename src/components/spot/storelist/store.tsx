@@ -7,7 +7,7 @@ import { Common } from '@styles/globalStyle';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDynamicPath, RouterPath } from '@routes/path';
-import { TOKEN } from '@api/instance';
+import Cookies from 'js-cookie';
 
 interface Props {
   spotId: number;
@@ -29,7 +29,7 @@ const Store = ({
   const navigate = useNavigate();
 
   const handleClick = () => {
-    if (TOKEN) {
+    if (Cookies.get('access_token')) {
       //로그인이 되어있을 경우
       setSendLinkIsOpen(true);
     } else {
