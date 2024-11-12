@@ -1,41 +1,61 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Menubar from '@components/mypage/Menubar';
 import OrderListItem from '@components/OrderHistory/OrderListItem';
 
-import { orderList } from '@components/OrderHistory/data';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
-import { getDynamicPath } from '../../routes/path';
+import { getDynamicPath } from '@routes/path';
+import { fetchInstance } from '@api/instance';
+import Cookies from 'js-cookie';
 
 interface Post {
   id: number;
   category: string;
   storeName: string;
+  minimumOrderAmount: number;
   pickUpLocation: string;
   deliveryStatus: boolean;
   price?: number;
   isCreater: boolean;
 }
-interface OrderHistory {
-  totalPages: number; //전체 페이지 수
-  totalElements: number; //전체 데이터 수
-  size: number; //페이지 당 보여줄 데이터 수
+
+interface Sort {
+  empty: boolean;
+  unsorted: boolean;
+  sorted: boolean;
+}
+
+interface OrderHistoryData {
+  totalPages: number;
+  totalElements: number;
+  first: boolean;
+  last: boolean;
+  size: number;
+  content: Post[];
+  number: number;
+  sort: Sort;
+  pageable: {
+    pageNumber: number;
+    pageSize: number;
+    sort: Sort;
+    offset: number;
+    unpaged: boolean;
+    paged: boolean;
+  };
+  numberOfElements: number;
+  empty: boolean;
 }
 
 const OrderHistoryPage = () => {
   const VIEW_PAGE_COUNT = 5;
+  const [orderHistoryData, setOrderHistoryData] = useState<OrderHistoryData>();
+  const [data, setData] = useState<Post[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const posts: Post[] = orderList.content;
-  const orderHistory: OrderHistory = orderList;
-
-  const startIdx = (currentPage - 1) * orderHistory.size;
-  const endIdx = startIdx + orderHistory.size;
-  const currentPosts = posts.slice(startIdx, endIdx);
 
   const pageNumbers = Array.from(
-    { length: orderHistory.totalPages },
+    { length: orderHistoryData?.totalPages || 0 },
     (_, i) => i + 1,
   );
 
@@ -43,22 +63,51 @@ const OrderHistoryPage = () => {
     Math.floor((currentPage - 1) / VIEW_PAGE_COUNT) * VIEW_PAGE_COUNT + 1;
   const endPage = Math.min(
     startPage + VIEW_PAGE_COUNT - 1,
-    orderHistory.totalPages,
+    orderHistoryData?.totalPages || 0,
   );
   const visiblePages = pageNumbers.slice(startPage - 1, endPage);
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= orderHistory.totalPages) {
+    if (page >= 1 && page <= (orderHistoryData?.totalPages || 0)) {
       setCurrentPage(page);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = Cookies.get('access_token');
+        console.log(token);
+        const response = await fetchInstance.get(
+          `http://43.203.251.194:8080/api/v1/orders?page=${currentPage}&size=3&sort=createdDate,desc`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        console.log('Response data:', response);
+
+        if (response.status === 200 && response.data) {
+          setOrderHistoryData(response.data);
+          setData(response.data.content);
+          console.log(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [currentPage]);
 
   return (
     <Wrapper>
       <InnerWrapper>
         <Menubar />
         <OrderListContainer>
-          {currentPosts.map((post) => (
+          {data.map((post) => (
             <Link
               key={post.id}
               to={getDynamicPath.orderDetail(post.id)}
@@ -92,7 +141,7 @@ const OrderHistoryPage = () => {
               {page}
             </PageNumber>
           ))}
-          {endPage < orderHistory.totalPages && (
+          {endPage < (orderHistoryData?.totalPages || 0) && (
             <NextBtn onClick={() => handlePageChange(currentPage + 1)}>
               다음 <HiChevronRight />
             </NextBtn>

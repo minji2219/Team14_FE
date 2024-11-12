@@ -2,12 +2,34 @@ import styled from 'styled-components';
 
 import { Common } from '@styles/globalStyle';
 import Button from '@components/common/Button';
+import Cookies from 'js-cookie';
+import { fetchInstance } from '@api/instance';
+import { useNavigate } from 'react-router-dom';
+import { RouterPath } from '@routes/path';
 
 interface Props {
+  name: string;
+  phoneNumber: string;
   editMode: () => void;
 }
 
-const Profile = ({ editMode }: Props) => {
+const Profile = ({ editMode, name, phoneNumber }: Props) => {
+  const navigate = useNavigate();
+  const deleteUser = () => {
+    const token = Cookies.get('access_token');
+    fetchInstance
+      .delete('http://3.39.23.121:8080/api/v1/members', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200 && response.data) {
+          Cookies.remove('access_token');
+          navigate(RouterPath.introduce);
+        }
+      });
+  };
   return (
     <div>
       <MyPageContainerMiddle>
@@ -17,9 +39,13 @@ const Profile = ({ editMode }: Props) => {
           <LeftContent>전화번호</LeftContent>
         </MyPageInfoDescription>
         <MyPageInfo>
-          <RightContent>우먹마</RightContent>
+          <RightContent>{name}</RightContent>
           <br />
-          <RightContent>010-0000-0000</RightContent>
+          <RightContent>
+            {phoneNumber
+              .replace(/-/g, '')
+              .replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}
+          </RightContent>
         </MyPageInfo>
       </MyPageContainerMiddle>
       <MyPageContainerBottom>
@@ -33,6 +59,7 @@ const Profile = ({ editMode }: Props) => {
         <Button
           label="탈퇴하기"
           bgColor={Common.colors.button3}
+          onClick={deleteUser}
           radius="20px"
         />
       </MyPageContainerBottom>

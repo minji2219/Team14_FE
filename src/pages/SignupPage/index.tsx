@@ -76,7 +76,7 @@ const SignupPage: React.FC = () => {
                 onClick={handleSubmit}
                 bgColor={Common.colors.primary}
                 radius="20px"
-                padding="10px 30px"
+                padding="10px 100px"
               />
             </CheckboxWrapper>
           </Form>
