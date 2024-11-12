@@ -9,6 +9,19 @@ import OrderHistoryDetailItem from '@components/OrderHistoryDetail/OrderHistoryD
 import RecruitDialog from '@components/spot/RecruitDialog';
 import { SearchSpotProvider } from '@provider/SearchSpot';
 import { TbPointFilled } from 'react-icons/tb';
+import { useGetOrderDetailCreater } from '@api/hooks/useGetOrderDetailCreater';
+import { useGetOrderDetailModify } from '@api/hooks/useGetOrderDetailCreaterModify';
+
+const modifyData = {
+  category: '분식',
+  storeName: '이삭토스트',
+  minimumOrderAmount: 10000,
+  pickUpLocation: '전남대학교',
+  deadlineTime: '02:05:59',
+  togetherOrderLink: 'http://localhost:3000',
+  lat: 35.1766787,
+  lng: 126.9054188,
+};
 
 const OrderDetailCreater = () => {
   const imageInput = useRef<HTMLInputElement>(null);
@@ -19,6 +32,11 @@ const OrderDetailCreater = () => {
   const [completeModalIsOpen, setCompleteModalIsOpen] = useState(false);
 
   const [tipIsOpen, setTipIsOpen] = useState(false);
+  // 주문내역(방장) 조회하기
+  // const { data } = useGetOrderDetailCreater(spotId);
+
+  // 주문내역(방장_수정) 조회하기
+  // const {data:modifyData} = useGetOrderDetailModify(spotId);
 
   const onchangeImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -79,6 +97,7 @@ const OrderDetailCreater = () => {
         content={
           <SearchSpotProvider>
             <RecruitDialog
+              modify={modifyData}
               onRequestClose={() => setRecruitIsOpen(false)}
               onRequestConfirm={() => setCompleteModalIsOpen(true)}
               //TODO임시

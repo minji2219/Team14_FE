@@ -1,4 +1,4 @@
-import { fetchAuthInstance, fetchInstance } from '@api/instance';
+import { fetchAuthInstance } from '@api/instance';
 import { useQuery } from '@tanstack/react-query';
 
 export interface OrderDetail {
@@ -8,11 +8,6 @@ export interface OrderDetail {
   pickUpLocation: string;
   delieveryStatus: boolean;
   memeberInfo: memeberInfo[];
-  //TODO: 현재 명세에는 없지만, 추가되어야함(스팟 수정 때문에)
-  // deadlineTime:string;
-  // togetherOrderLink:string;
-  // lat:number;
-  // lng:number;
 }
 
 interface memeberInfo {
@@ -23,7 +18,7 @@ interface memeberInfo {
 }
 
 const getPath = (spotId: number) => {
-  //BaseURL 재영님꺼로 변경
+  //BaseURL 재영님꺼로 변경필요
   return `http://3.34.191.43:8080/api/v1/orders/creator/${spotId}`;
 };
 
@@ -32,7 +27,7 @@ const getOrderDetail = async (spotId: number) => {
   return response.data;
 };
 
-export const useGetOrderDetail = (spotId: number) => {
+export const useGetOrderDetailCreater = (spotId: number) => {
   return useQuery({
     queryKey: [spotId],
     queryFn: () => getOrderDetail(spotId),

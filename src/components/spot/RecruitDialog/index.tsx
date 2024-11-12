@@ -11,6 +11,7 @@ import SearchBar from './PickupModal/SearchBar';
 import SearchMap from './PickupModal/SearchMap';
 import { SearchSpotContext } from '@provider/SearchSpot';
 import { usePostSpot } from '@api/hooks/usePostSpot';
+import { usePutSpot } from '@api/hooks/usePutSpot';
 
 interface Props {
   onRequestClose: () => void;
@@ -50,13 +51,14 @@ const RecruitDialog = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { address } = useContext(SearchSpotContext);
-  const { mutate, data } = usePostSpot();
+  const { mutate: postMutate, data } = usePostSpot();
+  const { mutate: putMutate } = usePutSpot();
 
   const getFormatTime = (hour: number, minute: number) => {
     const hours = hour >= 10 ? hour : '0' + hour;
     const minutes = minute > 10 ? minute : '0' + minute;
 
-    return hours + ':' + minutes + ':' + '59';
+    return hours + ':' + minutes + ':' + '00';
   };
 
   const parsingTime = (time: string) => {
@@ -81,34 +83,44 @@ const RecruitDialog = ({
         endHour: parsingTime(modify.deadlineTime).hours,
         endMinute: parsingTime(modify.deadlineTime).minutes,
         orderLink: modify.togetherOrderLink,
+        address: {
+          address: modify.pickUpLocation,
+          lat: modify.lat,
+          lng: modify.lng,
+        },
       },
     },
   );
 
   const createRecruit: SubmitHandler<FormValues> = async (data) => {
     //TODO:modify인 경우 다른 mutate 진행
-    console.log(data);
     const deadlineTime = getFormatTime(data.endHour, data.endMinute);
-    mutate(
-      {
-        lat: data.address.lat,
-        lng: data.address.lng,
-        category: data.category,
-        storeName: data.storeName,
-        minimumOrderAmount: Number(data.price),
-        togetherOrderLink: data.orderLink,
-        pickUpLocation: data.address.address,
-        deadlineTime: deadlineTime,
+
+    const requestData = {
+      lat: data.address.lat,
+      lng: data.address.lng,
+      category: data.category,
+      storeName: data.storeName,
+      minimumOrderAmount: Number(data.price),
+      togetherOrderLink: data.orderLink,
+      pickUpLocation: data.address.address,
+      deadlineTime: deadlineTime,
+    };
+
+    const requestOptions = {
+      onSuccess: () => {
+        console.log(data);
+        onRequestClose();
+        onRequestConfirm();
       },
-      {
-        onSuccess: () => {
-          console.log(data);
-          onRequestClose();
-          onRequestConfirm();
-        },
-        onError: (error) => onRequestError(),
-      },
-    );
+      onError: () => onRequestError(),
+    };
+
+    if (modify) {
+      putMutate(requestData, requestOptions);
+    } else {
+      postMutate(requestData, requestOptions);
+    }
   };
 
   const preventKeydown = (e: React.KeyboardEvent) => {
@@ -191,7 +203,12 @@ const RecruitDialog = ({
           isOpen={isOpen}
           onRequestClose={() => setIsOpen(false)}
           title={<SearchBar onRequestClose={() => setIsOpen(false)} />}
-          content={<SearchMap onRequestClose={() => setIsOpen(false)} />}
+          content={
+            <SearchMap
+              onRequestClose={() => setIsOpen(false)}
+              modify={modify && { lat: modify?.lat, lng: modify?.lng }}
+            />
+          }
         />
       </LocationWrapper>
 
