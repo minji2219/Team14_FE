@@ -113,7 +113,10 @@ const RecruitDialog = ({
         onRequestClose();
         onRequestConfirm();
       },
-      onError: () => onRequestError(),
+      onError: (err: any) => {
+        console.log(err);
+        onRequestError();
+      },
     };
 
     if (modify) {
