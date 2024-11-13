@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Common } from '@styles/globalStyle';
 import Modal from '@components/common/Modal';
 import RecruitDialog from '../RecruitDialog';
-import { SearchSpotProvider } from '@provider/SearchSpot';
+import { SearchSpotContext, SearchSpotProvider } from '@provider/SearchSpot';
 import AlertDialog from '@components/common/Modal/AlertDialog';
 import { useNavigate } from 'react-router-dom';
 import { RouterPath } from '@routes/path';
@@ -14,11 +14,32 @@ import { ClickedLocationContext } from '@provider/ClickedLocation';
 import { useGetSpotInfo } from '@api/hooks/useGetSpotInfo';
 
 const KakaoMap = () => {
-  const { location } = useContext(LocationContext);
+  const { location, setLocation } = useContext(LocationContext);
   const { setClickedLocation } = useContext(ClickedLocationContext);
 
   const navigate = useNavigate();
-
+  const dragEnd = (marker: any) => {
+    //위도(lat,Ma), 경도(lng,La)
+    const { La, Ma } = marker.getPosition();
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.coord2Address(La, Ma, (result, status) => {
+      if (status === kakao.maps.services.Status.OK) {
+        setLocation({
+          dong: result[0].address.region_3depth_name,
+          lat: Ma,
+          lng: La,
+        });
+        localStorage.setItem(
+          'location',
+          JSON.stringify({
+            dong: result[0].address.region_3depth_name,
+            lat: Ma,
+            lng: La,
+          }),
+        );
+      }
+    });
+  };
   const { data = [] } = useGetSpotInfo({
     lat: location.lat,
     lng: location.lng,
@@ -48,6 +69,8 @@ const KakaoMap = () => {
           src: '/image/myLocation.png',
           size: { width: 33, height: 45 },
         }}
+        draggable={true}
+        onDragEnd={(marker) => dragEnd(marker)}
       />
 
       {/* 배달 스팟들의 위치_파란색 마커 */}
