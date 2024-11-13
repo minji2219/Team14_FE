@@ -74,19 +74,17 @@ const OrderHistoryPage = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = Cookies.get('access_token');
-        console.log(token);
-        const response = await fetchInstance.get(
-          `http://43.203.251.194:8080/api/v1/orders?page=${currentPage}&size=3&sort=createdDate,desc`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+    const token = Cookies.get('access_token');
+    fetchInstance
+      .get(
+        `https://order-together.duckdns.org/api/v1/orders?page=${currentPage}&size=3&sort=createdDate,desc`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
-
+        },
+      )
+      .then((response) => {
         console.log('Response data:', response);
 
         if (response.status === 200 && response.data) {
@@ -94,12 +92,10 @@ const OrderHistoryPage = () => {
           setData(response.data.content);
           console.log(response.data);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
+      })
+      .catch((error) => {
+        console.error('OrderHistoryPage:', error);
+      });
   }, [currentPage]);
 
   return (

@@ -27,9 +27,11 @@ const LoginPage: React.FC = () => {
 
       setIsCodeProcessed(true);
       sessionStorage.setItem('codeProcessed', 'true');
-
+      // http://3.39.23.121:8080/api/v1/auth/login
+      // https://order-together.duckdns.org/api/v1/auth/login
+      // http://43.203.132.224:8080/api/v1/auth/login
       fetchInstance
-        .get('http://3.39.23.121:8080/api/v1/auth/login', {
+        .get('https://order-together.duckdns.org/api/v1/auth/login', {
           headers: {
             Authorization: `Bearer ${code}`,
             'Content-Type': 'application/json',
@@ -37,6 +39,12 @@ const LoginPage: React.FC = () => {
           maxRedirects: 0,
         })
         .then((response) => {
+          console.log(response);
+          if (response.status === 302) {
+            console.log('302', response);
+
+            window.location.href = response.data.redirectURL;
+          }
           const accessToken = response.data.data;
           if (accessToken) {
             Cookies.set('access_token', accessToken);
@@ -45,8 +53,10 @@ const LoginPage: React.FC = () => {
           }
         })
         .catch((error) => {
+          console.log(error);
           if (error.response) {
             if (error.response.status === 404) {
+              console.log(error.request.responseURL);
               const redirectUrl = error.request.responseURL;
               if (redirectUrl) {
                 window.location.href = redirectUrl;
