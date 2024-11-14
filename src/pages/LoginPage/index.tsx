@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
       // https://order-together.duckdns.org/api/v1/auth/login
       // http://43.203.132.224:8080/api/v1/auth/login
       fetchInstance
-        .get('https://order-together.duckdns.org/api/v1/auth/login', {
+        .get('http://43.203.132.224:8080/api/v1/auth/login', {
           headers: {
             Authorization: `Bearer ${code}`,
             'Content-Type': 'application/json',

@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import Button from '@components/common/Button';
 import { Common } from '@styles/globalStyle';
 import PaymentModal from '@components/common/PaymentModal';
+import Modal from '@components/common/Modal';
+import AlertDialog from '@components/common/Modal/AlertDialog';
 import Cookies from 'js-cookie';
 import { setOrderId } from '@provider/OrderIdLocation';
 
@@ -14,18 +16,14 @@ interface MyPointProps {
 const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [isPaymentWidgetVisible, setIsPaymentWidgetVisible] = useState(false);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
+  const [isRechargeOpen, setIsRechargeOpen] = useState(false);
 
   const handleAmountClick = (amount: number) => {
     setSelectedAmount(amount);
   };
 
   const handlePaymentRequest = async () => {
-    if (!selectedAmount) {
-      alert('충전 금액을 선택해주세요.');
-      return;
-    }
-
     const accessToken = Cookies.get('access_token');
     if (!accessToken) {
       alert('로그인이 필요합니다.');
@@ -34,9 +32,26 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
 
     setLoading(true);
 
+    const productMapping: { [key: number]: number } = {
+      5000: 1,
+      10000: 2,
+      20000: 3,
+      30000: 4,
+    };
+
+    const productIds = productMapping[selectedAmount ?? 0]
+      ? [productMapping[selectedAmount ?? 0]]
+      : null;
+
+    if (!productIds) {
+      alert('올바른 금액을 선택해주세요.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch(
-        'https://order-together.duckdns.org/api/v1/payments',
+        'http://43.203.132.224:8080/api/v1/payments',
         {
           method: 'POST',
           headers: {
@@ -45,7 +60,7 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
           },
           body: JSON.stringify({
             idempotencySeed: Math.random().toString(36).substr(2, 10),
-            productIds: [3],
+            productIds,
           }),
         },
       );
@@ -66,6 +81,14 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRechargeClick = () => {
+    if (!selectedAmount) {
+      alert('충전 금액을 선택해주세요.');
+      return;
+    }
+    setIsRechargeOpen(true);
   };
 
   const handleCloseModal = () => {
@@ -100,24 +123,40 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
             bgColor={Common.colors.primary}
             radius="30px"
             padding="10px 20px"
-            onClick={handlePaymentRequest}
-            disabled={loading} // Disable button when loading
+            onClick={handleRechargeClick}
+            disabled={loading}
           />
         )}
       </AmountOptions>
+
       {isPaymentWidgetVisible && (
         <PaymentModal
           onClose={handleCloseModal}
           selectedAmount={selectedAmount ?? 0}
         />
       )}
+
+      <Modal
+        isOpen={isRechargeOpen}
+        onRequestClose={() => setIsRechargeOpen(false)}
+        title="포인트 충전"
+        content={
+          <AlertDialog
+            content={`${selectedAmount?.toLocaleString()}P 충전하시겠습니까?`}
+            onRequestClose={() => setIsRechargeOpen(false)}
+            onRequestConfirm={() => {
+              setIsRechargeOpen(false);
+              handlePaymentRequest();
+            }}
+          />
+        }
+      />
     </Container>
   );
 };
 
 export default MyPoint;
 
-// Styled components
 const Container = styled.div`
   padding: 20px;
   border-radius: 10px;
