@@ -79,7 +79,7 @@ const OrderHistoryPage = () => {
         const token = Cookies.get('access_token');
         console.log(token);
         const response = await fetchInstance.get(
-          `http://43.203.251.194:8080/api/v1/orders?page=${currentPage}&size=3&sort=createdDate,desc`,
+          `${process.env.REACT_APP_BOMIN_API}/orders?page=${currentPage}&size=3&sort=createdDate,desc`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

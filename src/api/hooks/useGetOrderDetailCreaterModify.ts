@@ -13,7 +13,7 @@ interface OrderDetail {
 }
 
 const getPath = (spotId: number) => {
-  return `http://3.34.191.43:8080/api/v1/spot/${spotId}`;
+  return `${process.env.REACT_APP_BOMIN_API}/spot/${spotId}`;
 };
 
 const getOrderDetailModify = async (spotId: number) => {

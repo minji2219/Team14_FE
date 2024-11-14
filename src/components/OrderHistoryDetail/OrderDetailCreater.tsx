@@ -11,6 +11,7 @@ import { SearchSpotProvider } from '@provider/SearchSpot';
 import { TbPointFilled } from 'react-icons/tb';
 import { useGetOrderDetailCreater } from '@api/hooks/useGetOrderDetailCreater';
 import { useGetOrderDetailModify } from '@api/hooks/useGetOrderDetailCreaterModify';
+import { useParams } from 'react-router-dom';
 
 const modifyData = {
   category: '분식',
@@ -32,11 +33,13 @@ const OrderDetailCreater = () => {
   const [completeModalIsOpen, setCompleteModalIsOpen] = useState(false);
 
   const [tipIsOpen, setTipIsOpen] = useState(false);
-  // 주문내역(방장) 조회하기
-  // const { data } = useGetOrderDetailCreater(spotId);
 
-  // 주문내역(방장_수정) 조회하기
-  // const {data:modifyData} = useGetOrderDetailModify(spotId);
+  const { orderId } = useParams();
+
+  // 주문내역(방장) 조회하기
+  // const { data } = useGetOrderDetailCreater(orderId);
+
+  const { data: modifyData } = useGetOrderDetailModify(Number(orderId));
 
   const onchangeImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -97,6 +100,7 @@ const OrderDetailCreater = () => {
         content={
           <SearchSpotProvider>
             <RecruitDialog
+              //@ts-ignore
               modify={modifyData}
               onRequestClose={() => setRecruitIsOpen(false)}
               onRequestConfirm={() => setCompleteModalIsOpen(true)}

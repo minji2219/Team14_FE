@@ -6,16 +6,17 @@ import styled from 'styled-components';
 import { Common } from '@styles/globalStyle';
 import Modal from '@components/common/Modal';
 import RecruitDialog from '../RecruitDialog';
-import { SearchSpotContext, SearchSpotProvider } from '@provider/SearchSpot';
+import { SearchSpotProvider } from '@provider/SearchSpot';
 import AlertDialog from '@components/common/Modal/AlertDialog';
 import { useNavigate } from 'react-router-dom';
-import { RouterPath } from '@routes/path';
+import { getDynamicPath, RouterPath } from '@routes/path';
 import { ClickedLocationContext } from '@provider/ClickedLocation';
 import { useGetSpotInfo } from '@api/hooks/useGetSpotInfo';
 
 const KakaoMap = () => {
   const { location, setLocation } = useContext(LocationContext);
   const { setClickedLocation } = useContext(ClickedLocationContext);
+  const [spotId, setSpotId] = useState(0);
 
   const navigate = useNavigate();
   const dragEnd = (marker: any) => {
@@ -101,6 +102,7 @@ const KakaoMap = () => {
               onRequestClose={() => setRecruitIsOpen(false)}
               onRequestConfirm={() => setCompleteModalIsOpen(true)}
               onRequestError={() => setErrorModalIsOpen(true)}
+              setSpotId={setSpotId}
             />
           </SearchSpotProvider>
         }
@@ -123,9 +125,11 @@ const KakaoMap = () => {
               </div>
             }
             onRequestClose={() => setCompleteModalIsOpen(false)}
-            onRequestConfirm={() => {
-              navigate(RouterPath.myPageOrderDetail);
-            }}
+            onRequestConfirm={() =>
+              navigate(getDynamicPath.orderDetail(Number(spotId)), {
+                state: { createrModeData: true },
+              })
+            }
           />
         }
       />

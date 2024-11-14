@@ -5,7 +5,7 @@ export interface StoreListParams {
   id: number;
   category: string;
   minimumOrderAmount: number;
-  deadlineTime: string;
+  deadlineTime: number[];
   pickUpLocation: string;
   storeName: string;
   lat: number;
@@ -18,7 +18,7 @@ interface RequestParams {
 }
 
 const getPath = ({ lat, lng }: RequestParams) => {
-  return `https://order-together.duckdns.org/api/v1/spot/${lat}/${lng}`;
+  return `${process.env.REACT_APP_BOMIN_API}/spot/${lat}/${lng}`;
   // return `https://order-together.duckdns.org/api/v1/spot/35.1766787/126.9054188`;
 };
 

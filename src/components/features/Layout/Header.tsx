@@ -56,7 +56,7 @@ export const Header: React.FC = () => {
 
   const handleLogout = () => {
     fetchAuthInstance
-      .post('http://3.39.23.121:8080/api/v1/auth/logout')
+      .post(`${process.env.REACT_APP_BOMIN_API}/auth/logout`)
       .then(() => {
         Cookies.remove('access_token');
         setIsLoggedIn(false);

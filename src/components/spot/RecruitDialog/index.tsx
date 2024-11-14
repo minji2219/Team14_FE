@@ -27,6 +27,7 @@ interface Props {
     lat: number;
     lng: number;
   };
+  setSpotId?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface FormValues {
@@ -48,10 +49,11 @@ const RecruitDialog = ({
   onRequestConfirm,
   onRequestError,
   modify,
+  setSpotId,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { address } = useContext(SearchSpotContext);
-  const { mutate: postMutate, data } = usePostSpot();
+  const { mutate: postMutate } = usePostSpot();
   const { mutate: putMutate } = usePutSpot();
 
   const getFormatTime = (hour: number, minute: number) => {
@@ -94,7 +96,10 @@ const RecruitDialog = ({
 
   const createRecruit: SubmitHandler<FormValues> = async (data) => {
     //TODO:modify인 경우 다른 mutate 진행
-    const deadlineTime = getFormatTime(data.endHour, data.endMinute);
+    const deadlineTime = getFormatTime(
+      Number(data.endHour),
+      Number(data.endMinute),
+    );
 
     const requestData = {
       lat: data.address.lat,
@@ -108,8 +113,9 @@ const RecruitDialog = ({
     };
 
     const requestOptions = {
-      onSuccess: () => {
-        console.log(data);
+      onSuccess: (datas: any) => {
+        //@ts-ignore
+        setSpotId(datas.data.id);
         onRequestClose();
         onRequestConfirm();
       },
@@ -171,12 +177,30 @@ const RecruitDialog = ({
       <TimeWrpper>
         <InputField
           type="number"
-          {...register('endHour', { required: true })}
+          {...register('endHour', {
+            required: true,
+            min: 0,
+            max: 23,
+            onChange: (e) => {
+              const value = e.target.value;
+              if (value < 0) e.target.value = 0;
+              if (value > 23) e.target.value = 23;
+            },
+          })}
         />
         시{' '}
         <InputField
           type="number"
-          {...register('endMinute', { required: true })}
+          {...register('endMinute', {
+            required: true,
+            min: 0,
+            max: 59,
+            onChange: (e) => {
+              const value = e.target.value;
+              if (value < 0) e.target.value = 0;
+              if (value > 59) e.target.value = 59;
+            },
+          })}
         />
         분
       </TimeWrpper>

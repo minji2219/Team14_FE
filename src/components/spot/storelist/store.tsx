@@ -8,12 +8,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDynamicPath, RouterPath } from '@routes/path';
 import Cookies from 'js-cookie';
+import { getFormatTime } from '@helper/getFormatTime';
+import { usePostParcipate } from '@api/hooks/usePostParticipate';
 
 interface Props {
   spotId: number;
   category: string;
   storeName: string;
-  deadlineTime: string;
+  deadlineTime: number[];
   address: string;
 }
 const Store = ({
@@ -25,7 +27,7 @@ const Store = ({
 }: Props) => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [sendLinkIsOpen, setSendLinkIsOpen] = useState(false);
-
+  const { mutate } = usePostParcipate();
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -38,13 +40,28 @@ const Store = ({
     }
   };
 
+  const handleConfirm = () => {
+    //참여자 정보 post
+    //sms 보내기 요청
+    //마이페이지로 이동
+    mutate({
+      spotId: spotId,
+      price: null,
+      isPayed: null,
+      participantId: null,
+    });
+    // () =>
+    //   navigate(getDynamicPath.orderDetail(Number(spotId)), {
+    //     state: false,
+    //   });
+  };
   return (
     <Wrapper>
-      <Logo image={`/image/categories/${category.replace(', ', ',')}.png`} />
+      <Logo image={`/image/categories/${category.replaceAll(', ', ',')}.png`} />
       <DescriptWrapper>
         <Category>[{category}]</Category>
         <Title>{storeName}</Title>
-        주문마감 : {deadlineTime}
+        주문마감 : {getFormatTime(deadlineTime)}
         <Address>픽업 | {address}</Address>
       </DescriptWrapper>
       <Button
@@ -78,9 +95,7 @@ const Store = ({
               </div>
             }
             onRequestClose={() => setSendLinkIsOpen(false)}
-            onRequestConfirm={() =>
-              navigate(getDynamicPath.orderDetail(Number(spotId)))
-            }
+            onRequestConfirm={handleConfirm}
           />
         }
       />
@@ -99,7 +114,8 @@ const Wrapper = styled.div`
 `;
 
 const DescriptWrapper = styled.div`
-  margin-right: 10px;
+  margin-left: 10px;
+  width: 60%;
 `;
 
 const Category = styled.div`
