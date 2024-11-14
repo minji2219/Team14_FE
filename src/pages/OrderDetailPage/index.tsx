@@ -29,13 +29,13 @@ const OrderDetailPage = () => {
     <Wrapper>
       <InnerWrapper>
         <Menubar />
-        <OrderListItem
+        {/* <OrderListItem
           category={orderData.category}
           storeName={orderData.storeName}
           pickUpLocation={orderData.pickUpLocation}
           deliveryStatus={orderData.deliveryStatus}
           price={orderData.price}
-        />
+        /> */}
       </InnerWrapper>
       <InnerWrapper>
         {isCreator ? (

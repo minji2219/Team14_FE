@@ -6,12 +6,26 @@ import InputField from '@components/common/InputField';
 import { FaPlus } from 'react-icons/fa';
 
 import { OrderDetailMemberData } from '@components/OrderHistoryDetail/data';
+import { useParams } from 'react-router-dom';
+import OrderListItem from '@components/OrderHistory/OrderListItem';
+import { useGetOrderDetailMemeber } from '@api/hooks/useGetOrderDetailMembers';
 
 const OrderDetailMember = () => {
   const isDeliverable = OrderDetailMemberData.deliveryStatus;
-
+  const { orderId } = useParams();
+  const { data } = useGetOrderDetailMemeber(Number(orderId));
   return (
     <Wrapper>
+      {data && (
+        <OrderListItem
+          category={data.category}
+          storeName={data.storeName}
+          pickUpLocation={data.pickUpLocation}
+          deliveryStatus={data.delieveryStatus}
+          price={data.price}
+        />
+      )}
+
       <State>
         <Describe>
           {isDeliverable

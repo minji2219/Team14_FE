@@ -50,7 +50,7 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
 
   const [tipIsOpen, setTipIsOpen] = useState(false);
 
-  // const { orderId } = useParams();
+  const { orderId } = useParams();
   // const spotId = parseInt(orderId as string, 10);
   // 주문내역(방장) 조회하기
   const { data: spotData } = useGetOrderDetailCreater(spotId);
@@ -120,7 +120,8 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
             content={
               <SearchSpotProvider>
                 <RecruitDialog
-                  modify={modifyData}
+                  //@ts-ignore
+                  // modify={modifyData}
                   onRequestClose={() => setRecruitIsOpen(false)}
                   onRequestConfirm={() => setCompleteModalIsOpen(true)}
                   //TODO임시
