@@ -30,16 +30,16 @@ const SignupPage: React.FC = () => {
     }
     const query = new URLSearchParams(location.search);
     const email = query.get('email');
-    var numericValue = phoneNumber.replace(/[^0-9]/g, '');
+    const numericValue = phoneNumber.replace(/[^0-9]/g, '');
 
     const requestData = {
-      deliveryName: deliveryName,
+      deliveryName,
       phoneNumber: numericValue,
     };
 
     fetchInstance
       .post(
-        `${process.env.REACT_APP_BOMIN_API}/auth/signup?email=${email}`,
+        `http://43.203.132.224:8080/api/v1/auth/signup?email=${email}`,
         requestData,
       )
       .then((response) => {

@@ -24,7 +24,7 @@ const PaymentPage: React.FC = () => {
     console.log(token);
     fetchInstance
       .put(
-        'https://order-together.duckdns.org/api/v1/points',
+        'http://43.203.132.224:8080/api/v1/points',
         {
           paymentPoint: parseInt(paymentAmount, 10),
         },

@@ -36,7 +36,7 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
 
     try {
       const response = await fetch(
-        'https://order-together.duckdns.org/api/v1/payments',
+        'http://43.203.132.224:8080/api/v1/payments',
         {
           method: 'POST',
           headers: {
@@ -79,7 +79,7 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
         {selectedAmount ? `${selectedAmount.toLocaleString()} P` : '0 P'}
       </PointBalance>
       <AmountOptions>
-        {[5_000, 10_000, 20_000, 30_000].map((amount) => (
+        {[10_000, 20_000, 30_000].map((amount) => (
           <AmountOption key={amount}>
             <input
               type="radio"
