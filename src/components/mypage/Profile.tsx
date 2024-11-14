@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Common } from '@styles/globalStyle';
 import Button from '@components/common/Button';
 import Cookies from 'js-cookie';
-import { fetchInstance } from '@api/instance';
+import { fetchAuthInstance } from '@api/instance';
 import { useNavigate } from 'react-router-dom';
 import { RouterPath } from '@routes/path';
 import { useContext } from 'react';
@@ -20,7 +20,7 @@ const Profile = ({ editMode, name, phoneNumber }: Props) => {
   const { setIsLoggedIn } = useContext(AuthContext);
   const deleteUser = () => {
     const token = Cookies.get('access_token');
-    fetchInstance
+    fetchAuthInstance
       .delete('/members', {
         headers: {
           Authorization: `Bearer ${token}`,

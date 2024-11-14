@@ -41,7 +41,9 @@ const OrderDetailPage = () => {
         {isCreator ? (
           <OrderDetailCreater spotId={Number(orderId)} />
         ) : (
-          <OrderDetailMember />
+          // TODO:수정
+          // <OrderDetailMember />
+          ''
         )}
       </InnerWrapper>
     </Wrapper>

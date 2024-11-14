@@ -8,6 +8,7 @@ export interface OrderDetail {
   pickUpLocation: string;
   delieveryStatus: string;
   price: number;
+  orderDate: number[];
 }
 
 const getPath = (spotId: number) => {

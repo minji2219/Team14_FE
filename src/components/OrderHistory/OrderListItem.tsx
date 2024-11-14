@@ -7,6 +7,7 @@ interface Props {
   pickUpLocation: string;
   price?: number;
   deliveryStatus: string;
+  date: number[];
 }
 
 const OrderListItem = ({
@@ -15,6 +16,7 @@ const OrderListItem = ({
   pickUpLocation,
   price,
   deliveryStatus,
+  date = [24, 11, 5],
 }: Props) => {
   return (
     <Wrapper>
@@ -29,7 +31,7 @@ const OrderListItem = ({
           [{category}] {storeName}
         </Title>
         <span style={{ color: '#7E7E7E' }}>
-          주문 날짜: 2024-08-13 <br />
+          주문 날짜: {date[0]}-{date[1]}-{date[2]} <br />
           픽업장소: {pickUpLocation}
           <br />
           {price !== -1 ? `결제금액: ${price}P` : null}

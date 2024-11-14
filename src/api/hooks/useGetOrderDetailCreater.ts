@@ -8,6 +8,7 @@ export interface OrderDetail {
   pickUpLocation: string;
   deliveryStatus: string;
   price: number;
+  orderDate: number[];
   memberInfo: MemberInfo[];
 }
 

@@ -31,10 +31,7 @@ const SignupPage: React.FC = () => {
     const query = new URLSearchParams(location.search);
     const email = query.get('email');
     const numericValue = phoneNumber.replace(/[^0-9]/g, '');
-    const numericValue = phoneNumber.replace(/[^0-9]/g, '');
-
     const requestData = {
-      deliveryName,
       deliveryName,
       phoneNumber: numericValue,
     };
@@ -43,7 +40,7 @@ const SignupPage: React.FC = () => {
       .post(`/auth/signup?email=${email}`, requestData)
       .then((response) => {
         if (response.status === 200 && response.data) {
-          const accessToken = response.data.data;
+          const accessToken = response.data.data.token;
           Cookies.set('access_token', accessToken);
           setIsLoggedIn(true);
           navigate(RouterPath.root);

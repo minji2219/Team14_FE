@@ -85,17 +85,20 @@ const MyPoint: React.FC<MyPointProps> = ({
     }
 
     try {
-      const response = await fetch('/payments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+      const response = await fetch(
+        'https://order-together.duckdns.org/api/v1/payments',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            idempotencySeed: Math.random().toString(36).substr(2, 10),
+            productIds,
+          }),
         },
-        body: JSON.stringify({
-          idempotencySeed: Math.random().toString(36).substr(2, 10),
-          productIds,
-        }),
-      });
+      );
 
       if (!response.ok) {
         throw new Error('결제 정보 저장 실패');

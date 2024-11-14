@@ -4,12 +4,10 @@ import Background from '@components/common/Background/index';
 import { HEADER_HEIGHT } from '@components/features/Layout/Header';
 import { fetchInstance } from '@api/instance/index';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { AuthContext } from '@provider/AuthProvider';
 import Modal from '@components/common/Modal';
 import AlertDialog from '@components/common/Modal/AlertDialog';
-import { RouterPath } from '@routes/path';
 
 import { RouterPath } from '@routes/path';
 
@@ -23,10 +21,7 @@ const LoginPage: React.FC = () => {
   const [isCodeProcessed, setIsCodeProcessed] = useState(false);
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false); // Modal state
   const navigate = useNavigate();
-<<<<<<< HEAD
-=======
 
->>>>>>> jihwan2
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     const code = query.get('code');
@@ -36,13 +31,10 @@ const LoginPage: React.FC = () => {
 
       setIsCodeProcessed(true);
       sessionStorage.setItem('codeProcessed', 'true');
-<<<<<<< HEAD
-=======
 
       // http://3.39.23.121:8080/api/v1/auth/login
       // https://order-together.duckdns.org/api/v1/auth/login
       // http://43.203.132.224:8080/api/v1/auth/login
->>>>>>> jihwan2
       fetchInstance
         .get(`/auth/login`, {
           headers: {
@@ -52,33 +44,22 @@ const LoginPage: React.FC = () => {
           maxRedirects: 0,
         })
         .then((response) => {
-<<<<<<< HEAD
-          if (response.status === 302) {
-=======
           console.log(response);
           if (response.status === 302) {
             console.log('302', response);
 
->>>>>>> jihwan2
             window.location.href = response.data.redirectURL;
           }
-          const accessToken = response.data.data;
+          const accessToken = response.data.data.token;
           if (accessToken) {
             Cookies.set('access_token', accessToken);
             setIsLoggedIn(true);
-<<<<<<< HEAD
-=======
 
->>>>>>> jihwan2
             navigate(RouterPath.root);
             navigate(0);
           }
         })
         .catch((error) => {
-<<<<<<< HEAD
-          console.error('Login failed:', error);
-          setErrorModalIsOpen(true);
-=======
           console.log(error);
           if (error.response) {
             if (error.response.status === 404) {
@@ -93,7 +74,6 @@ const LoginPage: React.FC = () => {
           } else {
             navigate(RouterPath.root);
           }
->>>>>>> jihwan2
         });
     }
   }, [location.search, isCodeProcessed, setIsLoggedIn]);

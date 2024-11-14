@@ -11,8 +11,10 @@ import { SearchSpotProvider } from '@provider/SearchSpot';
 import { TbPointFilled } from 'react-icons/tb';
 import { useGetOrderDetailCreater } from '@api/hooks/useGetOrderDetailCreater';
 import { useGetOrderDetailModify } from '@api/hooks/useGetOrderDetailCreaterModify';
-import { useParams } from 'react-router-dom';
 import OrderListItem from '@components/OrderHistory/OrderListItem';
+import { fetchAuthInstance, fetchInstance } from '@api/instance';
+import { RouterPath } from '@routes/path';
+import { useNavigate } from 'react-router-dom';
 
 const modifyData = {
   category: '분식',
@@ -42,6 +44,7 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
   // 주문내역(방장) 조회하기
   const { data: spotData } = useGetOrderDetailCreater(spotId);
   const { refetch, data: modifyData } = useGetOrderDetailModify(Number(spotId));
+  const navigate = useNavigate();
 
   const onchangeImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -62,9 +65,16 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
       }
     };
   };
-  console.log('modify', modifyData);
   const handleUploadClick = () => {
     imageInput.current?.click();
+  };
+
+  const deleteSpot = () => {
+    fetchAuthInstance.delete(`/spot/${spotId}`).then((response) => {
+      if (response.status === 200) {
+        navigate(RouterPath.myPageOrderHistory);
+      }
+    });
   };
 
   return (
@@ -76,6 +86,7 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
           pickUpLocation={spotData.pickUpLocation}
           deliveryStatus={spotData.deliveryStatus}
           price={spotData.price}
+          date={spotData?.orderDate}
         />
       )}
 
@@ -157,6 +168,7 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
         <Space2 />
         <Button
           label="삭제하기"
+          onClick={deleteSpot}
           radius="20px"
           padding="9px 60px"
           bgColor={Common.colors.primary05}
@@ -172,7 +184,7 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
           <SearchSpotProvider>
             <RecruitDialog
               //@ts-ignore
-              // modify={modifyData}
+              modify={modifyData}
               onRequestClose={() => setRecruitIsOpen(false)}
               onRequestConfirm={() => setCompleteModalIsOpen(true)}
               //TODO임시

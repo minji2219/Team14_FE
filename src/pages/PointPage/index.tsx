@@ -11,7 +11,7 @@ import Cookies from 'js-cookie';
 
 interface PointData {
   amount: number;
-  date: Date;
+  date: number[];
 }
 
 const PointPage = () => {
@@ -42,7 +42,7 @@ const PointPage = () => {
 
     fetchData();
   }, []);
-
+  console.log(pointData);
   return (
     <Wrapper>
       <InnerWrapper>

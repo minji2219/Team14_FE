@@ -7,8 +7,8 @@ import OrderListItem from '@components/OrderHistory/OrderListItem';
 
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import { getDynamicPath } from '@routes/path';
-import { fetchInstance } from '@api/instance';
-import Cookies from 'js-cookie';
+import { fetchAuthInstance } from '@api/instance';
+import OrderDetailMember from '@components/OrderHistoryDetail/OrderDetailMember';
 
 interface Post {
   id: number;
@@ -18,6 +18,7 @@ interface Post {
   minimumOrderAmount: number;
   pickUpLocation: string;
   deliveryStatus: string;
+  orderDate: number[];
   price?: number;
   isCreator: boolean;
 }
@@ -54,13 +55,9 @@ const OrderHistoryPage = () => {
   };
 
   useEffect(() => {
-    const token = Cookies.get('access_token');
-    fetchInstance
+    fetchAuthInstance
       .get('/orders', {
         params: { page: currentPage, size: 5, sort: 'createdAt,desc' },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       })
       .then((response) => {
         if (response.status === 200 && response.data) {
@@ -94,6 +91,7 @@ const OrderHistoryPage = () => {
                   pickUpLocation={post.pickUpLocation}
                   price={post.price}
                   deliveryStatus={post.deliveryStatus}
+                  date={post.orderDate}
                 />
               </Link>
             ))
@@ -124,6 +122,8 @@ const OrderHistoryPage = () => {
           )}
         </PagenationUl>
       </InnerWrapper>
+      {/* TODO:수정 */}
+      <OrderDetailMember />
     </Wrapper>
   );
 };

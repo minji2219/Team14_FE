@@ -6,9 +6,11 @@ import InputField from '@components/common/InputField';
 import { Common } from '@styles/globalStyle';
 import { fetchInstance } from '@api/instance/index';
 import Cookies from 'js-cookie';
+import { useLocation } from 'react-router-dom';
 
 const PaymentPage: React.FC = () => {
-  const [paymentAmount, setPaymentAmount] = useState('');
+  const location = useLocation();
+  const [paymentAmount, setPaymentAmount] = useState(location.state.price);
 
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentAmount(e.target.value);
@@ -53,9 +55,9 @@ const PaymentPage: React.FC = () => {
         <InputWrapper>
           <StyledInputField
             type="text"
+            disabled
             value={paymentAmount}
             onChange={handlePaymentChange}
-            placeholder="결제 금액을 입력하세요"
             width="80%"
             bgColor="#ededed"
           />
