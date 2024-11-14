@@ -64,13 +64,15 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           <div id="payment-widget" />
           <div id="agreement" />
         </WidgetContainer>
-        <Button
-          label="결제하기"
-          bgColor={Common.colors.primary}
-          radius="30px"
-          padding="10px 20px"
-          onClick={handlePaymentRequest}
-        />
+        <ButtonContainer>
+          <Button
+            label="결제하기"
+            bgColor={Common.colors.primary}
+            radius="30px"
+            padding="10px 20px"
+            onClick={handlePaymentRequest}
+          />
+        </ButtonContainer>
       </ModalContent>
     </ModalOverlay>
   );
@@ -112,5 +114,11 @@ const CloseButton = styled.button`
 `;
 
 const WidgetContainer = styled.div`
+  margin-top: 20px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
   margin-top: 20px;
 `;

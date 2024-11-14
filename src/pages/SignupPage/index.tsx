@@ -31,8 +31,10 @@ const SignupPage: React.FC = () => {
     const query = new URLSearchParams(location.search);
     const email = query.get('email');
     const numericValue = phoneNumber.replace(/[^0-9]/g, '');
+    const numericValue = phoneNumber.replace(/[^0-9]/g, '');
 
     const requestData = {
+      deliveryName,
       deliveryName,
       phoneNumber: numericValue,
     };

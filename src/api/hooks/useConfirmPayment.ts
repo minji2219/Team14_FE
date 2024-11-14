@@ -24,7 +24,7 @@ const confirmPayment = async ({
   }
 
   const response = await axios.post(
-    '/payments/confirm',
+    'https://order-together.duckdns.org/api/v1/payments/confirm',
     { orderId, amount, paymentKey },
     {
       headers: {

@@ -6,7 +6,6 @@ import Button from '@components/common/Button';
 import MyPoint from '@components/common/MyPoint';
 
 import { useEffect, useState } from 'react';
-import { Common } from '@styles/globalStyle';
 import { fetchInstance } from '@api/instance';
 import Cookies from 'js-cookie';
 
@@ -48,15 +47,8 @@ const PointPage = () => {
     <Wrapper>
       <InnerWrapper>
         <Menubar />
-        <MyPoint />
-        <PaymentBox>
-          <Button
-            label="충전하기"
-            radius="20px"
-            bgColor={Common.colors.primary}
-            padding="9px 25px"
-          />
-        </PaymentBox>
+        <MyPoint showRechargeButton />
+
         <FilterBox>
           <Button
             label="충전"
@@ -95,13 +87,6 @@ const InnerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-
-const PaymentBox = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
 `;
 
 const FilterBox = styled.div`
