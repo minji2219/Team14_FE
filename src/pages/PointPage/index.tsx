@@ -5,21 +5,56 @@ import PointListItem from '@components/point/PointListItem';
 import Button from '@components/common/Button';
 import MyPoint from '@components/common/MyPoint';
 
-import { pointDataSet } from '@components/point/data';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Common } from '@styles/globalStyle';
+// import Cookies from 'js-cookie';
+import { fetchInstance } from '@api/instance';
+
+interface PointData {
+  amount: number;
+  date: Date;
+}
 
 const PointPage = () => {
   type PointFilter = '충전' | '결제' | '환전';
   const [pointFilterValue, setPointFilterValue] = useState<PointFilter>('충전');
+  const [pointData, setPointData] = useState<PointData[]>();
 
   const changePointFilter = (filter: PointFilter) => {
     setPointFilterValue(filter);
   };
 
-  const filteredPointData = pointDataSet.filter(
-    (pointData) => pointData.filter === pointFilterValue,
-  );
+  // const filteredPointData = pointDataSet.filter(
+  //   (pointData) => pointData.filter === pointFilterValue,
+  // );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // const token = Cookies.get('access_token');
+        const response = await fetchInstance.get(
+          'http://43.203.132.224:8080/api/v1/payments/history',
+          {
+            params: { paymentStatus: 'SUCCESS' },
+            headers: {
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzMxNTA2MzcwLCJleHAiOjUzMzE1MDYzNzB9.u4U-UL0ANUxHRg97sY3xOILmSqEeKUDbULqUWPUkmLE`,
+            },
+          },
+        );
+
+        console.log('Response data:', response);
+
+        if (response.status === 200 && response.data) {
+          setPointData(response.data.histories);
+          console.log(response.data);
+        }
+      } catch (error) {
+        console.error('Point Page', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Wrapper>
@@ -76,11 +111,11 @@ const PointPage = () => {
           />
         </FilterBox>
         <PointList>
-          {filteredPointData.map((pointData) => (
+          {pointData?.map((point) => (
             <PointListItem
-              date={pointData.date}
-              point={pointData.point}
-              filter={pointData.filter}
+              date={point.date}
+              point={point.amount}
+              filter="충전"
             />
           ))}
         </PointList>

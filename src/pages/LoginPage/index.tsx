@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
       // https://order-together.duckdns.org/api/v1/auth/login
       // http://43.203.132.224:8080/api/v1/auth/login
       fetchInstance
-        .get(`${process.env.REACT_APP_BOMIN_API}/auth/login`, {
+        .get(`/auth/login`, {
           headers: {
             Authorization: `Bearer ${code}`,
             'Content-Type': 'application/json',
@@ -39,6 +39,12 @@ const LoginPage: React.FC = () => {
           maxRedirects: 0,
         })
         .then((response) => {
+          console.log(response);
+          if (response.status === 302) {
+            console.log('302', response);
+
+            window.location.href = response.data.redirectURL;
+          }
           const accessToken = response.data.data;
           if (accessToken) {
             Cookies.set('access_token', accessToken);

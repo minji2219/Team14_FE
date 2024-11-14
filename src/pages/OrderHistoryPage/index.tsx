@@ -74,19 +74,14 @@ const OrderHistoryPage = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = Cookies.get('access_token');
-        console.log(token);
-        const response = await fetchInstance.get(
-          `${process.env.REACT_APP_BOMIN_API}/orders?page=${currentPage}&size=3&sort=createdAt,desc`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
+    const token = Cookies.get('access_token');
+    fetchInstance
+      .get(`/orders?page=${currentPage}&size=3&sort=createdDate,desc`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
         console.log('Response data:', response);
 
         if (response.status === 200 && response.data) {
@@ -94,12 +89,10 @@ const OrderHistoryPage = () => {
           setData(response.data.content);
           console.log(response.data);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
+      })
+      .catch((error) => {
+        console.error('OrderHistoryPage:', error);
+      });
   }, [currentPage]);
 
   return (
