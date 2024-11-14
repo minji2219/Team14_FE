@@ -23,7 +23,8 @@ const getOrderDetailModify = async (spotId: number) => {
 
 export const useGetOrderDetailModify = (spotId: number) => {
   return useQuery({
-    queryKey: [spotId],
+    queryKey: ['modify', spotId],
     queryFn: () => getOrderDetailModify(spotId),
+    enabled: false,
   });
 };

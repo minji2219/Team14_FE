@@ -25,7 +25,6 @@ const OrderDetailMember = () => {
           price={data.price}
         />
       )}
-
       <State>
         <Describe>
           {isDeliverable
@@ -33,9 +32,19 @@ const OrderDetailMember = () => {
             : '※ 파티원 모집 중입니다. 잠시 후에 결제해 주세요.'}
         </Describe>
         {isDeliverable ? (
-          <Button label="결제" radius="20px" bgColor={Common.colors.primary} />
+          <Button
+            label="결제"
+            radius="20px"
+            padding="9px 30px"
+            bgColor={Common.colors.primary}
+          />
         ) : (
-          <Button label="대기" radius="20px" bgColor={Common.colors.primary} />
+          <Button
+            label="대기"
+            radius="20px"
+            padding="9px 30px"
+            bgColor={Common.colors.primary}
+          />
         )}
       </State>
       <PriceInputContainer>
@@ -68,6 +77,7 @@ const OrderDetailMember = () => {
       <Button
         label="주문 취소하기"
         radius="20px"
+        padding="9px 60px"
         bgColor={Common.colors.primary}
       />
     </Wrapper>
@@ -77,7 +87,7 @@ const OrderDetailMember = () => {
 export default OrderDetailMember;
 
 const Wrapper = styled.div`
-  width: 100%;
+  width: 700px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -96,6 +106,7 @@ const State = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: 20px;
 `;
 
 const Describe = styled.span`
@@ -107,7 +118,7 @@ const PriceInputContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 20px 0;
+  margin: 40px 0;
 `;
 const MyPrice = styled.div`
   display: flex;

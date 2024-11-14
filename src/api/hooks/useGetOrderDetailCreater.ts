@@ -29,7 +29,7 @@ const getOrderDetail = async (spotId: number) => {
 
 export const useGetOrderDetailCreater = (spotId: number) => {
   return useQuery({
-    queryKey: [spotId],
+    queryKey: ['spotdata', spotId],
     queryFn: () => getOrderDetail(spotId),
   });
 };

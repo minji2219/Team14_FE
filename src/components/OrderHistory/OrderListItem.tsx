@@ -32,7 +32,7 @@ const OrderListItem = ({
           주문 날짜: 2024-08-13 <br />
           픽업장소: {pickUpLocation}
           <br />
-          {price != -1 ? `결제금액: ${price}P` : null}
+          {price !== -1 ? `결제금액: ${price}P` : null}
         </span>
       </Container>
     </Wrapper>
@@ -42,7 +42,7 @@ const OrderListItem = ({
 export default OrderListItem;
 
 const Wrapper = styled.div`
-  width: 100%;
+  width: 700px;
   display: flex;
   justify-content: center;
   border: 1px solid #c7c3c3;

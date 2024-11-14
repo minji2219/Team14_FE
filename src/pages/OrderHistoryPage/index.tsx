@@ -57,7 +57,7 @@ const OrderHistoryPage = () => {
     const token = Cookies.get('access_token');
     fetchInstance
       .get('/orders', {
-        params: { page: currentPage, size: 3, sort: 'createdAt,desc' },
+        params: { page: currentPage, size: 5, sort: 'createdAt,desc' },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -139,9 +139,15 @@ const Wrapper = styled.div`
 
 const InnerWrapper = styled.div`
   width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const OrderListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
 `;
 const PagenationUl = styled.ul`
