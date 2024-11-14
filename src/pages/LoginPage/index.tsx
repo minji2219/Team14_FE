@@ -6,6 +6,8 @@ import { fetchInstance } from '@api/instance/index';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { AuthContext } from '@provider/AuthProvider';
+import Modal from '@components/common/Modal';
+import AlertDialog from '@components/common/Modal/AlertDialog';
 import { RouterPath } from '@routes/path';
 
 const KAKAO_CLIENT_ID = '709c9edf5275cd3bedfb03c7f92e7af5';
@@ -14,10 +16,10 @@ const KAKAO_AUTH_URL = 'https://kauth.kakao.com/oauth/authorize';
 
 const LoginPage: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { setIsLoggedIn } = useContext(AuthContext);
   const [isCodeProcessed, setIsCodeProcessed] = useState(false);
-
+  const [errorModalIsOpen, setErrorModalIsOpen] = useState(false); // Modal state
+  const navigate = useNavigate();
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     const code = query.get('code');
@@ -27,9 +29,6 @@ const LoginPage: React.FC = () => {
 
       setIsCodeProcessed(true);
       sessionStorage.setItem('codeProcessed', 'true');
-      // http://3.39.23.121:8080/api/v1/auth/login
-      // https://order-together.duckdns.org/api/v1/auth/login
-      // http://43.203.132.224:8080/api/v1/auth/login
       fetchInstance
         .get(`/auth/login`, {
           headers: {
@@ -51,21 +50,11 @@ const LoginPage: React.FC = () => {
           }
         })
         .catch((error) => {
-          if (error.response) {
-            if (error.response.status === 404) {
-              const redirectUrl = error.request.responseURL;
-              if (redirectUrl) {
-                window.location.href = redirectUrl;
-              }
-            } else {
-              navigate(RouterPath.root);
-            }
-          } else {
-            navigate(RouterPath.root);
-          }
+          console.error('Login failed:', error);
+          setErrorModalIsOpen(true);
         });
     }
-  }, [location.search, isCodeProcessed, navigate, setIsLoggedIn]);
+  }, [location.search, isCodeProcessed, setIsLoggedIn]);
 
   const handleKakaoLogin = () => {
     const kakaoAuthUrl = `${KAKAO_AUTH_URL}?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code`;
@@ -87,6 +76,21 @@ const LoginPage: React.FC = () => {
         </Content>
       </Background>
       <Background />
+
+      <Modal
+        size="small"
+        type="warning"
+        isOpen={errorModalIsOpen}
+        onRequestClose={() => setErrorModalIsOpen(false)}
+        title={<div style={{ color: 'white' }}>에러 발생</div>}
+        content={
+          <AlertDialog
+            type="warning"
+            content="로그인을 실패하였습니다."
+            onRequestConfirm={() => setErrorModalIsOpen(false)}
+          />
+        }
+      />
     </Wrapper>
   );
 };
