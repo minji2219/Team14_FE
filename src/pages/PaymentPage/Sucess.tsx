@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getOrderId } from '@provider/OrderIdLocation';
 import useConfirmPayment from '@api/hooks/useConfirmPayment';
@@ -12,34 +12,31 @@ const SuccessPage = () => {
   const paymentKey = searchParams.get('paymentKey');
 
   const { mutate } = useConfirmPayment();
-
   const hasExecuted = useRef(false);
 
   useEffect(() => {
-    if (!orderId) {
-      console.error('Order ID is missing.');
-      alert('Order ID is missing. Returning to the previous page.');
-      navigate(-1);
-      return;
-    }
+    const confirmPayment = async () => {
+      if (!orderId) {
+        navigate(-1);
+        return;
+      }
 
-    if (!hasExecuted.current) {
-      console.log('Executing payment confirmation request');
-      mutate({ orderId, amount, paymentKey });
-      hasExecuted.current = true;
-    }
+      if (!hasExecuted.current) {
+        try {
+          await mutate({ orderId, amount, paymentKey });
+
+          navigate(-1);
+        } catch (error) {
+          alert('결제 확인에 실패했습니다. 다시 시도해주세요.');
+        }
+        hasExecuted.current = true;
+      }
+    };
+
+    confirmPayment();
   }, [mutate, navigate, orderId, amount, paymentKey]);
 
-  return (
-    <div className="result wrapper">
-      <div className="box_section">
-        <h2>결제 성공</h2>
-        <p>{`주문번호: ${orderId}`}</p>
-        <p>{`결제 금액: ${amount.toLocaleString()}원`}</p>
-        <p>{`paymentKey: ${paymentKey}`}</p>
-      </div>
-    </div>
-  );
+  return null;
 };
 
 export default SuccessPage;

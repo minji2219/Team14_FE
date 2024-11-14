@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Button from '@components/common/Button';
 import { Common } from '@styles/globalStyle';
@@ -18,6 +18,7 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
   const [isPaymentWidgetVisible, setIsPaymentWidgetVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
+  const [pointBalance, setPointBalance] = useState<number>(0);
 
   const handleAmountClick = (amount: number) => {
     setSelectedAmount(amount);
@@ -33,10 +34,9 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
     setLoading(true);
 
     const productMapping: { [key: number]: number } = {
-      5000: 1,
-      10000: 2,
-      20000: 3,
-      30000: 4,
+      10000: 1,
+      20000: 2,
+      30000: 3,
     };
 
     const productIds = productMapping[selectedAmount ?? 0]
@@ -95,14 +95,44 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
     setIsPaymentWidgetVisible(false);
   };
 
+  useEffect(() => {
+    const fetchMemberInfo = async () => {
+      try {
+        const accessToken = Cookies.get('access_token');
+        if (!accessToken) return;
+
+        const response = await fetch(
+          'http://43.203.132.224:8080/api/v1/members',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setPointBalance(data.data.point || 0);
+        } else {
+          console.error('Failed to fetch member info');
+        }
+      } catch (error) {
+        console.error('Error fetching member info:', error);
+      }
+    };
+
+    fetchMemberInfo();
+  }, []);
   return (
     <Container>
       <Title>My Point</Title>
       <PointBalance>
-        {selectedAmount ? `${selectedAmount.toLocaleString()} P` : '0 P'}
+        {pointBalance ? `${pointBalance.toLocaleString()} P` : '0 P'}
       </PointBalance>
       <AmountOptions>
-        {[5_000, 10_000, 20_000, 30_000].map((amount) => (
+        {[10_000, 20_000, 30_000].map((amount) => (
           <AmountOption key={amount}>
             <input
               type="radio"
