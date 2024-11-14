@@ -4,6 +4,8 @@ import MyPoint from '@components/common/MyPoint';
 import Button from '@components/common/Button';
 import InputField from '@components/common/InputField';
 import { Common } from '@styles/globalStyle';
+import { fetchInstance } from '@api/instance/index';
+import Cookies from 'js-cookie';
 
 const PaymentPage: React.FC = () => {
   const [paymentAmount, setPaymentAmount] = useState('');
@@ -12,10 +14,41 @@ const PaymentPage: React.FC = () => {
     setPaymentAmount(e.target.value);
   };
 
+  const handlePaymentSubmit = () => {
+    if (!paymentAmount) {
+      alert('결제 금액을 입력해주세요.');
+      return;
+    }
+
+    const token = Cookies.get('access_token');
+    console.log(token);
+    fetchInstance
+      .put(
+        'https://order-together.duckdns.org/api/v1/points',
+        {
+          paymentPoint: parseInt(paymentAmount, 10),
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then(() => {
+        alert('결제가 완료되었습니다.');
+        setPaymentAmount('');
+      })
+      .catch((error) => {
+        console.error('결제 실패:', error);
+        alert('결제에 실패했습니다. 다시 시도해주세요.');
+      });
+  };
+
   return (
     <Container>
       <Title>결제하기</Title>
-      <MyPoint />
+      <MyPoint showRechargeButton />
       <PaymentSection>
         <Label>결제 금액</Label>
         <InputWrapper>
@@ -34,6 +67,7 @@ const PaymentPage: React.FC = () => {
           bgColor={Common.colors.primary}
           radius="20px"
           padding="12px 24px"
+          onClick={handlePaymentSubmit}
         />
       </PaymentSection>
     </Container>

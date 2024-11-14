@@ -12,7 +12,7 @@ export const Common = {
     primary08: 'rgba(5,151,112,.8)',
     yellow: '#F1CF06',
     yellowBg: '#F7F7F7',
-    button2: '#73BEAA', //이름을 뭐로 해야될지 모르겠음..
+    button2: '#73BEAA',
     button3: '#D9D9D9',
     lightGray: '#BBB',
     warning: '#DC0000',

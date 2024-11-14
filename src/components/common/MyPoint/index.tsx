@@ -2,12 +2,74 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '@components/common/Button';
 import { Common } from '@styles/globalStyle';
+import PaymentModal from '@components/common/PaymentModal';
+import Cookies from 'js-cookie';
+import { setOrderId } from '@provider/OrderIdLocation';
 
-const MyPoint: React.FC = () => {
+interface MyPointProps {
+  // eslint-disable-next-line react/require-default-props
+  showRechargeButton?: boolean;
+}
+
+const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
+  const [isPaymentWidgetVisible, setIsPaymentWidgetVisible] = useState(false);
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const handleAmountClick = (amount: number) => {
     setSelectedAmount(amount);
+  };
+
+  const handlePaymentRequest = async () => {
+    if (!selectedAmount) {
+      alert('충전 금액을 선택해주세요.');
+      return;
+    }
+
+    const accessToken = Cookies.get('access_token');
+    if (!accessToken) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        'https://order-together.duckdns.org/api/v1/payments',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            idempotencySeed: Math.random().toString(36).substr(2, 10),
+            productIds: [3],
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error('결제 정보 저장 실패');
+      }
+
+      const data = await response.json();
+      const orderId = data.data?.orderId;
+
+      if (orderId) {
+        setOrderId(orderId);
+      }
+      setIsPaymentWidgetVisible(true);
+    } catch (error) {
+      alert('결제 요청에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsPaymentWidgetVisible(false);
   };
 
   return (
@@ -32,19 +94,30 @@ const MyPoint: React.FC = () => {
             </label>
           </AmountOption>
         ))}
-        <Button
-          label="충전"
-          bgColor={Common.colors.primary}
-          radius="30px"
-          padding="10px 20px"
-        />
+        {showRechargeButton && (
+          <Button
+            label="충전"
+            bgColor={Common.colors.primary}
+            radius="30px"
+            padding="10px 20px"
+            onClick={handlePaymentRequest}
+            disabled={loading} // Disable button when loading
+          />
+        )}
       </AmountOptions>
+      {isPaymentWidgetVisible && (
+        <PaymentModal
+          onClose={handleCloseModal}
+          selectedAmount={selectedAmount ?? 0}
+        />
+      )}
     </Container>
   );
 };
 
 export default MyPoint;
 
+// Styled components
 const Container = styled.div`
   padding: 20px;
   border-radius: 10px;

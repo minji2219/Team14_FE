@@ -14,9 +14,6 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
   return instance;
 };
 
-const BASE_URL = 'http://3.39.23.121:8080/api/v1';
-const TOKEN = 'token';
-
 export const fetchInstance = initInstance({
   // baseURL: BASE_URL,
 });
