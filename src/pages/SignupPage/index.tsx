@@ -23,13 +23,13 @@ const SignupPage: React.FC = () => {
     const email = query.get('email');
 
     const requestData = {
-      deliveryName,
       phoneNumber,
+      deliveryName,
     };
 
     fetchInstance
       .post(
-        `http://3.39.23.121:8080/api/v1/auth/signup?email=${email}`,
+        `https://order-together.duckdns.org/api/v1/auth/signup?email=${email}`,
         requestData,
       )
       .then((response) => {
