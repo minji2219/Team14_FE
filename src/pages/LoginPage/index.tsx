@@ -3,11 +3,13 @@ import styled from '@emotion/styled';
 import Background from '@components/common/Background/index';
 import { HEADER_HEIGHT } from '@components/features/Layout/Header';
 import { fetchInstance } from '@api/instance/index';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { AuthContext } from '@provider/AuthProvider';
 import Modal from '@components/common/Modal';
 import AlertDialog from '@components/common/Modal/AlertDialog';
+
+import { RouterPath } from '@routes/path';
 
 const KAKAO_CLIENT_ID = '709c9edf5275cd3bedfb03c7f92e7af5';
 const KAKAO_REDIRECT_URI = 'http://localhost:3000/login';
@@ -18,6 +20,7 @@ const LoginPage: React.FC = () => {
   const { setIsLoggedIn } = useContext(AuthContext);
   const [isCodeProcessed, setIsCodeProcessed] = useState(false);
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false); // Modal state
+  const navigate = useNavigate();
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
@@ -28,8 +31,12 @@ const LoginPage: React.FC = () => {
 
       setIsCodeProcessed(true);
       sessionStorage.setItem('codeProcessed', 'true');
+
+      // http://3.39.23.121:8080/api/v1/auth/login
+      // https://order-together.duckdns.org/api/v1/auth/login
+      // http://43.203.132.224:8080/api/v1/auth/login
       fetchInstance
-        .get('http://43.203.132.224:8080/api/v1/auth/login', {
+        .get(`/auth/login`, {
           headers: {
             Authorization: `Bearer ${code}`,
             'Content-Type': 'application/json',
@@ -37,19 +44,36 @@ const LoginPage: React.FC = () => {
           maxRedirects: 0,
         })
         .then((response) => {
+          console.log(response);
           if (response.status === 302) {
+            console.log('302', response);
+
             window.location.href = response.data.redirectURL;
           }
           const accessToken = response.data.data;
           if (accessToken) {
             Cookies.set('access_token', accessToken);
             setIsLoggedIn(true);
-            window.location.href = '/';
+
+            navigate(RouterPath.root);
+            navigate(0);
           }
         })
         .catch((error) => {
-          console.error('Login failed:', error);
-          setErrorModalIsOpen(true);
+          console.log(error);
+          if (error.response) {
+            if (error.response.status === 404) {
+              console.log(error.request.responseURL);
+              const redirectUrl = error.request.responseURL;
+              if (redirectUrl) {
+                window.location.href = redirectUrl;
+              }
+            } else {
+              navigate(RouterPath.root);
+            }
+          } else {
+            navigate(RouterPath.root);
+          }
         });
     }
   }, [location.search, isCodeProcessed, setIsLoggedIn]);

@@ -9,16 +9,51 @@ import Cookies from 'js-cookie';
 import { setOrderId } from '@provider/OrderIdLocation';
 
 interface MyPointProps {
-  // eslint-disable-next-line react/require-default-props
   showRechargeButton?: boolean;
+  refreshPoints?: () => void;
 }
 
-const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
+const MyPoint: React.FC<MyPointProps> = ({
+  showRechargeButton = false,
+  refreshPoints,
+}) => {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [isPaymentWidgetVisible, setIsPaymentWidgetVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
   const [pointBalance, setPointBalance] = useState<number>(0);
+
+  const fetchMemberInfo = async () => {
+    try {
+      const accessToken = Cookies.get('access_token');
+      if (!accessToken) return;
+
+      const response = await fetch(
+        'https://order-together.duckdns.org/api/v1/members',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setPointBalance(data.data.point || 0);
+        if (refreshPoints) refreshPoints();
+      } else {
+        console.error('Failed to fetch member info');
+      }
+    } catch (error) {
+      console.error('Error fetching member info:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMemberInfo();
+  }, []);
 
   const handleAmountClick = (amount: number) => {
     setSelectedAmount(amount);
@@ -51,7 +86,7 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
 
     try {
       const response = await fetch(
-        'http://43.203.132.224:8080/api/v1/payments',
+        'https://order-together.duckdns.org/api/v1/payments',
         {
           method: 'POST',
           headers: {
@@ -89,42 +124,13 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
       return;
     }
     setIsRechargeOpen(true);
+    fetchMemberInfo();
   };
 
   const handleCloseModal = () => {
     setIsPaymentWidgetVisible(false);
   };
 
-  useEffect(() => {
-    const fetchMemberInfo = async () => {
-      try {
-        const accessToken = Cookies.get('access_token');
-        if (!accessToken) return;
-
-        const response = await fetch(
-          'http://43.203.132.224:8080/api/v1/members',
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setPointBalance(data.data.point || 0);
-        } else {
-          console.error('Failed to fetch member info');
-        }
-      } catch (error) {
-        console.error('Error fetching member info:', error);
-      }
-    };
-
-    fetchMemberInfo();
-  }, []);
   return (
     <Container>
       <Title>My Point</Title>
@@ -183,6 +189,11 @@ const MyPoint: React.FC<MyPointProps> = ({ showRechargeButton = false }) => {
       />
     </Container>
   );
+};
+
+MyPoint.defaultProps = {
+  showRechargeButton: false,
+  refreshPoints: () => {},
 };
 
 export default MyPoint;

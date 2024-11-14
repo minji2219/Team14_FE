@@ -1,29 +1,27 @@
 import { fetchAuthInstance } from '@api/instance';
 import { useQuery } from '@tanstack/react-query';
 
-interface OrderDetail {
-  cateogry: string;
+export interface OrderDetail {
+  category: string;
   storeName: string;
   minimumOrderAmount: number;
-  deadlineTime: string;
-  togetherOrderLink: string;
   pickUpLocation: string;
-  lat: number;
-  lng: number;
+  delieveryStatus: string;
+  price: number;
 }
 
 const getPath = (spotId: number) => {
-  return `/spot/${spotId}`;
+  return `/orders/participant/${spotId}`;
 };
 
-const getOrderDetailModify = async (spotId: number) => {
+const getOrderDetail = async (spotId: number) => {
   const response = await fetchAuthInstance.get<OrderDetail>(getPath(spotId));
   return response.data;
 };
 
-export const useGetOrderDetailModify = (spotId: number) => {
+export const useGetOrderDetailMemeber = (spotId: number) => {
   return useQuery({
-    queryKey: [spotId],
-    queryFn: () => getOrderDetailModify(spotId),
+    queryKey: ['participant', spotId],
+    queryFn: () => getOrderDetail(spotId),
   });
 };

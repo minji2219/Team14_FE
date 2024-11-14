@@ -6,24 +6,43 @@ import Menubar from '@components/mypage/Menubar';
 import OrderDetailCreater from '@components/OrderHistoryDetail/OrderDetailCreater';
 import OrderDetailMember from '@components/OrderHistoryDetail/OrderDetailMember';
 
-import { OrderDetailCreator } from '@components/OrderHistoryDetail/data';
+// import { OrderDetailCreator } from '@components/OrderHistoryDetail/data';
+
+interface Post {
+  id: number;
+  spotId: number;
+  category: string;
+  storeName: string;
+  minimumOrderAmount: number;
+  pickUpLocation: string;
+  deliveryStatus: string;
+  price?: number;
+  isCreator: boolean;
+}
 
 const OrderDetailPage = () => {
   const location = useLocation();
-  const isCreater: boolean = location.state.createrModeData;
+  const isCreator: boolean = location.state.createrModeData;
+  const orderData: Post = location.state.orderData;
 
   return (
     <Wrapper>
       <InnerWrapper>
         <Menubar />
-        <OrderListItem
-          category={OrderDetailCreator.category}
-          storeName={OrderDetailCreator.storeName}
-          pickUpLocation={OrderDetailCreator.pickUpLocation}
-        />
+        {/* <OrderListItem
+          category={orderData.category}
+          storeName={orderData.storeName}
+          pickUpLocation={orderData.pickUpLocation}
+          deliveryStatus={orderData.deliveryStatus}
+          price={orderData.price}
+        /> */}
       </InnerWrapper>
       <InnerWrapper>
-        {isCreater ? <OrderDetailCreater /> : <OrderDetailMember />}
+        {isCreator ? (
+          <OrderDetailCreater spotId={orderData.spotId} />
+        ) : (
+          <OrderDetailMember />
+        )}
       </InnerWrapper>
     </Wrapper>
   );

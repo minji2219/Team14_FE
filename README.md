@@ -23,6 +23,8 @@
   지도 상에 표시된 마커와 리스트를 통해 배달 받을 장소와 가게를 확인하고 참여할 수 있다.
 - 새로운 스팟 등록  
   자신이 원하는 음식을 방장이 되어 원하는 장소에 스팟을 생성할 수 있다.
+- sms  
+  선택한 스팟에 대한 "함께주문" 링크를 문자를 통해 받을 수 있다.
 - 주문 결제(토스 페이먼츠 API)  
   이용자들은 구매한 포인트를 통해 해당 앱에서 배달 음식의 값을 지불할 수 있다.
 - 주문 목록 확인  
@@ -44,7 +46,7 @@
 | 서민지 | <img src="https://img.shields.io/badge/-FE-blue"> 스팟(메인)페이지     |
 | 임지환 | <img src="https://img.shields.io/badge/-FE-blue"> 로그인 및 결제페이지 |
 | 나제법 | <img src="https://img.shields.io/badge/-BE-red"> 결제 API              |
-| 서영우 | <img src="https://img.shields.io/badge/-BE-red"> 로그인 API            |
+| 서영우 | <img src="https://img.shields.io/badge/-BE-red"> 로그인 API, 회원 API  |
 | 안재영 | <img src="https://img.shields.io/badge/-BE-red"> SMS API, 결제내역 API |
 | 유보민 | <img src="https://img.shields.io/badge/-BE-red"> 지도(스팟) API        |
 

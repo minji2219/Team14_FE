@@ -12,6 +12,9 @@ import SearchMap from './PickupModal/SearchMap';
 import { SearchSpotContext } from '@provider/SearchSpot';
 import { usePostSpot } from '@api/hooks/usePostSpot';
 import { usePutSpot } from '@api/hooks/usePutSpot';
+import { getFormatTime } from '@helper/getFormatTime';
+import { parsingTime } from '@helper/parsingTime';
+import { queryClient } from '@api/QueryClient';
 
 interface Props {
   onRequestClose: () => void;
@@ -27,6 +30,7 @@ interface Props {
     lat: number;
     lng: number;
   };
+  setSpotId?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface FormValues {
@@ -48,25 +52,12 @@ const RecruitDialog = ({
   onRequestConfirm,
   onRequestError,
   modify,
+  setSpotId,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { address } = useContext(SearchSpotContext);
-  const { mutate: postMutate, data } = usePostSpot();
+  const { mutate: postMutate } = usePostSpot();
   const { mutate: putMutate } = usePutSpot();
-
-  const getFormatTime = (hour: number, minute: number) => {
-    const hours = hour >= 10 ? hour : '0' + hour;
-    const minutes = minute > 10 ? minute : '0' + minute;
-
-    return hours + ':' + minutes + ':' + '00';
-  };
-
-  const parsingTime = (time: string) => {
-    const hours = time.split(':')[0];
-    const minutes = time.split(':')[1];
-
-    return { hours: Number(hours), minutes: Number(minutes) };
-  };
 
   const {
     register,
@@ -94,7 +85,10 @@ const RecruitDialog = ({
 
   const createRecruit: SubmitHandler<FormValues> = async (data) => {
     //TODO:modify인 경우 다른 mutate 진행
-    const deadlineTime = getFormatTime(data.endHour, data.endMinute);
+    const deadlineTime = getFormatTime([
+      Number(data.endHour),
+      Number(data.endMinute),
+    ]);
 
     const requestData = {
       lat: data.address.lat,
@@ -108,12 +102,22 @@ const RecruitDialog = ({
     };
 
     const requestOptions = {
-      onSuccess: () => {
-        console.log(data);
+      onSuccess: (datas: any) => {
+        //@ts-ignore
+        setSpotId(datas.data.id);
         onRequestClose();
         onRequestConfirm();
+        if (!modify) {
+          const location = JSON.parse(localStorage.getItem('location')!);
+          queryClient.invalidateQueries({
+            queryKey: ['spotInfo', location.lat, location.lng],
+          });
+        }
       },
-      onError: () => onRequestError(),
+      onError: (err: any) => {
+        console.log(err);
+        onRequestError();
+      },
     };
 
     if (modify) {
@@ -164,16 +168,34 @@ const RecruitDialog = ({
         {...register('price', { required: true })}
       />
 
-      <Label>주문 마감 시간</Label>
+      <Label>주문 마감 시간 (24시간제로 기입)</Label>
       <TimeWrpper>
         <InputField
           type="number"
-          {...register('endHour', { required: true })}
+          {...register('endHour', {
+            required: true,
+            min: 0,
+            max: 23,
+            onChange: (e) => {
+              const value = e.target.value;
+              if (value < 0) e.target.value = 0;
+              if (value > 23) e.target.value = 23;
+            },
+          })}
         />
         시{' '}
         <InputField
           type="number"
-          {...register('endMinute', { required: true })}
+          {...register('endMinute', {
+            required: true,
+            min: 0,
+            max: 59,
+            onChange: (e) => {
+              const value = e.target.value;
+              if (value < 0) e.target.value = 0;
+              if (value > 59) e.target.value = 59;
+            },
+          })}
         />
         분
       </TimeWrpper>

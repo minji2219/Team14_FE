@@ -65,7 +65,7 @@ const Wrapper = styled.div`
   height: 50%;
   width: 100%;
   box-sizing: border-box;
-  padding: 0 20px;
+  padding: 0 30px;
   overflow: scroll;
   &::-webkit-scrollbar {
     display: none;

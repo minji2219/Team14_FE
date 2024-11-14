@@ -3,12 +3,39 @@ import styled from 'styled-components';
 import { Common } from '@styles/globalStyle';
 import Button from '@components/common/Button';
 import InputField from '@components/common/InputField';
+import { useState } from 'react';
+import { fetchInstance } from '@api/instance';
+import Cookies from 'js-cookie';
 
 interface Props {
+  phoneNumber: string;
+  name: string;
   editMode: () => void;
 }
 
-const ProfileEdit = ({ editMode }: Props) => {
+const ProfileEdit = ({ editMode, phoneNumber, name }: Props) => {
+  const [editPhoneNumber, setEditPhoneNumber] = useState<string>(phoneNumber);
+  const [editName, setEditName] = useState<string>(name);
+
+  const editInfo = () => {
+    const token = Cookies.get('access_token');
+    fetchInstance
+      .put(
+        'https://order-together.duckdns.org/api/v1/members',
+        { deliveryName: editName, phoneNumber: editPhoneNumber },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .then((response) => {
+        if (response.status === 200 && response.data) {
+          editMode();
+        }
+      });
+  };
+
   return (
     <div>
       <MyPageContainerMiddle>
@@ -18,16 +45,26 @@ const ProfileEdit = ({ editMode }: Props) => {
           <LeftContent>전화번호 변경</LeftContent>
         </MyPageInfoDescription>
         <MyPageInfo>
-          <InputField width="65%" bgColor="#EDEDED" />
+          <InputField
+            width="65%"
+            bgColor="#EDEDED"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+          />
           <Space />
-          <InputField width="65%" bgColor="#EDEDED" />
+          <InputField
+            width="65%"
+            bgColor="#EDEDED"
+            value={editPhoneNumber}
+            onChange={(e) => setEditPhoneNumber(e.target.value)}
+          />
         </MyPageInfo>
       </MyPageContainerMiddle>
       <MyPageContainerBottom>
         <Button
           label="저장하기"
           bgColor={Common.colors.primary}
-          onClick={editMode}
+          onClick={editInfo}
           radius="20px"
         />
       </MyPageContainerBottom>

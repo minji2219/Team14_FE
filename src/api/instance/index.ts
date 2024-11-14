@@ -14,12 +14,15 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
   return instance;
 };
 
+const BASE_URL = 'https://order-together.duckdns.org/api/v1';
+
 export const fetchInstance = initInstance({
-  // baseURL: BASE_URL,
+  baseURL: BASE_URL,
 });
 
 export const fetchAuthInstance = initInstance({
-  // baseURL: BASE_URL,
+  baseURL: BASE_URL,
+
   headers: {
     Authorization: `Bearer ${Cookies.get('access_token')}`,
   },

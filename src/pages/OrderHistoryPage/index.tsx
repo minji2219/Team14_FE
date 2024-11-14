@@ -1,41 +1,41 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Menubar from '@components/mypage/Menubar';
 import OrderListItem from '@components/OrderHistory/OrderListItem';
 
-import { orderList } from '@components/OrderHistory/data';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
-import { getDynamicPath } from '../../routes/path';
+import { getDynamicPath } from '@routes/path';
+import { fetchInstance } from '@api/instance';
+import Cookies from 'js-cookie';
 
 interface Post {
   id: number;
+  spotId: number;
   category: string;
   storeName: string;
+  minimumOrderAmount: number;
   pickUpLocation: string;
-  deliveryStatus: boolean;
+  deliveryStatus: string;
   price?: number;
-  isCreater: boolean;
+  isCreator: boolean;
 }
-interface OrderHistory {
-  totalPages: number; //전체 페이지 수
-  totalElements: number; //전체 데이터 수
-  size: number; //페이지 당 보여줄 데이터 수
+
+interface OrderHistoryData {
+  totalPages: number;
+  totalElements: number;
+  ordersInfo: Post[];
 }
 
 const OrderHistoryPage = () => {
   const VIEW_PAGE_COUNT = 5;
+  const [orderHistoryData, setOrderHistoryData] = useState<OrderHistoryData>();
+  const [data, setData] = useState<Post[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const posts: Post[] = orderList.content;
-  const orderHistory: OrderHistory = orderList;
-
-  const startIdx = (currentPage - 1) * orderHistory.size;
-  const endIdx = startIdx + orderHistory.size;
-  const currentPosts = posts.slice(startIdx, endIdx);
 
   const pageNumbers = Array.from(
-    { length: orderHistory.totalPages },
+    { length: orderHistoryData?.totalPages || 0 },
     (_, i) => i + 1,
   );
 
@@ -43,36 +43,64 @@ const OrderHistoryPage = () => {
     Math.floor((currentPage - 1) / VIEW_PAGE_COUNT) * VIEW_PAGE_COUNT + 1;
   const endPage = Math.min(
     startPage + VIEW_PAGE_COUNT - 1,
-    orderHistory.totalPages,
+    orderHistoryData?.totalPages || 0,
   );
   const visiblePages = pageNumbers.slice(startPage - 1, endPage);
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= orderHistory.totalPages) {
+    if (page >= 1 && page <= (orderHistoryData?.totalPages || 0)) {
       setCurrentPage(page);
     }
   };
+
+  useEffect(() => {
+    const token = Cookies.get('access_token');
+    fetchInstance
+      .get('https://order-together.duckdns.org/api/v1/orders', {
+        params: { page: currentPage, size: 3, sort: 'createdAt,desc' },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log('Response data:', response);
+
+        if (response.status === 200 && response.data) {
+          setOrderHistoryData(response.data);
+          setData(response.data.ordersInfo);
+          console.log(response.data);
+        }
+      })
+      .catch((error) => {
+        console.error('OrderHistoryPage:', error);
+      });
+  }, [currentPage]);
 
   return (
     <Wrapper>
       <InnerWrapper>
         <Menubar />
         <OrderListContainer>
-          {currentPosts.map((post) => (
-            <Link
-              key={post.id}
-              to={getDynamicPath.orderDetail(post.id)}
-              state={{ createrModeData: post.isCreater }}
-              style={{ textDecoration: 'none', color: '#000' }}
-            >
-              <OrderListItem
-                category={post.category}
-                storeName={post.storeName}
-                pickUpLocation={post.pickUpLocation}
-                price={post.price}
-              />
-            </Link>
-          ))}
+          {data.length === 0 ? (
+            <div style={{ width: '100%' }}>주문내역이 없습니다.</div>
+          ) : (
+            data.map((post) => (
+              <Link
+                key={post.id}
+                to={getDynamicPath.orderDetail(post.id)}
+                state={{ createrModeData: post.isCreator, orderData: post }}
+                style={{ textDecoration: 'none', color: '#000' }}
+              >
+                <OrderListItem
+                  category={post.category}
+                  storeName={post.storeName}
+                  pickUpLocation={post.pickUpLocation}
+                  price={post.price}
+                  deliveryStatus={post.deliveryStatus}
+                />
+              </Link>
+            ))
+          )}
         </OrderListContainer>
       </InnerWrapper>
       <InnerWrapper>
@@ -92,7 +120,7 @@ const OrderHistoryPage = () => {
               {page}
             </PageNumber>
           ))}
-          {endPage < orderHistory.totalPages && (
+          {endPage < (orderHistoryData?.totalPages || 0) && (
             <NextBtn onClick={() => handlePageChange(currentPage + 1)}>
               다음 <HiChevronRight />
             </NextBtn>
