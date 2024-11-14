@@ -14,7 +14,7 @@ interface Props {
 const SlideItem = ({ category, title, address, center, endSlide }: Props) => {
   return (
     <Container isCenter={center} isEndSlide={endSlide}>
-      <Logo image={`/image/categories/${category}.png`} />
+      <Logo image={`/image/categories/${category.replaceAll(', ', ',')}.png`} />
       <Wrapper>
         <Category>[{category}]</Category>
         <Title>{title}</Title>

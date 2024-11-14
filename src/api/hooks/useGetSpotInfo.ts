@@ -26,12 +26,12 @@ const getSpotInfo = async ({ lat, lng }: RequestParams) => {
   const response = await fetchInstance.get<StoreListParams[]>(
     getPath({ lat, lng }),
   );
-  return response.data;
+  return response.data.reverse();
 };
 
 export const useGetSpotInfo = ({ lat, lng }: RequestParams) => {
   return useQuery({
-    queryKey: [{ lat, lng }],
+    queryKey: ['spotInfo', lat, lng],
     queryFn: () => getSpotInfo({ lat, lng }),
   });
 };

@@ -19,6 +19,7 @@ const KakaoMap = () => {
   const [spotId, setSpotId] = useState(0);
 
   const navigate = useNavigate();
+
   const dragEnd = (marker: any) => {
     //위도(lat,Ma), 경도(lng,La)
     const { La, Ma } = marker.getPosition();
@@ -41,6 +42,7 @@ const KakaoMap = () => {
       }
     });
   };
+
   const { data = [] } = useGetSpotInfo({
     lat: location.lat,
     lng: location.lng,

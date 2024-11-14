@@ -13,16 +13,16 @@ import { useGetOrderDetailCreater } from '@api/hooks/useGetOrderDetailCreater';
 import { useGetOrderDetailModify } from '@api/hooks/useGetOrderDetailCreaterModify';
 import { useParams } from 'react-router-dom';
 
-const modifyData = {
-  category: '분식',
-  storeName: '이삭토스트',
-  minimumOrderAmount: 10000,
-  pickUpLocation: '전남대학교',
-  deadlineTime: '02:05:59',
-  togetherOrderLink: 'http://localhost:3000',
-  lat: 35.1766787,
-  lng: 126.9054188,
-};
+// const modifyData = {
+//   category: '분식',
+//   storeName: '이삭토스트',
+//   minimumOrderAmount: 10000,
+//   pickUpLocation: '전남대학교',
+//   deadlineTime: [2, 5],
+//   togetherOrderLink: 'http://localhost:3000',
+//   lat: 35.1766787,
+//   lng: 126.9054188,
+// };
 
 const OrderDetailCreater = () => {
   const imageInput = useRef<HTMLInputElement>(null);

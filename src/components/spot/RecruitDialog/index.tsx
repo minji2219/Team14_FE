@@ -12,6 +12,9 @@ import SearchMap from './PickupModal/SearchMap';
 import { SearchSpotContext } from '@provider/SearchSpot';
 import { usePostSpot } from '@api/hooks/usePostSpot';
 import { usePutSpot } from '@api/hooks/usePutSpot';
+import { getFormatTime } from '@helper/getFormatTime';
+import { parsingTime } from '@helper/parsingTime';
+import { queryClient } from '@api/QueryClient';
 
 interface Props {
   onRequestClose: () => void;
@@ -56,20 +59,6 @@ const RecruitDialog = ({
   const { mutate: postMutate } = usePostSpot();
   const { mutate: putMutate } = usePutSpot();
 
-  const getFormatTime = (hour: number, minute: number) => {
-    const hours = hour >= 10 ? hour : '0' + hour;
-    const minutes = minute > 10 ? minute : '0' + minute;
-
-    return hours + ':' + minutes + ':' + '00';
-  };
-
-  const parsingTime = (time: string) => {
-    const hours = time.split(':')[0];
-    const minutes = time.split(':')[1];
-
-    return { hours: Number(hours), minutes: Number(minutes) };
-  };
-
   const {
     register,
     control,
@@ -96,10 +85,10 @@ const RecruitDialog = ({
 
   const createRecruit: SubmitHandler<FormValues> = async (data) => {
     //TODO:modify인 경우 다른 mutate 진행
-    const deadlineTime = getFormatTime(
+    const deadlineTime = getFormatTime([
       Number(data.endHour),
       Number(data.endMinute),
-    );
+    ]);
 
     const requestData = {
       lat: data.address.lat,
@@ -118,6 +107,12 @@ const RecruitDialog = ({
         setSpotId(datas.data.id);
         onRequestClose();
         onRequestConfirm();
+        if (!modify) {
+          const location = JSON.parse(localStorage.getItem('location')!);
+          queryClient.invalidateQueries({
+            queryKey: ['spotInfo', location.lat, location.lng],
+          });
+        }
       },
       onError: (err: any) => {
         console.log(err);
@@ -173,7 +168,7 @@ const RecruitDialog = ({
         {...register('price', { required: true })}
       />
 
-      <Label>주문 마감 시간</Label>
+      <Label>주문 마감 시간 (24시간제로 기입)</Label>
       <TimeWrpper>
         <InputField
           type="number"

@@ -37,12 +37,14 @@ const Swiper = () => {
     });
   };
 
-  const [carouselList, setCarouselList] = useState(getDeadlineImminentList);
+  const [carouselList, setCarouselList] = useState(getDeadlineImminentList());
   const [slideNumber, setSlideNumber] = useState<number>(1);
   const [isEndSlide, setIsEndSlide] = useState(true);
+
   useEffect(() => {
     setCarouselList(getDeadlineImminentList());
-  }, []);
+  }, [data]);
+
   useEffect(() => {
     if (carouselList.length === 0) return;
     const startData = { ...carouselList[0] };
