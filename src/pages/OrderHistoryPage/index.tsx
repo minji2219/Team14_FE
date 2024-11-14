@@ -56,12 +56,8 @@ const OrderHistoryPage = () => {
   useEffect(() => {
     const token = Cookies.get('access_token');
     fetchInstance
-<<<<<<< HEAD
-      .get(`/orders?page=${currentPage}&size=3&sort=createdDate,desc`, {
-=======
       .get('https://order-together.duckdns.org/api/v1/orders', {
         params: { page: currentPage, size: 3, sort: 'createdAt,desc' },
->>>>>>> hojeong
         headers: {
           Authorization: `Bearer ${token}`,
         },
