@@ -21,10 +21,9 @@ const PaymentPage: React.FC = () => {
     }
 
     const token = Cookies.get('access_token');
-    console.log(token);
     fetchInstance
       .put(
-        'http://43.203.132.224:8080/api/v1/points',
+        '/points',
         {
           paymentPoint: parseInt(paymentAmount, 10),
         },

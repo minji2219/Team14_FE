@@ -2,11 +2,12 @@ import { fetchAuthInstance } from '@api/instance';
 import { useQuery } from '@tanstack/react-query';
 
 export interface OrderDetail {
-  cateogry: string;
+  category: string;
   storeName: string;
   minimumOrderAmount: number;
   pickUpLocation: string;
-  delieveryStatus: string;
+  deliveryStatus: string;
+  price: number;
   memberInfo: MemberInfo[];
 }
 

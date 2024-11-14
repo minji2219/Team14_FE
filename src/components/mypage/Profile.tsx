@@ -21,7 +21,7 @@ const Profile = ({ editMode, name, phoneNumber }: Props) => {
   const deleteUser = () => {
     const token = Cookies.get('access_token');
     fetchInstance
-      .delete('https://order-together.duckdns.org/api/v1/members', {
+      .delete('/members', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

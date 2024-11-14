@@ -3,9 +3,9 @@ import { useMutation } from '@tanstack/react-query';
 
 interface PostData {
   spotId: number;
-  // price: number | null;
-  // isPayed: boolean | null;
-  // participantId: number | null;
+  price: number | null;
+  isPayed: boolean | null;
+  participantId: number | null;
 }
 
 const getPath = () => {

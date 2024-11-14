@@ -57,13 +57,11 @@ export const Header: React.FC = () => {
   };
 
   const handleLogout = () => {
-    fetchAuthInstance
-      .post(`${process.env.REACT_APP_BOMIN_API}/auth/logout`)
-      .then(() => {
-        Cookies.remove('access_token');
-        setIsLoggedIn(false);
-        navigate(RouterPath.root);
-      });
+    fetchAuthInstance.post(`/auth/logout`).then(() => {
+      Cookies.remove('access_token');
+      setIsLoggedIn(false);
+      navigate(RouterPath.root);
+    });
   };
 
   useEffect(() => {

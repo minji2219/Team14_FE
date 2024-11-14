@@ -56,19 +56,16 @@ const OrderHistoryPage = () => {
   useEffect(() => {
     const token = Cookies.get('access_token');
     fetchInstance
-      .get('https://order-together.duckdns.org/api/v1/orders', {
+      .get('/orders', {
         params: { page: currentPage, size: 3, sort: 'createdAt,desc' },
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        console.log('Response data:', response);
-
         if (response.status === 200 && response.data) {
           setOrderHistoryData(response.data);
           setData(response.data.ordersInfo);
-          console.log(response.data);
         }
       })
       .catch((error) => {
@@ -87,8 +84,8 @@ const OrderHistoryPage = () => {
             data.map((post) => (
               <Link
                 key={post.id}
-                to={getDynamicPath.orderDetail(post.id)}
-                state={{ createrModeData: post.isCreator, orderData: post }}
+                to={getDynamicPath.orderDetail(post.spotId)}
+                state={{ createrModeData: post.isCreator }}
                 style={{ textDecoration: 'none', color: '#000' }}
               >
                 <OrderListItem

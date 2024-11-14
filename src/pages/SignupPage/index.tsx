@@ -38,10 +38,7 @@ const SignupPage: React.FC = () => {
     };
 
     fetchInstance
-      .post(
-        `http://43.203.132.224:8080/api/v1/auth/signup?email=${email}`,
-        requestData,
-      )
+      .post(`/auth/signup?email=${email}`, requestData)
       .then((response) => {
         if (response.status === 200 && response.data) {
           const accessToken = response.data.data;
@@ -52,32 +49,6 @@ const SignupPage: React.FC = () => {
         }
       });
   };
-
-  //   fetchInstance
-  //     .post(
-  //       `https://order-together.duckdns.org/api/v1/auth/signup?email=${email}`,
-  //       {
-  //         requestData,
-  //         maxRedirects: 0,
-  //       },
-  //     )
-  //     .then((response) => {
-  //       //@ts-ignore
-  //       console.log(response);
-  //       window.location.href = response.request.responseURL;
-  //       if (response.status === 302) {
-  //         //@ts-ignore
-  //         const redirectUrl = response.headers.get('Location');
-  //         window.location.href = redirectUrl;
-  //       }
-  //       const accessToken = response.data.data;
-  //       if (accessToken) {
-  //         Cookies.set('access_token', accessToken);
-  //         setIsLoggedIn(true);
-  //         navigate(RouterPath.root);
-  //       }
-  //     });
-  // };
 
   return (
     <Wrapper>

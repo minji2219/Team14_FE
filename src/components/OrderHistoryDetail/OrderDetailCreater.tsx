@@ -12,19 +12,7 @@ import { TbPointFilled } from 'react-icons/tb';
 import { useGetOrderDetailCreater } from '@api/hooks/useGetOrderDetailCreater';
 import { useGetOrderDetailModify } from '@api/hooks/useGetOrderDetailCreaterModify';
 import { useParams } from 'react-router-dom';
-
-// const modifyData = {
-//   category: '분식',
-//   storeName: '이삭토스트',
-//   minimumOrderAmount: 10000,
-//   pickUpLocation: '전남대학교',
-//   deadlineTime: [2, 5],
-//   togetherOrderLink: 'http://localhost:3000',
-//   lat: 35.1766787,
-//   lng: 126.9054188,
-// };
-// import { useGetOrderDetailModify } from '@api/hooks/useGetOrderDetailCreaterModify';
-// import { useParams } from 'react-router-dom';
+import OrderListItem from '@components/OrderHistory/OrderListItem';
 
 const modifyData = {
   category: '분식',
@@ -50,13 +38,11 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
 
   const [tipIsOpen, setTipIsOpen] = useState(false);
 
-  const { orderId } = useParams();
   // const spotId = parseInt(orderId as string, 10);
   // 주문내역(방장) 조회하기
   const { data: spotData } = useGetOrderDetailCreater(spotId);
-  console.log(spotData);
 
-  const { data: modifyData } = useGetOrderDetailModify(Number(orderId));
+  const { data: modifyData } = useGetOrderDetailModify(Number(spotId));
 
   const onchangeImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -77,15 +63,24 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
       }
     };
   };
-  console.log(modifyData);
+  console.log('modify', modifyData);
   const handleUploadClick = () => {
     imageInput.current?.click();
   };
-  console.log(spotData?.memberInfo);
 
   return (
     <Wrapper>
-      {spotData?.memberInfo.length != 0 ? (
+      {spotData && (
+        <OrderListItem
+          category={spotData.category}
+          storeName={spotData.storeName}
+          pickUpLocation={spotData.pickUpLocation}
+          deliveryStatus={spotData.deliveryStatus}
+          price={spotData.price}
+        />
+      )}
+
+      {spotData?.memberInfo?.length !== 0 ? (
         <>
           <ButtonContainer>
             <span>{uploadFileName}</span>
@@ -154,7 +149,7 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
           />
           <ParticipantContainer>
             {spotData &&
-              spotData.memberInfo.map((data) => (
+              spotData.memberInfo?.map((data) => (
                 <OrderHistoryDetailItem
                   deliveryName={data.deliveryName}
                   price={data.price}

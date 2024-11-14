@@ -26,21 +26,15 @@ const PointPage = () => {
     const fetchData = async () => {
       try {
         const token = Cookies.get('access_token');
-        const response = await fetchInstance.get(
-          'https://order-together.duckdns.org/api/v1/payments/history',
-          {
-            params: { paymentStatus: 'SUCCESS' },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetchInstance.get('/payments/history', {
+          params: { paymentStatus: 'SUCCESS' },
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
-
-        console.log('Response data:', response);
+        });
 
         if (response.status === 200 && response.data) {
           setPointData(response.data.histories);
-          console.log(response.data);
         }
       } catch (error) {
         console.error('Point Page', error);

@@ -1,3 +1,4 @@
+import Logo from '@components/common/Logo';
 import styled from '@emotion/styled';
 
 interface Props {
@@ -17,7 +18,7 @@ const OrderListItem = ({
 }: Props) => {
   return (
     <Wrapper>
-      <img src={`/image/categories/${category}.png`} alt="식당 이미지" />
+      <Logo image={`/image/categories/${category.replaceAll(', ', ',')}.png`} />
       <Container>
         <div>
           <img src="/image/ing.png" alt="진행중" />
