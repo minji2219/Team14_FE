@@ -8,7 +8,7 @@
   "rules": {
     "no-use-before-define": "off",
     "arrow-body-style": ["error", "as-needed"],
-    "requireReturnForObjectLiteral": true,
+    "requireReturnForObjectLiteral": 0,
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
     "import/extensions": [

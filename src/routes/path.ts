@@ -9,6 +9,8 @@ export const RouterPath = {
   myPageOrderDetail: '/mypage/orderhistory/:orderId',
   myPagePoint: '/mypage/point',
   payment: '/payment',
+  success: '/success',
+  fail: '/fail',
 };
 
 export const getDynamicPath = {

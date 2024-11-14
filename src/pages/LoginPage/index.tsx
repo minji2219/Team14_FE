@@ -45,6 +45,12 @@ const LoginPage: React.FC = () => {
 
             window.location.href = response.data.redirectURL;
           }
+          console.log(response);
+          if (response.status === 302) {
+            console.log('302', response);
+
+            window.location.href = response.data.redirectURL;
+          }
           const accessToken = response.data.data;
           if (accessToken) {
             Cookies.set('access_token', accessToken);
@@ -55,8 +61,10 @@ const LoginPage: React.FC = () => {
         })
         .catch((error) => {
           console.log(error);
+          console.log(error);
           if (error.response) {
             if (error.response.status === 404) {
+              console.log(error.request.responseURL);
               console.log(error.request.responseURL);
               const redirectUrl = error.request.responseURL;
               if (redirectUrl) {

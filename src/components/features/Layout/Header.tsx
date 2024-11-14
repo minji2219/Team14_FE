@@ -33,8 +33,10 @@ export const Header: React.FC = () => {
   const getLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
+      // eslint-disable-next-line no-undef
       const geocoder = new kakao.maps.services.Geocoder();
       geocoder.coord2Address(longitude, latitude, (result, status) => {
+        // eslint-disable-next-line no-undef
         if (status === kakao.maps.services.Status.OK) {
           setLocation({
             dong: result[0].address.region_3depth_name,

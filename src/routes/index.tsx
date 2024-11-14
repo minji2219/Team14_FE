@@ -11,6 +11,8 @@ import OrderDetailPage from '@pages/OrderDetailPage';
 import PointPage from '@pages/PointPage';
 import PaymentPage from '@pages/PaymentPage';
 
+import SuccessPage from '@pages/PaymentPage/Sucess';
+import FailPage from '@pages/PaymentPage/Fail';
 import { RouterPath } from './path';
 
 const router = createBrowserRouter([
@@ -53,10 +55,17 @@ const router = createBrowserRouter([
         path: RouterPath.payment,
         element: <PaymentPage />,
       },
+      {
+        path: RouterPath.success,
+        element: <SuccessPage />,
+      },
+      {
+        path: RouterPath.fail,
+        element: <FailPage />,
+      },
     ],
   },
 ]);
 
-export const Routes = () => {
-  return <RouterProvider router={router} />;
-};
+// eslint-disable-next-line import/prefer-default-export
+export const Routes = () => <RouterProvider router={router} />;
