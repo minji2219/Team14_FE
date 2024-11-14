@@ -7,6 +7,8 @@ import Profile from '@components/mypage/Profile';
 import { fetchInstance } from '@api/instance';
 import Cookies from 'js-cookie';
 
+import { IoPersonCircleSharp } from 'react-icons/io5';
+
 interface ProfileData {
   deliveryName: string;
   phoneNumber: string;
@@ -45,7 +47,7 @@ const MyPage = () => {
         <Menubar />
         <MyPageContainer>
           <MyPageContainerTop>
-            <ProfileImage src="/image/profile.jpg" alt="프로필 이미지" />
+            <IoPersonCircleSharp size={200} />
             <PointsBalance>
               잔여 포인트:{' '}
               {data?.point ? `${data.point.toLocaleString()}P` : '0P'}
@@ -94,11 +96,6 @@ const MyPageContainerTop = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-
-const ProfileImage = styled.img`
-  width: 25%;
-  border-radius: 50%;
 `;
 
 const PointsBalance = styled.p`

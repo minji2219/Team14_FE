@@ -5,6 +5,7 @@ interface Props {
   storeName: string;
   pickUpLocation: string;
   price?: number;
+  deliveryStatus: string;
 }
 
 const OrderListItem = ({
@@ -12,6 +13,7 @@ const OrderListItem = ({
   storeName,
   pickUpLocation,
   price,
+  deliveryStatus,
 }: Props) => {
   return (
     <Wrapper>
@@ -19,7 +21,7 @@ const OrderListItem = ({
       <Container>
         <div>
           <img src="/image/ing.png" alt="진행중" />
-          <ProgressLabel>진행중</ProgressLabel>
+          <ProgressLabel>{deliveryStatus}</ProgressLabel>
         </div>
 
         <Title>
@@ -29,7 +31,7 @@ const OrderListItem = ({
           주문 날짜: 2024-08-13 <br />
           픽업장소: {pickUpLocation}
           <br />
-          {price ? `결제금액: ${price}P` : null}
+          {price != -1 ? `결제금액: ${price}P` : null}
         </span>
       </Container>
     </Wrapper>

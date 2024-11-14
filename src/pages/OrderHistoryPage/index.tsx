@@ -12,40 +12,20 @@ import Cookies from 'js-cookie';
 
 interface Post {
   id: number;
+  spotId: number;
   category: string;
   storeName: string;
   minimumOrderAmount: number;
   pickUpLocation: string;
-  deliveryStatus: boolean;
+  deliveryStatus: string;
   price?: number;
-  isCreater: boolean;
-}
-
-interface Sort {
-  empty: boolean;
-  unsorted: boolean;
-  sorted: boolean;
+  isCreator: boolean;
 }
 
 interface OrderHistoryData {
   totalPages: number;
   totalElements: number;
-  first: boolean;
-  last: boolean;
-  size: number;
-  content: Post[];
-  number: number;
-  sort: Sort;
-  pageable: {
-    pageNumber: number;
-    pageSize: number;
-    sort: Sort;
-    offset: number;
-    unpaged: boolean;
-    paged: boolean;
-  };
-  numberOfElements: number;
-  empty: boolean;
+  ordersInfo: Post[];
 }
 
 const OrderHistoryPage = () => {
@@ -76,7 +56,12 @@ const OrderHistoryPage = () => {
   useEffect(() => {
     const token = Cookies.get('access_token');
     fetchInstance
+<<<<<<< HEAD
       .get(`/orders?page=${currentPage}&size=3&sort=createdDate,desc`, {
+=======
+      .get('https://order-together.duckdns.org/api/v1/orders', {
+        params: { page: currentPage, size: 3, sort: 'createdAt,desc' },
+>>>>>>> hojeong
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -86,7 +71,7 @@ const OrderHistoryPage = () => {
 
         if (response.status === 200 && response.data) {
           setOrderHistoryData(response.data);
-          setData(response.data.content);
+          setData(response.data.ordersInfo);
           console.log(response.data);
         }
       })
@@ -100,21 +85,26 @@ const OrderHistoryPage = () => {
       <InnerWrapper>
         <Menubar />
         <OrderListContainer>
-          {data.map((post) => (
-            <Link
-              key={post.id}
-              to={getDynamicPath.orderDetail(post.id)}
-              state={{ createrModeData: post.isCreater }}
-              style={{ textDecoration: 'none', color: '#000' }}
-            >
-              <OrderListItem
-                category={post.category}
-                storeName={post.storeName}
-                pickUpLocation={post.pickUpLocation}
-                price={post.price}
-              />
-            </Link>
-          ))}
+          {data.length === 0 ? (
+            <div style={{ width: '100%' }}>주문내역이 없습니다.</div>
+          ) : (
+            data.map((post) => (
+              <Link
+                key={post.id}
+                to={getDynamicPath.orderDetail(post.id)}
+                state={{ createrModeData: post.isCreator, orderData: post }}
+                style={{ textDecoration: 'none', color: '#000' }}
+              >
+                <OrderListItem
+                  category={post.category}
+                  storeName={post.storeName}
+                  pickUpLocation={post.pickUpLocation}
+                  price={post.price}
+                  deliveryStatus={post.deliveryStatus}
+                />
+              </Link>
+            ))
+          )}
         </OrderListContainer>
       </InnerWrapper>
       <InnerWrapper>

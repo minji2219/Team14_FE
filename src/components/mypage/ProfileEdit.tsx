@@ -21,7 +21,7 @@ const ProfileEdit = ({ editMode, phoneNumber, name }: Props) => {
     const token = Cookies.get('access_token');
     fetchInstance
       .put(
-        'http://3.39.23.121:8080/api/v1/members',
+        'https://order-together.duckdns.org/api/v1/members',
         { deliveryName: editName, phoneNumber: editPhoneNumber },
         {
           headers: {

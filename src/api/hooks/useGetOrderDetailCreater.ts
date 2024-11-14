@@ -6,11 +6,11 @@ export interface OrderDetail {
   storeName: string;
   minimumOrderAmount: number;
   pickUpLocation: string;
-  delieveryStatus: boolean;
-  memeberInfo: memeberInfo[];
+  delieveryStatus: string;
+  memberInfo: MemberInfo[];
 }
 
-interface memeberInfo {
+interface MemberInfo {
   memeberId: number;
   deliveryName: string;
   price: number;

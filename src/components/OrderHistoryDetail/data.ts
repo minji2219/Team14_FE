@@ -3,7 +3,7 @@ export const OrderDetailCreator = {
   storeName: '버거킹전남대점',
   minimumOrderAmount: 3,
   pickUpLocation: 'example1',
-  deliveryStatus: true,
+  deliveryStatus: '진행중',
   memberInfo: [
     {
       memberId: 321,
