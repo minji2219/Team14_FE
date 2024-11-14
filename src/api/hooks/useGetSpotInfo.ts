@@ -18,8 +18,7 @@ interface RequestParams {
 }
 
 const getPath = ({ lat, lng }: RequestParams) => {
-  return `${process.env.REACT_APP_BOMIN_API}/spot/${lat}/${lng}`;
-  // return `https://order-together.duckdns.org/api/v1/spot/35.1766787/126.9054188`;
+  return `/spot/${lat}/${lng}`;
 };
 
 const getSpotInfo = async ({ lat, lng }: RequestParams) => {

@@ -13,7 +13,7 @@ interface PostData {
 }
 
 const getPath = () => {
-  return `https://order-together.duckdns.org/api/v1/spot`;
+  return `/spot`;
 };
 
 const postSpot = async (postData: PostData) => {

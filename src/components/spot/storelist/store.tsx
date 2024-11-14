@@ -10,6 +10,7 @@ import { getDynamicPath, RouterPath } from '@routes/path';
 import Cookies from 'js-cookie';
 import { getFormatTime } from '@helper/getFormatTime';
 import { usePostParcipate } from '@api/hooks/usePostParticipate';
+import { useSendLink } from '@api/hooks/useSendLink';
 
 interface Props {
   spotId: number;
@@ -28,6 +29,7 @@ const Store = ({
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [sendLinkIsOpen, setSendLinkIsOpen] = useState(false);
   const { mutate } = usePostParcipate();
+  const { refetch } = useSendLink(spotId);
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -42,18 +44,18 @@ const Store = ({
 
   const handleConfirm = () => {
     //참여자 정보 post
-    //sms 보내기 요청
+    // mutate({
+    //   spotId: spotId,
+    //   price: null,
+    //   isPayed: null,
+    //   participantId: null,
+    // });
+    //문자 메시지 get요청
+    // refetch();
     //마이페이지로 이동
-    mutate({
-      spotId: spotId,
-      price: null,
-      isPayed: null,
-      participantId: null,
-    });
-    // () =>
-    //   navigate(getDynamicPath.orderDetail(Number(spotId)), {
-    //     state: false,
-    //   });
+    // navigate(getDynamicPath.orderDetail(Number(spotId)), {
+    //   state: false,
+    // });
   };
   return (
     <Wrapper>

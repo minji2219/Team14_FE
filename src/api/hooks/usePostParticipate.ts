@@ -3,13 +3,13 @@ import { useMutation } from '@tanstack/react-query';
 
 interface PostData {
   spotId: number;
-  price: number | null;
-  isPayed: boolean | null;
-  participantId: number | null;
+  // price: number | null;
+  // isPayed: boolean | null;
+  // participantId: number | null;
 }
 
 const getPath = () => {
-  return `https://order-together.duckdns.org/api/v1/orders`;
+  return `/orders`;
 };
 
 const postParcipate = async (postData: PostData) => {

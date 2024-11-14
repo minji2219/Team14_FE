@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import SlideItem from './SlideItem';
 import { useContext, useEffect, useState } from 'react';
 import { Common } from '@styles/globalStyle';
-import { storeList } from './data';
 
 import { BsChevronLeft } from 'react-icons/bs';
 import { BsChevronRight } from 'react-icons/bs';
@@ -11,6 +10,7 @@ import { LocationContext } from '@provider/PresentLocation';
 
 const Swiper = () => {
   const { location } = useContext(LocationContext);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const { data = [] } = useGetSpotInfo({
     lat: location.lat,
@@ -42,8 +42,11 @@ const Swiper = () => {
   const [isEndSlide, setIsEndSlide] = useState(true);
 
   useEffect(() => {
-    setCarouselList(getDeadlineImminentList());
-  }, [data]);
+    if (data.length > 0 && !isDataLoaded) {
+      setCarouselList(getDeadlineImminentList());
+      setIsDataLoaded(true);
+    }
+  }, [data, isDataLoaded]);
 
   useEffect(() => {
     if (carouselList.length === 0) return;
@@ -55,7 +58,7 @@ const Swiper = () => {
 
     const newList = [endData, ...carouselList, startData];
     setCarouselList(newList);
-  }, [data]);
+  }, [data, isDataLoaded]);
 
   const moveToNthSlide = (index: number) => {
     setTimeout(() => {

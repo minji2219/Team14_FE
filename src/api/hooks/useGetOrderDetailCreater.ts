@@ -18,8 +18,7 @@ interface memeberInfo {
 }
 
 const getPath = (spotId: number) => {
-  //BaseURL 재영님꺼로 변경필요
-  return `http://3.34.191.43:8080/api/v1/orders/creator/${spotId}`;
+  return `/orders/creator/${spotId}`;
 };
 
 const getOrderDetail = async (spotId: number) => {

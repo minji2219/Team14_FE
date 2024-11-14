@@ -44,6 +44,7 @@ const LoginPage: React.FC = () => {
             Cookies.set('access_token', accessToken);
             setIsLoggedIn(true);
             navigate(RouterPath.root);
+            navigate(0);
           }
         })
         .catch((error) => {

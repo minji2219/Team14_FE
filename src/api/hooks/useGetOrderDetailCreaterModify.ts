@@ -13,7 +13,7 @@ interface OrderDetail {
 }
 
 const getPath = (spotId: number) => {
-  return `${process.env.REACT_APP_BOMIN_API}/spot/${spotId}`;
+  return `/spot/${spotId}`;
 };
 
 const getOrderDetailModify = async (spotId: number) => {

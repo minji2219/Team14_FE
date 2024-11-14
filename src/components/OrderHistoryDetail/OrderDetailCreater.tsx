@@ -60,7 +60,7 @@ const OrderDetailCreater = () => {
       }
     };
   };
-
+  console.log(modifyData);
   const handleUploadClick = () => {
     imageInput.current?.click();
   };

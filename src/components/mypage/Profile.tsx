@@ -6,6 +6,8 @@ import Cookies from 'js-cookie';
 import { fetchInstance } from '@api/instance';
 import { useNavigate } from 'react-router-dom';
 import { RouterPath } from '@routes/path';
+import { useContext } from 'react';
+import { AuthContext } from '@provider/AuthProvider';
 
 interface Props {
   name: string;
@@ -15,6 +17,7 @@ interface Props {
 
 const Profile = ({ editMode, name, phoneNumber }: Props) => {
   const navigate = useNavigate();
+  const { setIsLoggedIn } = useContext(AuthContext);
   const deleteUser = () => {
     const token = Cookies.get('access_token');
     fetchInstance
@@ -26,6 +29,7 @@ const Profile = ({ editMode, name, phoneNumber }: Props) => {
       .then((response) => {
         if (response.status === 200 && response.data) {
           Cookies.remove('access_token');
+          setIsLoggedIn(false);
           navigate(RouterPath.introduce);
         }
       });
