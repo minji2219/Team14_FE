@@ -29,7 +29,7 @@ const SignupPage: React.FC = () => {
 
     fetchInstance
       .post(
-        `http://3.39.23.121:8080/api/v1/auth/signup?email=${email}`,
+        `https://order-together.duckdns.org/api/v1/auth/signup?email=${email}`,
         requestData,
       )
       .then((response) => {

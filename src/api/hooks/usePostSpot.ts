@@ -13,7 +13,7 @@ interface PostData {
 }
 
 const getPath = () => {
-  return `http://3.34.191.43:8080/api/v1/spot`;
+  return `https://order-together.duckdns.org/api/v1/spot`;
 };
 
 const postSpot = async (postData: PostData) => {
