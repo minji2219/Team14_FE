@@ -6,48 +6,46 @@ import Button from '@components/common/Button';
 import MyPoint from '@components/common/MyPoint';
 
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { fetchInstance } from '@api/instance';
 import Cookies from 'js-cookie';
 
 interface PointData {
   amount: number;
-  date: Date;
+  date: string;
 }
 
 const PointPage = () => {
+  const location = useLocation();
   const [pointData, setPointData] = useState<PointData[]>();
 
-  // const filteredPointData = pointDataSet.filter(
-  //   (pointData) => pointData.filter === pointFilterValue,
-  // );
+  const fetchData = async () => {
+    try {
+      const token = Cookies.get('access_token');
+      const response = await fetchInstance.get('/payments/history', {
+        params: { paymentStatus: 'SUCCESS' },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200 && response.data) {
+        setPointData(response.data.data.histories);
+      }
+    } catch (error) {
+      console.error('Point Page', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = Cookies.get('access_token');
-        const response = await fetchInstance.get(
-          'https://order-together.duckdns.org/api/v1/payments/history',
-          {
-            params: { paymentStatus: 'SUCCESS' },
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-        console.log('Response data:', response);
-
-        if (response.status === 200 && response.data) {
-          setPointData(response.data.histories);
-          console.log(response.data);
-        }
-      } catch (error) {
-        console.error('Point Page', error);
-      }
-    };
-
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (location.state?.refresh) {
+      fetchData();
+    }
+  }, [location.state]);
 
   return (
     <Wrapper>
@@ -63,12 +61,14 @@ const PointPage = () => {
             style={{
               color: '#FFF',
               border: '1px solid #000',
+              cursor: 'default',
             }}
           />
         </FilterBox>
         <PointList>
           {pointData?.map((point) => (
             <PointListItem
+              key={point.date}
               date={point.date}
               point={point.amount}
               filter="충전"
@@ -96,13 +96,13 @@ const InnerWrapper = styled.div`
 `;
 
 const FilterBox = styled.div`
-  width: 80%;
+  width: 60%;
   display: flex;
 `;
 
 const PointList = styled.div`
   position: relative;
-  width: 80%;
+  width: 60%;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -1,10 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { getOrderId } from '@provider/OrderIdLocation';
 import useConfirmPayment from '@api/hooks/useConfirmPayment';
 
 const SuccessPage = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const orderId = getOrderId();
@@ -17,7 +16,7 @@ const SuccessPage = () => {
   useEffect(() => {
     const confirmPayment = async () => {
       if (!orderId) {
-        navigate(-1);
+        window.history.back();
         return;
       }
 
@@ -25,7 +24,7 @@ const SuccessPage = () => {
         try {
           await mutate({ orderId, amount, paymentKey });
 
-          navigate(-1);
+          window.history.back();
         } catch (error) {
           alert('결제 확인에 실패했습니다. 다시 시도해주세요.');
         }
@@ -34,7 +33,7 @@ const SuccessPage = () => {
     };
 
     confirmPayment();
-  }, [mutate, navigate, orderId, amount, paymentKey]);
+  }, [mutate, orderId, amount, paymentKey]);
 
   return null;
 };

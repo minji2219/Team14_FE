@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { getDynamicPath, RouterPath } from '@routes/path';
 import { ClickedLocationContext } from '@provider/ClickedLocation';
 import { useGetSpotInfo } from '@api/hooks/useGetSpotInfo';
+import Cookies from 'js-cookie';
 
 const KakaoMap = () => {
   const { location, setLocation } = useContext(LocationContext);
@@ -51,14 +52,24 @@ const KakaoMap = () => {
   const [recruitIsOpen, setRecruitIsOpen] = useState(false);
   const [completeModalIsOpen, setCompleteModalIsOpen] = useState(false);
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
+  const handlePlusBtn = () => {
+    if (Cookies.get('access_token')) {
+      //로그인이 되어있을 경우
+      setRecruitIsOpen(true);
+    } else {
+      //로그인이 안되어 있을 경우
+      setIsLoginOpen(true);
+    }
+  };
   return (
     <Map
       center={{ lat: location.lat, lng: location.lng }}
       style={{ width: '100%', height: '100%' }}
       level={3}
     >
-      <PlusBtnIcon onClick={() => setRecruitIsOpen(true)}>
+      <PlusBtnIcon onClick={handlePlusBtn}>
         <BsPlusCircleFill size="50" />
       </PlusBtnIcon>
 
@@ -146,6 +157,18 @@ const KakaoMap = () => {
             type="warning"
             content="스팟 생성 중 에러가 발생했습니다."
             onRequestConfirm={() => setErrorModalIsOpen(false)}
+          />
+        }
+      />
+      <Modal
+        isOpen={isLoginOpen}
+        onRequestClose={() => setIsLoginOpen(false)}
+        title="로그인이 필요한 서비스입니다."
+        content={
+          <AlertDialog
+            content="로그인 페이지로 이동하시겠습니까?"
+            onRequestClose={() => setIsLoginOpen(false)}
+            onRequestConfirm={() => navigate(RouterPath.login)}
           />
         }
       />

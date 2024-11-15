@@ -7,8 +7,8 @@ import OrderListItem from '@components/OrderHistory/OrderListItem';
 
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import { getDynamicPath } from '@routes/path';
-import { fetchInstance } from '@api/instance';
-import Cookies from 'js-cookie';
+import { fetchAuthInstance } from '@api/instance';
+import OrderDetailMember from '@components/OrderHistoryDetail/OrderDetailMember';
 
 interface Post {
   id: number;
@@ -18,6 +18,7 @@ interface Post {
   minimumOrderAmount: number;
   pickUpLocation: string;
   deliveryStatus: string;
+  orderDate: number[];
   price?: number;
   isCreator: boolean;
 }
@@ -54,21 +55,14 @@ const OrderHistoryPage = () => {
   };
 
   useEffect(() => {
-    const token = Cookies.get('access_token');
-    fetchInstance
-      .get('https://order-together.duckdns.org/api/v1/orders', {
-        params: { page: currentPage, size: 3, sort: 'createdAt,desc' },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    fetchAuthInstance
+      .get('/orders', {
+        params: { page: currentPage, size: 5, sort: 'createdAt,desc' },
       })
       .then((response) => {
-        console.log('Response data:', response);
-
         if (response.status === 200 && response.data) {
           setOrderHistoryData(response.data);
           setData(response.data.ordersInfo);
-          console.log(response.data);
         }
       })
       .catch((error) => {
@@ -87,8 +81,8 @@ const OrderHistoryPage = () => {
             data.map((post) => (
               <Link
                 key={post.id}
-                to={getDynamicPath.orderDetail(post.id)}
-                state={{ createrModeData: post.isCreator, orderData: post }}
+                to={getDynamicPath.orderDetail(post.spotId)}
+                state={{ createrModeData: post.isCreator }}
                 style={{ textDecoration: 'none', color: '#000' }}
               >
                 <OrderListItem
@@ -97,6 +91,7 @@ const OrderHistoryPage = () => {
                   pickUpLocation={post.pickUpLocation}
                   price={post.price}
                   deliveryStatus={post.deliveryStatus}
+                  date={post.orderDate}
                 />
               </Link>
             ))
@@ -127,6 +122,8 @@ const OrderHistoryPage = () => {
           )}
         </PagenationUl>
       </InnerWrapper>
+      {/* TODO:수정 */}
+      <OrderDetailMember />
     </Wrapper>
   );
 };
@@ -142,9 +139,15 @@ const Wrapper = styled.div`
 
 const InnerWrapper = styled.div`
   width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const OrderListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
 `;
 const PagenationUl = styled.ul`

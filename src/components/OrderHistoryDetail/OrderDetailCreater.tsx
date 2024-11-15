@@ -11,20 +11,10 @@ import { SearchSpotProvider } from '@provider/SearchSpot';
 import { TbPointFilled } from 'react-icons/tb';
 import { useGetOrderDetailCreater } from '@api/hooks/useGetOrderDetailCreater';
 import { useGetOrderDetailModify } from '@api/hooks/useGetOrderDetailCreaterModify';
-import { useParams } from 'react-router-dom';
-
-// const modifyData = {
-//   category: '분식',
-//   storeName: '이삭토스트',
-//   minimumOrderAmount: 10000,
-//   pickUpLocation: '전남대학교',
-//   deadlineTime: [2, 5],
-//   togetherOrderLink: 'http://localhost:3000',
-//   lat: 35.1766787,
-//   lng: 126.9054188,
-// };
-// import { useGetOrderDetailModify } from '@api/hooks/useGetOrderDetailCreaterModify';
-// import { useParams } from 'react-router-dom';
+import OrderListItem from '@components/OrderHistory/OrderListItem';
+import { fetchAuthInstance, fetchInstance } from '@api/instance';
+import { RouterPath } from '@routes/path';
+import { useNavigate } from 'react-router-dom';
 
 const modifyData = {
   category: '분식',
@@ -50,13 +40,11 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
 
   const [tipIsOpen, setTipIsOpen] = useState(false);
 
-  const { orderId } = useParams();
   // const spotId = parseInt(orderId as string, 10);
   // 주문내역(방장) 조회하기
   const { data: spotData } = useGetOrderDetailCreater(spotId);
-  console.log(spotData);
-
-  const { data: modifyData } = useGetOrderDetailModify(Number(orderId));
+  const { refetch, data: modifyData } = useGetOrderDetailModify(Number(spotId));
+  const navigate = useNavigate();
 
   const onchangeImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -77,15 +65,32 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
       }
     };
   };
-  console.log(modifyData);
   const handleUploadClick = () => {
     imageInput.current?.click();
   };
-  console.log(spotData?.memberInfo);
+
+  const deleteSpot = () => {
+    fetchAuthInstance.delete(`/spot/${spotId}`).then((response) => {
+      if (response.status === 200) {
+        navigate(RouterPath.myPageOrderHistory);
+      }
+    });
+  };
 
   return (
     <Wrapper>
-      {spotData?.memberInfo.length != 0 ? (
+      {spotData && (
+        <OrderListItem
+          category={spotData.category}
+          storeName={spotData.storeName}
+          pickUpLocation={spotData.pickUpLocation}
+          deliveryStatus={spotData.deliveryStatus}
+          price={spotData.price}
+          date={spotData?.orderDate}
+        />
+      )}
+
+      {spotData?.memberInfo?.length !== 0 ? (
         <>
           <ButtonContainer>
             <span>{uploadFileName}</span>
@@ -113,25 +118,6 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
           </ButtonContainer>
           <Modal
             size="big"
-            type="transparent"
-            isOpen={recruitIsOpen}
-            onRequestClose={() => setRecruitIsOpen(false)}
-            title="모집"
-            content={
-              <SearchSpotProvider>
-                <RecruitDialog
-                  //@ts-ignore
-                  // modify={modifyData}
-                  onRequestClose={() => setRecruitIsOpen(false)}
-                  onRequestConfirm={() => setCompleteModalIsOpen(true)}
-                  //TODO임시
-                  onRequestError={() => {}}
-                />
-              </SearchSpotProvider>
-            }
-          />
-          <Modal
-            size="big"
             title="알아보기"
             type="transparent"
             isOpen={tipIsOpen}
@@ -154,7 +140,7 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
           />
           <ParticipantContainer>
             {spotData &&
-              spotData.memberInfo.map((data) => (
+              spotData.memberInfo?.map((data) => (
                 <OrderHistoryDetailItem
                   deliveryName={data.deliveryName}
                   price={data.price}
@@ -162,31 +148,51 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
                 />
               ))}
           </ParticipantContainer>
-          <Button
-            label="수정하기"
-            radius="20px"
-            bgColor={Common.colors.primary}
-            onClick={() => setRecruitIsOpen(true)}
-          />
-          <Space2 />
-          <Button
-            label="삭제하기"
-            radius="20px"
-            bgColor={Common.colors.primary05}
-          />
         </>
       ) : (
-        <EmptyMember>
-          참여한 멤버가 없습니다.
-          <>
-            <Button
-              label="주문 취소하기"
-              radius="20px"
-              bgColor={Common.colors.primary}
-            />
-          </>
-        </EmptyMember>
+        <div>
+          <EmptyMember>참여한 멤버가 없습니다.</EmptyMember>
+        </div>
       )}
+      <div>
+        <Button
+          label="수정하기"
+          radius="20px"
+          padding="9px 60px"
+          bgColor={Common.colors.primary}
+          onClick={() => {
+            setRecruitIsOpen(true);
+            refetch();
+          }}
+        />
+        <Space2 />
+        <Button
+          label="삭제하기"
+          onClick={deleteSpot}
+          radius="20px"
+          padding="9px 60px"
+          bgColor={Common.colors.primary05}
+        />
+      </div>
+      <Modal
+        size="big"
+        type="transparent"
+        isOpen={recruitIsOpen}
+        onRequestClose={() => setRecruitIsOpen(false)}
+        title="모집"
+        content={
+          <SearchSpotProvider>
+            <RecruitDialog
+              //@ts-ignore
+              modify={modifyData}
+              onRequestClose={() => setRecruitIsOpen(false)}
+              onRequestConfirm={() => setCompleteModalIsOpen(true)}
+              //TODO임시
+              onRequestError={() => {}}
+            />
+          </SearchSpotProvider>
+        }
+      />
     </Wrapper>
   );
 };
@@ -248,7 +254,8 @@ const Des = styled.div`
 const EmptyMember = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   font-size: 20px;
   height: 300px;
 `;

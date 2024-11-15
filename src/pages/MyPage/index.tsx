@@ -26,7 +26,7 @@ const MyPage = () => {
   useEffect(() => {
     const token = Cookies.get('access_token');
     fetchInstance
-      .get(`${process.env.REACT_APP_BOMIN_API}/members`, {
+      .get(`/members`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -10,12 +10,12 @@ import { setOrderId } from '@provider/OrderIdLocation';
 
 interface MyPointProps {
   showRechargeButton?: boolean;
-  refreshPoints?: () => void;
+  refreshKey?: number;
 }
 
 const MyPoint: React.FC<MyPointProps> = ({
   showRechargeButton = false,
-  refreshPoints,
+  refreshKey,
 }) => {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [isPaymentWidgetVisible, setIsPaymentWidgetVisible] = useState(false);
@@ -42,7 +42,6 @@ const MyPoint: React.FC<MyPointProps> = ({
       if (response.ok) {
         const data = await response.json();
         setPointBalance(data.data.point || 0);
-        if (refreshPoints) refreshPoints();
       } else {
         console.error('Failed to fetch member info');
       }
@@ -53,7 +52,7 @@ const MyPoint: React.FC<MyPointProps> = ({
 
   useEffect(() => {
     fetchMemberInfo();
-  }, []);
+  }, [refreshKey]);
 
   const handleAmountClick = (amount: number) => {
     setSelectedAmount(amount);
@@ -69,9 +68,9 @@ const MyPoint: React.FC<MyPointProps> = ({
     setLoading(true);
 
     const productMapping: { [key: number]: number } = {
-      10000: 1,
-      20000: 2,
-      30000: 3,
+      10000: 2,
+      20000: 3,
+      30000: 4,
     };
 
     const productIds = productMapping[selectedAmount ?? 0]
@@ -161,6 +160,7 @@ const MyPoint: React.FC<MyPointProps> = ({
             padding="10px 20px"
             onClick={handleRechargeClick}
             disabled={loading}
+            style={{ marginLeft: '20px' }}
           />
         )}
       </AmountOptions>
@@ -193,7 +193,7 @@ const MyPoint: React.FC<MyPointProps> = ({
 
 MyPoint.defaultProps = {
   showRechargeButton: false,
-  refreshPoints: () => {},
+  refreshKey: 0,
 };
 
 export default MyPoint;

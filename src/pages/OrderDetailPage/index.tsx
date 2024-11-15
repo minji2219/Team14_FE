@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import OrderListItem from '@components/OrderHistory/OrderListItem';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 import Menubar from '@components/mypage/Menubar';
 import OrderDetailCreater from '@components/OrderHistoryDetail/OrderDetailCreater';
@@ -23,7 +23,7 @@ interface Post {
 const OrderDetailPage = () => {
   const location = useLocation();
   const isCreator: boolean = location.state.createrModeData;
-  const orderData: Post = location.state.orderData;
+  const { orderId } = useParams();
 
   return (
     <Wrapper>
@@ -39,9 +39,11 @@ const OrderDetailPage = () => {
       </InnerWrapper>
       <InnerWrapper>
         {isCreator ? (
-          <OrderDetailCreater spotId={orderData.spotId} />
+          <OrderDetailCreater spotId={Number(orderId)} />
         ) : (
-          <OrderDetailMember />
+          // TODO:수정
+          // <OrderDetailMember />
+          ''
         )}
       </InnerWrapper>
     </Wrapper>

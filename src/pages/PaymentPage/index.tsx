@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MyPoint from '@components/common/MyPoint';
 import Button from '@components/common/Button';
@@ -6,27 +6,43 @@ import InputField from '@components/common/InputField';
 import { Common } from '@styles/globalStyle';
 import { fetchInstance } from '@api/instance/index';
 import Cookies from 'js-cookie';
+import { useLocation } from 'react-router-dom';
+import { usePostIsPayed } from '@api/hooks/usePostIspayed';
 
 const PaymentPage: React.FC = () => {
-  const [paymentAmount, setPaymentAmount] = useState('');
+  const location = useLocation();
+  const [paymentAmount, setPaymentAmount] = useState<number>(
+    location.state.price || 0,
+  );
+  const [loading, setLoading] = useState(false);
+  const { mutate } = usePostIsPayed();
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPaymentAmount(e.target.value);
+    const { value } = e.target;
+    if (!Number.isNaN(Number(value))) {
+      setPaymentAmount(Number(value));
+    }
   };
 
   const handlePaymentSubmit = () => {
-    if (!paymentAmount) {
-      alert('결제 금액을 입력해주세요.');
+    if (!paymentAmount || paymentAmount <= 0) {
+      alert('유효한 결제 금액을 입력해주세요.');
       return;
     }
 
     const token = Cookies.get('access_token');
-    console.log(token);
+    if (!token) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    setLoading(true);
     fetchInstance
       .put(
-        'https://order-together.duckdns.org/api/v1/points',
+        '/points',
         {
-          paymentPoint: parseInt(paymentAmount, 10),
+          paymentPoint: paymentAmount,
         },
         {
           headers: {
@@ -37,18 +53,28 @@ const PaymentPage: React.FC = () => {
       )
       .then(() => {
         alert('결제가 완료되었습니다.');
-        setPaymentAmount('');
+        mutate(location.state.spotId);
+        setPaymentAmount(0);
+        setRefreshKey((prev) => prev + 1);
       })
       .catch((error) => {
         console.error('결제 실패:', error);
         alert('결제에 실패했습니다. 다시 시도해주세요.');
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
+
+  useEffect(() => {
+    setRefreshKey((prev) => prev + 1);
+  }, []);
 
   return (
     <Container>
       <Title>결제하기</Title>
-      <MyPoint showRechargeButton />
+
+      <MyPoint showRechargeButton refreshKey={refreshKey} />
       <PaymentSection>
         <Label>결제 금액</Label>
         <InputWrapper>
@@ -56,18 +82,19 @@ const PaymentPage: React.FC = () => {
             type="text"
             value={paymentAmount}
             onChange={handlePaymentChange}
-            placeholder="결제 금액을 입력하세요"
             width="80%"
             bgColor="#ededed"
+            disabled={loading}
           />
           <Currency>원</Currency>
         </InputWrapper>
         <Button
-          label="결제하기"
+          label={loading ? '결제 중...' : '결제하기'}
           bgColor={Common.colors.primary}
           radius="20px"
           padding="12px 24px"
           onClick={handlePaymentSubmit}
+          disabled={loading}
         />
       </PaymentSection>
     </Container>

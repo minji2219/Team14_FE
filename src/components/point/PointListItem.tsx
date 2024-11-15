@@ -1,24 +1,35 @@
 import styled from '@emotion/styled';
 
 interface Props {
-  date: Date;
+  date: string;
   point: number;
   filter: string;
 }
 
 const PointListItem = ({ date, point, filter }: Props) => {
-  const newDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')}`;
-  const newTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
   const newPoint: string = point.toLocaleString('ko-KR');
 
+  const splitDate = (date: string) => {
+    const days = date.split(' ')[0];
+    const times = date.split(' ')[1];
+
+    return {
+      month: days.split('-')[1],
+      day: days.split('-')[2],
+      hour: times.split(':')[0],
+      minute: times.split(':')[1],
+    };
+  };
   return (
     <Container>
-      <DateTitle>{newDate}</DateTitle>
+      <DateTitle>
+        {splitDate(date).month}.{splitDate(date).day}
+      </DateTitle>
       <DetailContainer>
         <Point>{newPoint}P</Point>
         <PointInfo>
           <Time>
-            {newTime} {filter}
+            {splitDate(date).hour}:{splitDate(date).minute} {filter}
           </Time>
         </PointInfo>
       </DetailContainer>

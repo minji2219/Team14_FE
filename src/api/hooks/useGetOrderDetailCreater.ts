@@ -2,11 +2,13 @@ import { fetchAuthInstance } from '@api/instance';
 import { useQuery } from '@tanstack/react-query';
 
 export interface OrderDetail {
-  cateogry: string;
+  category: string;
   storeName: string;
   minimumOrderAmount: number;
   pickUpLocation: string;
-  delieveryStatus: string;
+  deliveryStatus: string;
+  price: number;
+  orderDate: number[];
   memberInfo: MemberInfo[];
 }
 
@@ -28,7 +30,7 @@ const getOrderDetail = async (spotId: number) => {
 
 export const useGetOrderDetailCreater = (spotId: number) => {
   return useQuery({
-    queryKey: [spotId],
+    queryKey: ['spotdata', spotId],
     queryFn: () => getOrderDetail(spotId),
   });
 };

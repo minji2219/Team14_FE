@@ -44,18 +44,25 @@ const Store = ({
 
   const handleConfirm = () => {
     //참여자 정보 post
-    // mutate({
-    //   spotId: spotId,
-    //   price: null,
-    //   isPayed: null,
-    //   participantId: null,
-    // });
+    mutate(
+      {
+        spotId: spotId,
+        price: null,
+        isPayed: null,
+        participantId: null,
+      },
+      {
+        onError: (err) => {
+          alert('본인이 생성한 스팟은 참여가 불가합니다.');
+        },
+      },
+    );
     //문자 메시지 get요청
     // refetch();
     //마이페이지로 이동
-    // navigate(getDynamicPath.orderDetail(Number(spotId)), {
-    //   state: false,
-    // });
+    navigate(getDynamicPath.orderDetail(Number(spotId)), {
+      state: false,
+    });
   };
   return (
     <Wrapper>

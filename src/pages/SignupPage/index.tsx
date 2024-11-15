@@ -21,31 +21,33 @@ const SignupPage: React.FC = () => {
   const [deliveryName, setDeliveryName] = useState<string>('');
 
   const [isOpen, setIsOpen] = useState(false);
+  const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [checkBox, setCheckBox] = useState(false);
 
   const handleSubmit = () => {
+    if (!phoneNumber || !deliveryName) {
+      setErrorModalIsOpen(true);
+      return;
+    }
+
     if (!checkBox) {
       setIsOpen(true);
       return;
     }
+
     const query = new URLSearchParams(location.search);
     const email = query.get('email');
     const numericValue = phoneNumber.replace(/[^0-9]/g, '');
-
     const requestData = {
       deliveryName,
       phoneNumber: numericValue,
     };
 
     fetchInstance
-      .post(
-        `https://order-together.duckdns.org/api/v1/auth/signup?email=${email}`,
-
-        requestData,
-      )
+      .post(`/auth/signup?email=${email}`, requestData)
       .then((response) => {
         if (response.status === 200 && response.data) {
-          const accessToken = response.data.data;
+          const accessToken = response.data.data.token;
           Cookies.set('access_token', accessToken);
           setIsLoggedIn(true);
           navigate(RouterPath.root);
@@ -53,32 +55,6 @@ const SignupPage: React.FC = () => {
         }
       });
   };
-
-  //   fetchInstance
-  //     .post(
-  //       `https://order-together.duckdns.org/api/v1/auth/signup?email=${email}`,
-  //       {
-  //         requestData,
-  //         maxRedirects: 0,
-  //       },
-  //     )
-  //     .then((response) => {
-  //       //@ts-ignore
-  //       console.log(response);
-  //       window.location.href = response.request.responseURL;
-  //       if (response.status === 302) {
-  //         //@ts-ignore
-  //         const redirectUrl = response.headers.get('Location');
-  //         window.location.href = redirectUrl;
-  //       }
-  //       const accessToken = response.data.data;
-  //       if (accessToken) {
-  //         Cookies.set('access_token', accessToken);
-  //         setIsLoggedIn(true);
-  //         navigate(RouterPath.root);
-  //       }
-  //     });
-  // };
 
   return (
     <Wrapper>
@@ -126,6 +102,20 @@ const SignupPage: React.FC = () => {
                 padding="10px 100px"
               />
             </CheckboxWrapper>
+            <Modal
+              size="small"
+              type="warning"
+              isOpen={errorModalIsOpen}
+              onRequestClose={() => setErrorModalIsOpen(false)}
+              title={<div style={{ color: 'white' }}>에러 발생</div>}
+              content={
+                <AlertDialog
+                  type="warning"
+                  content="회원 정보를 입력해주세요."
+                  onRequestConfirm={() => setErrorModalIsOpen(false)}
+                />
+              }
+            />
             <Modal
               isOpen={isOpen}
               onRequestClose={() => setIsOpen(false)}

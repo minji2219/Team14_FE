@@ -1,3 +1,4 @@
+import Logo from '@components/common/Logo';
 import styled from '@emotion/styled';
 
 interface Props {
@@ -6,6 +7,7 @@ interface Props {
   pickUpLocation: string;
   price?: number;
   deliveryStatus: string;
+  date: number[];
 }
 
 const OrderListItem = ({
@@ -14,10 +16,11 @@ const OrderListItem = ({
   pickUpLocation,
   price,
   deliveryStatus,
+  date = [24, 11, 5],
 }: Props) => {
   return (
     <Wrapper>
-      <img src={`/image/categories/${category}.png`} alt="식당 이미지" />
+      <Logo image={`/image/categories/${category.replaceAll(', ', ',')}.png`} />
       <Container>
         <div>
           <img src="/image/ing.png" alt="진행중" />
@@ -28,10 +31,10 @@ const OrderListItem = ({
           [{category}] {storeName}
         </Title>
         <span style={{ color: '#7E7E7E' }}>
-          주문 날짜: 2024-08-13 <br />
+          주문 날짜: {date[0]}-{date[1]}-{date[2]} <br />
           픽업장소: {pickUpLocation}
           <br />
-          {price != -1 ? `결제금액: ${price}P` : null}
+          {price !== -1 ? `결제금액: ${price}P` : null}
         </span>
       </Container>
     </Wrapper>
@@ -41,7 +44,7 @@ const OrderListItem = ({
 export default OrderListItem;
 
 const Wrapper = styled.div`
-  width: 100%;
+  width: 700px;
   display: flex;
   justify-content: center;
   border: 1px solid #c7c3c3;

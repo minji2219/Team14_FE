@@ -115,7 +115,6 @@ const RecruitDialog = ({
         }
       },
       onError: (err: any) => {
-        console.log(err);
         onRequestError();
       },
     };
