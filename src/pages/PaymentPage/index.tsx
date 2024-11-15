@@ -7,11 +7,12 @@ import { Common } from '@styles/globalStyle';
 import { fetchInstance } from '@api/instance/index';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
+import { usePostIsPayed } from '@api/hooks/usePostIspayed';
 
 const PaymentPage: React.FC = () => {
   const location = useLocation();
   const [paymentAmount, setPaymentAmount] = useState(location.state.price);
-
+  const { mutate } = usePostIsPayed();
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentAmount(e.target.value);
   };
@@ -38,6 +39,7 @@ const PaymentPage: React.FC = () => {
       )
       .then(() => {
         alert('결제가 완료되었습니다.');
+        mutate(location.state.spotId);
         setPaymentAmount('');
       })
       .catch((error) => {

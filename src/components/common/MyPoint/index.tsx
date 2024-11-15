@@ -69,9 +69,9 @@ const MyPoint: React.FC<MyPointProps> = ({
     setLoading(true);
 
     const productMapping: { [key: number]: number } = {
-      10000: 1,
-      20000: 2,
-      30000: 3,
+      10000: 2,
+      20000: 3,
+      30000: 4,
     };
 
     const productIds = productMapping[selectedAmount ?? 0]
@@ -161,6 +161,7 @@ const MyPoint: React.FC<MyPointProps> = ({
             padding="10px 20px"
             onClick={handleRechargeClick}
             disabled={loading}
+            style={{ marginLeft: '20px' }}
           />
         )}
       </AmountOptions>

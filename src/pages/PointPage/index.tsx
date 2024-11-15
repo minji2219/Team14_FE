@@ -11,7 +11,7 @@ import Cookies from 'js-cookie';
 
 interface PointData {
   amount: number;
-  date: number[];
+  date: string;
 }
 
 const PointPage = () => {
@@ -33,7 +33,7 @@ const PointPage = () => {
         });
 
         if (response.status === 200 && response.data) {
-          setPointData(response.data.histories);
+          setPointData(response.data.data.histories);
         }
       } catch (error) {
         console.error('Point Page', error);
@@ -42,7 +42,7 @@ const PointPage = () => {
 
     fetchData();
   }, []);
-  console.log(pointData);
+
   return (
     <Wrapper>
       <InnerWrapper>
@@ -57,6 +57,7 @@ const PointPage = () => {
             style={{
               color: '#FFF',
               border: '1px solid #000',
+              cursor: 'default',
             }}
           />
         </FilterBox>
@@ -90,13 +91,13 @@ const InnerWrapper = styled.div`
 `;
 
 const FilterBox = styled.div`
-  width: 80%;
+  width: 60%;
   display: flex;
 `;
 
 const PointList = styled.div`
   position: relative;
-  width: 80%;
+  width: 60%;
   display: flex;
   flex-direction: column;
   align-items: center;
