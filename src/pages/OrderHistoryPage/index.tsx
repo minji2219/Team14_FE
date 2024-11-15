@@ -122,8 +122,8 @@ const OrderHistoryPage = () => {
           )}
         </PagenationUl>
       </InnerWrapper>
-      {/* TODO:수정 */}
-      <OrderDetailMember />
+      {/* TODO:수정
+      <OrderDetailMember /> */}
     </Wrapper>
   );
 };

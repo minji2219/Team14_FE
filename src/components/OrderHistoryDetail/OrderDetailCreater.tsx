@@ -160,9 +160,9 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
           radius="20px"
           padding="9px 60px"
           bgColor={Common.colors.primary}
-          onClick={() => {
+          onClick={async () => {
+            await refetch();
             setRecruitIsOpen(true);
-            refetch();
           }}
         />
         <Space2 />

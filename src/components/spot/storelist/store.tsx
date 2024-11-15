@@ -58,7 +58,7 @@ const Store = ({
       },
     );
     //문자 메시지 get요청
-    // refetch();
+    refetch();
     //마이페이지로 이동
     navigate(getDynamicPath.orderDetail(Number(spotId)), {
       state: false,

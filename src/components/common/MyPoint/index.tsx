@@ -7,6 +7,7 @@ import Modal from '@components/common/Modal';
 import AlertDialog from '@components/common/Modal/AlertDialog';
 import Cookies from 'js-cookie';
 import { setOrderId } from '@provider/OrderIdLocation';
+import { useNavigate } from 'react-router-dom';
 
 interface MyPointProps {
   showRechargeButton?: boolean;
@@ -22,7 +23,6 @@ const MyPoint: React.FC<MyPointProps> = ({
   const [loading, setLoading] = useState(false);
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
   const [pointBalance, setPointBalance] = useState<number>(0);
-
   const fetchMemberInfo = async () => {
     try {
       const accessToken = Cookies.get('access_token');

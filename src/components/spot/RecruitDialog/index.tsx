@@ -15,6 +15,7 @@ import { usePutSpot } from '@api/hooks/usePutSpot';
 import { getFormatTime } from '@helper/getFormatTime';
 import { parsingTime } from '@helper/parsingTime';
 import { queryClient } from '@api/QueryClient';
+import { useParams } from 'react-router-dom';
 
 interface Props {
   onRequestClose: () => void;
@@ -56,6 +57,8 @@ const RecruitDialog = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const { address } = useContext(SearchSpotContext);
+  const { orderId } = useParams();
+
   const { mutate: postMutate } = usePostSpot();
   const { mutate: putMutate } = usePutSpot();
 
@@ -118,9 +121,10 @@ const RecruitDialog = ({
         onRequestError();
       },
     };
-
+    // console.log(orderId);
     if (modify) {
-      putMutate(requestData, requestOptions);
+      //@ts-ignore
+      putMutate({ ...requestData, id: Number(orderId) }, requestOptions);
     } else {
       postMutate(requestData, requestOptions);
     }

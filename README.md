@@ -4,7 +4,7 @@
 
 ## 🍴요기먹때
 
-![alt text](image.png)
+![alt text](image-1.png)
 
 - 🙋🏻‍♀️1인 가구 대상으로
 - 👩‍👦함께 배달 음식을 주문할 수 있는 사람을 매칭해
@@ -13,18 +13,23 @@
 ## 배포 링크
 
 ✅FE: https://team14-fe.vercel.app/  
-✅BE:
+✅BE: https://order-together.duckdns.org/api/v1
 
 ## 주요기능
 
-- 카카오 소셜 로그인
-- 배달 어플 함께 주문하기(카카오지도 API)  
-  배달의 민족이 제공하는 "함께주문"을 통해 익명의 사용자와 함께 배달 주문을 할 수 있다.  
-  지도 상에 표시된 마커와 리스트를 통해 배달 받을 장소와 가게를 확인하고 참여할 수 있다.
-- 새로운 스팟 등록  
-  자신이 원하는 음식을 방장이 되어 원하는 장소에 스팟을 생성할 수 있다.
-- sms  
-  선택한 스팟에 대한 "함께주문" 링크를 문자를 통해 받을 수 있다.
+**카카오 소셜 로그인**  
+**배달 어플 함께 주문하기(카카오지도 API)**
+
+- 배달의 민족이 제공하는 "함께주문"을 통해 익명의 사용자와 함께 배달 주문을 할 수 있다.
+- 지도 상에 표시된 마커와 리스트를 통해 배달 받을 장소와 가게를 확인하고 참여할 수 있다.
+
+**새로운 스팟 등록**
+
+- 자신이 원하는 음식을 방장이 되어 원하는 장소에 스팟을 생성할 수 있다.
+
+**sms**  
+ 선택한 스팟에 대한 "함께주문" 링크를 문자를 통해 받을 수 있다.
+
 - 주문 결제(토스 페이먼츠 API)  
   이용자들은 구매한 포인트를 통해 해당 앱에서 배달 음식의 값을 지불할 수 있다.
 - 주문 목록 확인  
@@ -57,6 +62,8 @@
 <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"> <img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"> <img src="https://img.shields.io/badge/emotion-DB7093?style=for-the-badge&logo=styled-components&logoColor=white">
 
 ### ✅BE
+
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"> <img src="https://img.shields.io/badge/junit5-25A162?style=for-the-badge&logo=junit5&logoColor=white"> **Spring Data JPA,** **JWT**
 
 ## 💻UI(이미지 추가)
 
