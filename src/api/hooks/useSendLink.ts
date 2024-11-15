@@ -1,20 +1,19 @@
 import { fetchAuthInstance } from '@api/instance';
-import { useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
-interface PostData {
-  spotId: string;
-}
-
-const getPath = () => {
-  return `/api/v1/spot/sms`;
+const getPath = (spotId: number) => {
+  return `/spot/sms/${spotId}`;
 };
 
-const sendLink = async (postData: PostData) => {
-  return await fetchAuthInstance.post(getPath(), postData);
+const sendLink = async (spotId: number) => {
+  const response = await fetchAuthInstance.get(getPath(spotId));
+  return response.data;
 };
 
-export const useSendLink = (postData: PostData) => {
-  return useMutation({
-    mutationFn: () => sendLink(postData),
+export const useSendLink = (spotId: number) => {
+  return useQuery({
+    queryKey: ['link', spotId],
+    queryFn: () => sendLink(spotId),
+    enabled: false,
   });
 };

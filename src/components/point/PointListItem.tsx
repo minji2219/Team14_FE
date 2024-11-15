@@ -7,18 +7,29 @@ interface Props {
 }
 
 const PointListItem = ({ date, point, filter }: Props) => {
-  const newDate: string[] = date.split('T')[0].split('-');
-  const newTime: string[] = date.split('T')[1].split(':');
   const newPoint: string = point.toLocaleString('ko-KR');
 
+  const splitDate = (date: string) => {
+    const days = date.split(' ')[0];
+    const times = date.split(' ')[1];
+
+    return {
+      month: days.split('-')[1],
+      day: days.split('-')[2],
+      hour: times.split(':')[0],
+      minute: times.split(':')[1],
+    };
+  };
   return (
     <Container>
-      <DateTitle>{newDate[1] + '.' + newDate[2]}</DateTitle>
+      <DateTitle>
+        {splitDate(date).month}.{splitDate(date).day}
+      </DateTitle>
       <DetailContainer>
         <Point>{newPoint}P</Point>
         <PointInfo>
           <Time>
-            {newTime[0] + ':' + newTime[1]} {filter}
+            {splitDate(date).hour}:{splitDate(date).minute} {filter}
           </Time>
         </PointInfo>
       </DetailContainer>

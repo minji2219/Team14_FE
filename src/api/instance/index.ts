@@ -1,11 +1,12 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import Cookies from 'js-cookie';
 
 const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
   const instance = axios.create({
     timeout: 5000,
     ...config,
     headers: {
-      Accept: 'application/json',
+      // Accept: 'application/json',
       'Content-Type': 'application/json',
       ...config.headers,
     },
@@ -13,17 +14,16 @@ const initInstance = (config: AxiosRequestConfig): AxiosInstance => {
   return instance;
 };
 
-//TODO: 임시
-// const BASE_URL = 'http://3.34.191.43';
-const TOKEN = 'token';
+const BASE_URL = 'https://order-together.duckdns.org/api/v1';
 
 export const fetchInstance = initInstance({
-  // baseURL: BASE_URL,
+  baseURL: BASE_URL,
 });
 
 export const fetchAuthInstance = initInstance({
-  // baseURL: BASE_URL,
+  baseURL: BASE_URL,
+
   headers: {
-    Authorization: `Bearer ${TOKEN}`,
+    Authorization: `Bearer ${Cookies.get('access_token')}`,
   },
 });

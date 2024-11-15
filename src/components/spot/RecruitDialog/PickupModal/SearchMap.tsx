@@ -8,9 +8,10 @@ import Button from '@components/common/Button';
 
 interface Props {
   onRequestClose: () => void;
+  modify?: { lat: number; lng: number };
 }
 
-const SearchMap = ({ onRequestClose }: Props) => {
+const SearchMap = ({ onRequestClose, modify }: Props) => {
   const { location } = useContext(LocationContext);
   const { bound, address, setAddress } = useContext(SearchSpotContext);
 
@@ -63,7 +64,10 @@ const SearchMap = ({ onRequestClose }: Props) => {
 
   return (
     <Map
-      center={{ lat: location.lat, lng: location.lng }}
+      center={{
+        lat: modify ? modify.lat : marker.lat,
+        lng: modify ? modify.lng : marker.lng,
+      }}
       style={{
         width: '800px',
         height: '600px',
@@ -76,8 +80,12 @@ const SearchMap = ({ onRequestClose }: Props) => {
       <Explain>배달 받을 장소를 검색 또는 핀을 이동 시켜 선택해보세요.</Explain>
       <MapMarker
         position={{
-          lat: marker.lat,
-          lng: marker.lng,
+          lat: modify ? modify.lat : marker.lat,
+          lng: modify ? modify.lng : marker.lng,
+        }}
+        image={{
+          src: '/image/myLocation.png',
+          size: { width: 33, height: 45 },
         }}
         draggable={true}
         onDragEnd={(marker) => dragEnd(marker)}

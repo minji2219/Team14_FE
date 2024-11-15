@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '@provider/AuthProvider';
 import Cookies from 'js-cookie';
 import { fetchAuthInstance } from '@api/instance/index';
+import { RouterPath } from '@routes/path';
 
 export const HEADER_HEIGHT = '64px';
 
@@ -32,8 +33,10 @@ export const Header: React.FC = () => {
   const getLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
+      // eslint-disable-next-line no-undef
       const geocoder = new kakao.maps.services.Geocoder();
       geocoder.coord2Address(longitude, latitude, (result, status) => {
+        // eslint-disable-next-line no-undef
         if (status === kakao.maps.services.Status.OK) {
           setLocation({
             dong: result[0].address.region_3depth_name,
@@ -54,10 +57,10 @@ export const Header: React.FC = () => {
   };
 
   const handleLogout = () => {
-    fetchAuthInstance.post('/auth/logout').then(() => {
+    fetchAuthInstance.post(`/auth/logout`).then(() => {
       Cookies.remove('access_token');
       setIsLoggedIn(false);
-      navigate('/');
+      navigate(RouterPath.root);
     });
   };
 
@@ -80,7 +83,7 @@ export const Header: React.FC = () => {
     <Wrapper>
       <Container>
         <HeaderLeft>
-          <LogoWrapper onClick={() => navigate('/')}>
+          <LogoWrapper onClick={() => navigate(RouterPath.spot)}>
             <Logo src="/image/logo.png" alt="로고" />
             <Location>요기 먹때</Location>
           </LogoWrapper>
@@ -99,18 +102,26 @@ export const Header: React.FC = () => {
         </HeaderLeft>
 
         {isLoggedIn ? (
-          <Button
-            label="로그아웃"
-            bgColor="#ffd500"
-            radius="5px"
-            onClick={handleLogout}
-          />
+          <BtnWrapper>
+            <Button
+              label="마이페이지"
+              bgColor="transparent"
+              radius="5px"
+              onClick={() => navigate(RouterPath.myPage)}
+            />
+            <Button
+              label="로그아웃"
+              bgColor="#ffd500"
+              radius="5px"
+              onClick={handleLogout}
+            />
+          </BtnWrapper>
         ) : (
           <Button
             label="로그인"
             bgColor="#ffd500"
             radius="5px"
-            onClick={() => navigate('/login')}
+            onClick={() => navigate(RouterPath.login)}
           />
         )}
       </Container>
@@ -136,7 +147,7 @@ const Wrapper = styled.header`
 
 const Container = styled.div`
   width: 100%;
-  max-width: 1200px;
+  max-width: 1700px;
   padding: 0 20px;
   display: flex;
   align-items: center;
@@ -203,4 +214,8 @@ const DropdownItem = styled.div<DropdownItemProps>`
   &:hover {
     background-color: #f0f0f0;
   }
+`;
+const BtnWrapper = styled.div`
+  display: flex;
+  gap: 20px;
 `;

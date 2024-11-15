@@ -1,41 +1,43 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Menubar from '@components/mypage/Menubar';
 import OrderListItem from '@components/OrderHistory/OrderListItem';
 
-import { orderList } from '@components/OrderHistory/data';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
-import { getDynamicPath } from '../../routes/path';
+import { getDynamicPath } from '@routes/path';
+// import { fetchAuthInstance } from '@api/instance';
+// import OrderDetailMember from '@components/OrderHistoryDetail/OrderDetailMember';
+import { useGetOrderList } from '@api/hooks/useGetOrderList';
 
 interface Post {
   id: number;
+  spotId: number;
   category: string;
   storeName: string;
+  minimumOrderAmount: number;
   pickUpLocation: string;
-  deliveryStatus: boolean;
+  deliveryStatus: string;
+  orderDate: number[];
   price?: number;
-  isCreater: boolean;
+  isCreator: boolean;
 }
-interface OrderHistory {
-  totalPages: number; //전체 페이지 수
-  totalElements: number; //전체 데이터 수
-  size: number; //페이지 당 보여줄 데이터 수
+
+interface OrderHistoryData {
+  totalPages: number;
+  totalElements: number;
+  ordersInfo: Post[];
 }
 
 const OrderHistoryPage = () => {
   const VIEW_PAGE_COUNT = 5;
   const [currentPage, setCurrentPage] = useState(1);
-  const posts: Post[] = orderList.content;
-  const orderHistory: OrderHistory = orderList;
-
-  const startIdx = (currentPage - 1) * orderHistory.size;
-  const endIdx = startIdx + orderHistory.size;
-  const currentPosts = posts.slice(startIdx, endIdx);
+  const { refetch, data } = useGetOrderList(currentPage);
+  console.log(data);
 
   const pageNumbers = Array.from(
-    { length: orderHistory.totalPages },
+    { length: data?.totalPages || 0 },
     (_, i) => i + 1,
   );
 
@@ -43,36 +45,46 @@ const OrderHistoryPage = () => {
     Math.floor((currentPage - 1) / VIEW_PAGE_COUNT) * VIEW_PAGE_COUNT + 1;
   const endPage = Math.min(
     startPage + VIEW_PAGE_COUNT - 1,
-    orderHistory.totalPages,
+    data?.totalPages || 0,
   );
   const visiblePages = pageNumbers.slice(startPage - 1, endPage);
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= orderHistory.totalPages) {
+    if (page >= 1 && page <= (data?.totalPages || 0)) {
       setCurrentPage(page);
     }
   };
+
+  useEffect(() => {
+    refetch();
+  }, [currentPage]);
 
   return (
     <Wrapper>
       <InnerWrapper>
         <Menubar />
         <OrderListContainer>
-          {currentPosts.map((post) => (
-            <Link
-              key={post.id}
-              to={getDynamicPath.orderDetail(post.id)}
-              state={{ createrModeData: post.isCreater }}
-              style={{ textDecoration: 'none', color: '#000' }}
-            >
-              <OrderListItem
-                category={post.category}
-                storeName={post.storeName}
-                pickUpLocation={post.pickUpLocation}
-                price={post.price}
-              />
-            </Link>
-          ))}
+          {data?.ordersInfo.length === 0 ? (
+            <div style={{ width: '100%' }}>주문내역이 없습니다.</div>
+          ) : (
+            data?.ordersInfo.map((post) => (
+              <Link
+                key={post.id}
+                to={getDynamicPath.orderDetail(post.spotId)}
+                state={{ createrModeData: post.isCreator }}
+                style={{ textDecoration: 'none', color: '#000' }}
+              >
+                <OrderListItem
+                  category={post.category}
+                  storeName={post.storeName}
+                  pickUpLocation={post.pickUpLocation}
+                  price={post.price}
+                  deliveryStatus={post.deliveryStatus}
+                  date={post.orderDate}
+                />
+              </Link>
+            ))
+          )}
         </OrderListContainer>
       </InnerWrapper>
       <InnerWrapper>
@@ -92,7 +104,7 @@ const OrderHistoryPage = () => {
               {page}
             </PageNumber>
           ))}
-          {endPage < orderHistory.totalPages && (
+          {endPage < (data?.totalPages || 0) && (
             <NextBtn onClick={() => handlePageChange(currentPage + 1)}>
               다음 <HiChevronRight />
             </NextBtn>
@@ -114,9 +126,15 @@ const Wrapper = styled.div`
 
 const InnerWrapper = styled.div`
   width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const OrderListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
 `;
 const PagenationUl = styled.ul`

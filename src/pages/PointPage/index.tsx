@@ -5,82 +5,73 @@ import PointListItem from '@components/point/PointListItem';
 import Button from '@components/common/Button';
 import MyPoint from '@components/common/MyPoint';
 
-import { pointDataSet } from '@components/point/data';
-import { useState } from 'react';
-import { Common } from '@styles/globalStyle';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { fetchInstance } from '@api/instance';
+import Cookies from 'js-cookie';
+
+interface PointData {
+  amount: number;
+  date: string;
+}
 
 const PointPage = () => {
-  type PointFilter = '충전' | '결제' | '환전';
-  const [pointFilterValue, setPointFilterValue] = useState<PointFilter>('충전');
+  const location = useLocation();
+  const [pointData, setPointData] = useState<PointData[]>();
 
-  const changePointFilter = (filter: PointFilter) => {
-    setPointFilterValue(filter);
+  const fetchData = async () => {
+    try {
+      const token = Cookies.get('access_token');
+      const response = await fetchInstance.get('/payments/history', {
+        params: { paymentStatus: 'SUCCESS' },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200 && response.data) {
+        setPointData(response.data.data.histories);
+      }
+    } catch (error) {
+      console.error('Point Page', error);
+    }
   };
 
-  const filteredPointData = pointDataSet.filter(
-    (pointData) => pointData.filter === pointFilterValue,
-  );
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (location.state?.refresh) {
+      fetchData();
+    }
+  }, [location.state]);
 
   return (
     <Wrapper>
       <InnerWrapper>
         <Menubar />
-        <MyPoint />
-        <PaymentBox>
-          <Button
-            label="충전하기"
-            radius="20px"
-            bgColor={Common.colors.primary}
-            padding="9px 25px"
-          />
-          <Space />
-          <Button
-            label="환전하기"
-            radius="20px"
-            bgColor={Common.colors.primary05}
-            padding="9px 25px"
-          />
-        </PaymentBox>
+        <MyPoint showRechargeButton />
+
         <FilterBox>
           <Button
             label="충전"
             radius="20px"
-            onClick={() => changePointFilter('충전')}
-            bgColor={pointFilterValue === '충전' ? '#000' : '#FFF'}
+            bgColor="#000"
             style={{
-              color: pointFilterValue === '충전' ? '#FFF' : '#000',
+              color: '#FFF',
               border: '1px solid #000',
-            }}
-          />
-          <Space />
-          <Button
-            label="결제"
-            radius="20px"
-            onClick={() => changePointFilter('결제')}
-            bgColor={pointFilterValue === '결제' ? '#000' : '#FFF'}
-            style={{
-              color: pointFilterValue === '결제' ? '#FFF' : '#000',
-              border: '1px solid #000',
-            }}
-          />
-          <Space />
-          <Button
-            label="환전"
-            radius="20px"
-            onClick={() => changePointFilter('환전')}
-            bgColor={pointFilterValue === '환전' ? '#000' : '#FFF'}
-            style={{
-              color: pointFilterValue === '환전' ? '#FFF' : '#000',
-              border: '1px solid #000',
+              cursor: 'default',
             }}
           />
         </FilterBox>
         <PointList>
-          {filteredPointData.map((pointData) => (
+          {pointData?.map((point) => (
             <PointListItem
-              date={pointData.date}
-              point={pointData.point}
-              filter={pointData.filter}
+              key={point.date}
+              date={point.date}
+              point={point.amount}
+              filter="충전"
             />
           ))}
         </PointList>
@@ -104,28 +95,17 @@ const InnerWrapper = styled.div`
   align-items: center;
 `;
 
-const PaymentBox = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-`;
-
 const FilterBox = styled.div`
-  width: 80%;
+  width: 60%;
   display: flex;
 `;
 
 const PointList = styled.div`
   position: relative;
-  width: 80%;
+  width: 60%;
   display: flex;
   flex-direction: column;
   align-items: center;
   border-bottom: 1px solid #ccc;
   margin: 20px 0 20px;
-`;
-
-const Space = styled.div`
-  width: 15px;
 `;

@@ -9,31 +9,49 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchInstance } from '@api/instance/index';
 import Cookies from 'js-cookie';
 import { AuthContext } from '@provider/AuthProvider';
+import { RouterPath } from '@routes/path';
+import Modal from '@components/common/Modal';
+import AlertDialog from '@components/common/Modal/AlertDialog';
 
 const SignupPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { setIsLoggedIn } = useContext(AuthContext);
-  const [phoneNumber, setPhoneNumber] = useState<string>('01097019200');
-  const [deliveryName, setDeliveryName] = useState<string>('wlghks');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [deliveryName, setDeliveryName] = useState<string>('');
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
+  const [checkBox, setCheckBox] = useState(false);
 
   const handleSubmit = () => {
+    if (!phoneNumber || !deliveryName) {
+      setErrorModalIsOpen(true);
+      return;
+    }
+
+    if (!checkBox) {
+      setIsOpen(true);
+      return;
+    }
+
     const query = new URLSearchParams(location.search);
     const email = query.get('email');
-
+    const numericValue = phoneNumber.replace(/[^0-9]/g, '');
     const requestData = {
       deliveryName,
-      phoneNumber,
+      phoneNumber: numericValue,
     };
 
     fetchInstance
       .post(`/auth/signup?email=${email}`, requestData)
       .then((response) => {
         if (response.status === 200 && response.data) {
-          const accessToken = response.data.data;
+          const accessToken = response.data.data.token;
           Cookies.set('access_token', accessToken);
           setIsLoggedIn(true);
-          navigate('/');
+          navigate(RouterPath.root);
+          navigate(0);
         }
       });
   };
@@ -44,6 +62,7 @@ const SignupPage: React.FC = () => {
         <Content>
           <Title>회원정보 입력</Title>
           <Form>
+            <Label>숫자만 입력해주세요.</Label>
             <StyledInputField
               placeholder="전화번호"
               value={phoneNumber}
@@ -62,7 +81,15 @@ const SignupPage: React.FC = () => {
             />
             <CheckboxWrapper>
               <CheckboxLabelWrapper>
-                <input type="checkbox" id="marketingConsent" />
+                <input
+                  type="checkbox"
+                  id="marketingConsent"
+                  checked={checkBox}
+                  onClick={() => {
+                    if (!checkBox) setIsOpen(true);
+                    else setCheckBox(false);
+                  }}
+                />
                 <Label htmlFor="marketingConsent">
                   (필수) 마케팅 정보 수신 동의
                 </Label>
@@ -72,9 +99,48 @@ const SignupPage: React.FC = () => {
                 onClick={handleSubmit}
                 bgColor={Common.colors.primary}
                 radius="20px"
-                padding="10px 30px"
+                padding="10px 100px"
               />
             </CheckboxWrapper>
+            <Modal
+              size="small"
+              type="warning"
+              isOpen={errorModalIsOpen}
+              onRequestClose={() => setErrorModalIsOpen(false)}
+              title={<div style={{ color: 'white' }}>에러 발생</div>}
+              content={
+                <AlertDialog
+                  type="warning"
+                  content="회원 정보를 입력해주세요."
+                  onRequestConfirm={() => setErrorModalIsOpen(false)}
+                />
+              }
+            />
+            <Modal
+              isOpen={isOpen}
+              onRequestClose={() => setIsOpen(false)}
+              title="[요기먹때] 마케팅 정보 수신 동의"
+              content={
+                <AlertDialog
+                  content={
+                    <div>
+                      개인정보보호법 및 정보통신망 이용촉진 및<br /> 정보보호
+                      등에 관한 법률 등 관계법령에 따라
+                      <br /> 광고성 정보 전송을 위한 사전 수신동의를 받고
+                      있습니다.
+                    </div>
+                  }
+                  onRequestConfirm={() => {
+                    setCheckBox(true);
+                    setIsOpen(false);
+                  }}
+                  onRequestClose={() => {
+                    setCheckBox(false);
+                    setIsOpen(false);
+                  }}
+                />
+              }
+            />
           </Form>
         </Content>
       </Background>

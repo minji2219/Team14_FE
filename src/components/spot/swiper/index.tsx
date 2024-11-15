@@ -1,13 +1,22 @@
 import styled from '@emotion/styled';
 import SlideItem from './SlideItem';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Common } from '@styles/globalStyle';
-import { storeList } from './data';
 
 import { BsChevronLeft } from 'react-icons/bs';
 import { BsChevronRight } from 'react-icons/bs';
+import { useGetSpotInfo } from '@api/hooks/useGetSpotInfo';
+import { LocationContext } from '@provider/PresentLocation';
 
 const Swiper = () => {
+  const { location } = useContext(LocationContext);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+  const { data = [] } = useGetSpotInfo({
+    lat: location.lat,
+    lng: location.lng,
+  });
+
   const getDeadlineImminentList = () => {
     const calculateDiff = (deadlineHour: number, deadlineMinute: number) => {
       const date = new Date();
@@ -20,12 +29,11 @@ const Swiper = () => {
       return deadlineTotalMinute - nowTotalMinute;
     };
 
-    return storeList.filter((store) => {
-      const hour = Number(store.deadlineTime.split(':')[0]);
-      const minute = Number(store.deadlineTime.split(':')[1]);
-
+    return data.filter((store) => {
+      const hour = Number(store.deadlineTime[0]);
+      const minute = Number(store.deadlineTime[1]);
       const timeDiff = calculateDiff(hour, minute);
-      if (timeDiff <= 30 && timeDiff >= 0) return store;
+      return timeDiff <= 30 && timeDiff >= 0;
     });
   };
 
@@ -34,16 +42,23 @@ const Swiper = () => {
   const [isEndSlide, setIsEndSlide] = useState(true);
 
   useEffect(() => {
+    if (data.length > 0 && !isDataLoaded) {
+      setCarouselList(getDeadlineImminentList());
+      setIsDataLoaded(true);
+    }
+  }, [data, isDataLoaded]);
+
+  useEffect(() => {
     if (carouselList.length === 0) return;
     const startData = { ...carouselList[0] };
     const endData = { ...carouselList[carouselList.length - 1] };
 
-    startData.id = startData.id + '_fake';
-    endData.id = endData.id + '_fake';
+    startData.id = Number(startData.id + '00');
+    endData.id = Number(endData.id + '00');
 
     const newList = [endData, ...carouselList, startData];
     setCarouselList(newList);
-  }, []);
+  }, [data, isDataLoaded]);
 
   const moveToNthSlide = (index: number) => {
     setTimeout(() => {

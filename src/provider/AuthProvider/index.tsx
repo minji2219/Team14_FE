@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 
 interface AuthContextProps {
   isLoggedIn: boolean;
+  // eslint-disable-next-line no-unused-vars
   setIsLoggedIn: (loggedIn: boolean) => void;
 }
 
@@ -19,6 +20,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   );
 
   return (
+    // eslint-disable-next-line react/jsx-no-constructed-context-values
     <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
       {children}
     </AuthContext.Provider>

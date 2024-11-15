@@ -9,10 +9,11 @@ interface PostData {
   minimumOrderAmount: number;
   togetherOrderLink: string;
   pickUpLocation: string;
+  deadlineTime: string;
 }
 
 const getPath = () => {
-  return `http://3.34.191.43:8080/api/v1/spot`;
+  return `/spot`;
 };
 
 const postSpot = async (postData: PostData) => {

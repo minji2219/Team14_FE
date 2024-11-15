@@ -1,5 +1,16 @@
-import { fetchInstance } from '@api/instance';
+import { fetchAuthInstance, fetchInstance } from '@api/instance';
 import { useQuery } from '@tanstack/react-query';
+
+export interface StoreListParams {
+  id: number;
+  category: string;
+  minimumOrderAmount: number;
+  deadlineTime: number[];
+  pickUpLocation: string;
+  storeName: string;
+  lat: number;
+  lng: number;
+}
 
 interface RequestParams {
   lat: number;
@@ -7,16 +18,19 @@ interface RequestParams {
 }
 
 const getPath = ({ lat, lng }: RequestParams) => {
-  return `http://3.34.191.43:8080/api/v1/spot/${lat}/${lng}`;
+  return `/spot/${lat}/${lng}`;
 };
 
 const getSpotInfo = async ({ lat, lng }: RequestParams) => {
-  return await fetchInstance.get(getPath({ lat, lng }));
+  const response = await fetchInstance.get<StoreListParams[]>(
+    getPath({ lat, lng }),
+  );
+  return response.data.reverse();
 };
 
 export const useGetSpotInfo = ({ lat, lng }: RequestParams) => {
   return useQuery({
-    queryKey: [{ lat, lng }],
+    queryKey: ['spotInfo', lat, lng],
     queryFn: () => getSpotInfo({ lat, lng }),
   });
 };

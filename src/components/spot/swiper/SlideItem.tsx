@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { Common } from '@styles/globalStyle';
 
 interface Props {
-  key: string;
+  key: number;
   category: string;
   title: string;
   address: string;
@@ -14,7 +14,7 @@ interface Props {
 const SlideItem = ({ category, title, address, center, endSlide }: Props) => {
   return (
     <Container isCenter={center} isEndSlide={endSlide}>
-      <Logo image={`/image/categories/${category}.png`} />
+      <Logo image={`/image/categories/${category.replaceAll(', ', ',')}.png`} />
       <Wrapper>
         <Category>[{category}]</Category>
         <Title>{title}</Title>

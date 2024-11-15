@@ -7,12 +7,16 @@ import { Common } from '@styles/globalStyle';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDynamicPath, RouterPath } from '@routes/path';
+import Cookies from 'js-cookie';
+import { getFormatTime } from '@helper/getFormatTime';
+import { usePostParcipate } from '@api/hooks/usePostParticipate';
+import { useSendLink } from '@api/hooks/useSendLink';
 
 interface Props {
-  spotId: string;
+  spotId: number;
   category: string;
   storeName: string;
-  deadlineTime: string;
+  deadlineTime: number[];
   address: string;
 }
 const Store = ({
@@ -24,13 +28,12 @@ const Store = ({
 }: Props) => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [sendLinkIsOpen, setSendLinkIsOpen] = useState(false);
-  //TODO: 로그인 여부 확인 만들어질 때까지 임시 사용
-  const [login, setLogin] = useState(true);
-
+  const { mutate } = usePostParcipate();
+  const { refetch } = useSendLink(spotId);
   const navigate = useNavigate();
 
   const handleClick = () => {
-    if (login) {
+    if (Cookies.get('access_token')) {
       //로그인이 되어있을 경우
       setSendLinkIsOpen(true);
     } else {
@@ -38,13 +41,36 @@ const Store = ({
       setIsLoginOpen(true);
     }
   };
+
+  const handleConfirm = () => {
+    //참여자 정보 post
+    mutate(
+      {
+        spotId: spotId,
+        price: null,
+        isPayed: null,
+        participantId: null,
+      },
+      {
+        onError: (err) => {
+          alert('본인이 생성한 스팟은 참여가 불가합니다.');
+        },
+      },
+    );
+    //문자 메시지 get요청
+    refetch();
+    //마이페이지로 이동
+    navigate(getDynamicPath.orderDetail(Number(spotId)), {
+      state: false,
+    });
+  };
   return (
     <Wrapper>
-      <Logo image={`/image/categories/${category}.png`} />
+      <Logo image={`/image/categories/${category.replaceAll(', ', ',')}.png`} />
       <DescriptWrapper>
         <Category>[{category}]</Category>
         <Title>{storeName}</Title>
-        주문마감 : {deadlineTime}
+        주문마감 : {getFormatTime(deadlineTime)}
         <Address>픽업 | {address}</Address>
       </DescriptWrapper>
       <Button
@@ -78,9 +104,7 @@ const Store = ({
               </div>
             }
             onRequestClose={() => setSendLinkIsOpen(false)}
-            onRequestConfirm={() =>
-              navigate(getDynamicPath.orderDetail(Number(spotId)))
-            }
+            onRequestConfirm={handleConfirm}
           />
         }
       />
@@ -99,7 +123,8 @@ const Wrapper = styled.div`
 `;
 
 const DescriptWrapper = styled.div`
-  margin-right: 10px;
+  margin-left: 10px;
+  width: 60%;
 `;
 
 const Category = styled.div`

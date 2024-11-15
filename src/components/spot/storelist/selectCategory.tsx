@@ -3,19 +3,20 @@ import { categories } from './category';
 import { ClickedLocation } from '@provider/ClickedLocation';
 
 interface Props {
+  value?: string;
   setCategory: React.Dispatch<React.SetStateAction<string>>;
   setClickedLocation?: React.Dispatch<
     React.SetStateAction<ClickedLocation | undefined>
   >;
 }
-const SelectCategory = ({ setCategory, setClickedLocation }: Props) => {
+const SelectCategory = ({ setCategory, setClickedLocation, value }: Props) => {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCategory(e.target.value);
     if (setClickedLocation) setClickedLocation(undefined);
   };
 
   return (
-    <Selector onChange={handleChange}>
+    <Selector onChange={handleChange} value={value}>
       <option>카테고리 선택</option>
       {categories.map((category) => (
         <option key={category} value={category}>
