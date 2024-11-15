@@ -186,7 +186,10 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
               //@ts-ignore
               modify={modifyData}
               onRequestClose={() => setRecruitIsOpen(false)}
-              onRequestConfirm={() => setCompleteModalIsOpen(true)}
+              onRequestConfirm={() => {
+                setRecruitIsOpen(false);
+                setCompleteModalIsOpen(true);
+              }}
               //TODO임시
               onRequestError={() => {}}
             />

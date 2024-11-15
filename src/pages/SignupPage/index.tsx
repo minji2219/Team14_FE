@@ -119,7 +119,7 @@ const SignupPage: React.FC = () => {
             <Modal
               isOpen={isOpen}
               onRequestClose={() => setIsOpen(false)}
-              title="[여기먹때] 마케팅 정보 수신 동의"
+              title="[요기먹때] 마케팅 정보 수신 동의"
               content={
                 <AlertDialog
                   content={

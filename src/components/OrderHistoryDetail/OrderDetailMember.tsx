@@ -19,9 +19,9 @@ const OrderDetailMember = () => {
   const [price, setPrice] = useState<number>(0);
   const navigate = useNavigate();
   const deleteSpot = () => {
-    fetchAuthInstance.delete(`/orders/${orderId}`).then((response) => {
+    fetchAuthInstance.delete(`/orders/delete/${orderId}`).then((response) => {
       if (response.status === 200) {
-        window.history.back();
+        navigate(RouterPath.myPageOrderHistory);
       }
     });
   };

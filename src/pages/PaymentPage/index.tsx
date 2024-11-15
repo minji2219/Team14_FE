@@ -6,19 +6,19 @@ import InputField from '@components/common/InputField';
 import { Common } from '@styles/globalStyle';
 import { fetchInstance } from '@api/instance/index';
 import Cookies from 'js-cookie';
-import { useLocation } from 'react-router-dom';
-import { usePostIsPayed } from '@api/hooks/usePostIspayed';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { usePostPayPrice } from '@api/hooks/usePostpayPrice';
+import { RouterPath } from '@routes/path';
 
 const PaymentPage: React.FC = () => {
   const location = useLocation();
-  const { mutate: postIsPayed } = usePostIsPayed();
   const { mutate: postPayPrice } = usePostPayPrice();
   const [paymentAmount, setPaymentAmount] = useState<number>(
     location.state.price || 0,
   );
   const [loading, setLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const navigate = useNavigate();
 
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -55,12 +55,12 @@ const PaymentPage: React.FC = () => {
       )
       .then(async () => {
         alert('결제가 완료되었습니다.');
-        postIsPayed({ orderId: location.state.orderId });
-        await postPayPrice({
+        postPayPrice({
           orderId: location.state.orderId,
           price: location.state.price,
         });
         setPaymentAmount(0);
+        navigate(RouterPath.myPageOrderHistory);
         setRefreshKey((prev) => prev + 1);
       })
       .catch((error) => {
