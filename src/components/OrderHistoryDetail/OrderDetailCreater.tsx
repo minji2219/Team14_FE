@@ -86,11 +86,11 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
           pickUpLocation={spotData.pickUpLocation}
           deliveryStatus={spotData.deliveryStatus}
           price={spotData.price}
-          date={spotData?.orderDate}
+          date={spotData.orderDate}
         />
       )}
 
-      {spotData?.memberInfo?.length !== 0 ? (
+      {spotData?.memberInfo.length !== 0 ? (
         <>
           <ButtonContainer>
             <span>{uploadFileName}</span>
@@ -140,7 +140,7 @@ const OrderDetailCreater = ({ spotId }: OrderDetailCreaterProps) => {
           />
           <ParticipantContainer>
             {spotData &&
-              spotData.memberInfo?.map((data) => (
+              spotData.memberInfo.map((data) => (
                 <OrderHistoryDetailItem
                   deliveryName={data.deliveryName}
                   price={data.price}

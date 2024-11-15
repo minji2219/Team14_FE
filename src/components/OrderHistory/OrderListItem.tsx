@@ -16,7 +16,7 @@ const OrderListItem = ({
   pickUpLocation,
   price,
   deliveryStatus,
-  date = [24, 11, 5],
+  date,
 }: Props) => {
   return (
     <Wrapper>

@@ -39,7 +39,7 @@ const PaymentPage: React.FC = () => {
       )
       .then(() => {
         alert('결제가 완료되었습니다.');
-        mutate(location.state.spotId);
+        mutate({ orderId: location.state.orderId });
         setPaymentAmount('');
       })
       .catch((error) => {

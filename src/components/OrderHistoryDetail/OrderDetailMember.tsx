@@ -84,7 +84,7 @@ const OrderDetailMember = () => {
         bgColor={Common.colors.primary}
         onClick={() => {
           navigate(RouterPath.payment, {
-            state: { price: price + 500, spotId: orderId },
+            state: { price: price + 500, orderId: data?.orderId },
           });
         }}
       />
