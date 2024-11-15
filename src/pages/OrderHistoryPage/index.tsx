@@ -7,8 +7,9 @@ import OrderListItem from '@components/OrderHistory/OrderListItem';
 
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import { getDynamicPath } from '@routes/path';
-import { fetchAuthInstance } from '@api/instance';
-import OrderDetailMember from '@components/OrderHistoryDetail/OrderDetailMember';
+// import { fetchAuthInstance } from '@api/instance';
+// import OrderDetailMember from '@components/OrderHistoryDetail/OrderDetailMember';
+import { useGetOrderList } from '@api/hooks/useGetOrderList';
 
 interface Post {
   id: number;
@@ -31,12 +32,12 @@ interface OrderHistoryData {
 
 const OrderHistoryPage = () => {
   const VIEW_PAGE_COUNT = 5;
-  const [orderHistoryData, setOrderHistoryData] = useState<OrderHistoryData>();
-  const [data, setData] = useState<Post[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const { refetch, data } = useGetOrderList(currentPage);
+  console.log(data);
 
   const pageNumbers = Array.from(
-    { length: orderHistoryData?.totalPages || 0 },
+    { length: data?.totalPages || 0 },
     (_, i) => i + 1,
   );
 
@@ -44,30 +45,18 @@ const OrderHistoryPage = () => {
     Math.floor((currentPage - 1) / VIEW_PAGE_COUNT) * VIEW_PAGE_COUNT + 1;
   const endPage = Math.min(
     startPage + VIEW_PAGE_COUNT - 1,
-    orderHistoryData?.totalPages || 0,
+    data?.totalPages || 0,
   );
   const visiblePages = pageNumbers.slice(startPage - 1, endPage);
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= (orderHistoryData?.totalPages || 0)) {
+    if (page >= 1 && page <= (data?.totalPages || 0)) {
       setCurrentPage(page);
     }
   };
 
   useEffect(() => {
-    fetchAuthInstance
-      .get('/orders', {
-        params: { page: currentPage, size: 5, sort: 'createdAt,desc' },
-      })
-      .then((response) => {
-        if (response.status === 200 && response.data) {
-          setOrderHistoryData(response.data);
-          setData(response.data.ordersInfo);
-        }
-      })
-      .catch((error) => {
-        console.error('OrderHistoryPage:', error);
-      });
+    refetch();
   }, [currentPage]);
 
   return (
@@ -75,10 +64,10 @@ const OrderHistoryPage = () => {
       <InnerWrapper>
         <Menubar />
         <OrderListContainer>
-          {data.length === 0 ? (
+          {data?.ordersInfo.length === 0 ? (
             <div style={{ width: '100%' }}>주문내역이 없습니다.</div>
           ) : (
-            data.map((post) => (
+            data?.ordersInfo.map((post) => (
               <Link
                 key={post.id}
                 to={getDynamicPath.orderDetail(post.spotId)}
@@ -115,15 +104,13 @@ const OrderHistoryPage = () => {
               {page}
             </PageNumber>
           ))}
-          {endPage < (orderHistoryData?.totalPages || 0) && (
+          {endPage < (data?.totalPages || 0) && (
             <NextBtn onClick={() => handlePageChange(currentPage + 1)}>
               다음 <HiChevronRight />
             </NextBtn>
           )}
         </PagenationUl>
       </InnerWrapper>
-      {/* TODO:수정
-      <OrderDetailMember /> */}
     </Wrapper>
   );
 };

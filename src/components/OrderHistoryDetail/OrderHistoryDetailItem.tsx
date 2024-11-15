@@ -11,6 +11,7 @@ interface Props {
 
 const OrderHistoryDetailItem = ({ deliveryName, price, isPayed }: Props) => {
   const stringPrice = price.toLocaleString('ko-KR');
+
   return (
     <ListItem>
       <InfoWrapper>
