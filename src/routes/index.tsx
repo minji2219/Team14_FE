@@ -67,5 +67,5 @@ const router = createBrowserRouter([
   },
 ]);
 
-// eslint-disable-next-line import/prefer-default-export
+// eslint-disable-next-line
 export const Routes = () => <RouterProvider router={router} />;
