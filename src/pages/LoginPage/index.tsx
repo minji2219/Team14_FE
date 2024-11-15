@@ -50,7 +50,7 @@ const LoginPage: React.FC = () => {
 
             window.location.href = response.data.redirectURL;
           }
-          const accessToken = response.data.data;
+          const accessToken = response.data.data.token;
           if (accessToken) {
             Cookies.set('access_token', accessToken);
             setIsLoggedIn(true);
