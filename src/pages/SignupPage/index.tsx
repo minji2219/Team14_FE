@@ -21,13 +21,20 @@ const SignupPage: React.FC = () => {
   const [deliveryName, setDeliveryName] = useState<string>('');
 
   const [isOpen, setIsOpen] = useState(false);
+  const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [checkBox, setCheckBox] = useState(false);
 
   const handleSubmit = () => {
+    if (!phoneNumber || !deliveryName) {
+      setErrorModalIsOpen(true);
+      return;
+    }
+
     if (!checkBox) {
       setIsOpen(true);
       return;
     }
+
     const query = new URLSearchParams(location.search);
     const email = query.get('email');
     const numericValue = phoneNumber.replace(/[^0-9]/g, '');
@@ -95,6 +102,20 @@ const SignupPage: React.FC = () => {
                 padding="10px 100px"
               />
             </CheckboxWrapper>
+            <Modal
+              size="small"
+              type="warning"
+              isOpen={errorModalIsOpen}
+              onRequestClose={() => setErrorModalIsOpen(false)}
+              title={<div style={{ color: 'white' }}>에러 발생</div>}
+              content={
+                <AlertDialog
+                  type="warning"
+                  content="회원 정보를 입력해주세요."
+                  onRequestConfirm={() => setErrorModalIsOpen(false)}
+                />
+              }
+            />
             <Modal
               isOpen={isOpen}
               onRequestClose={() => setIsOpen(false)}

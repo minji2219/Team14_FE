@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import MyPoint from '@components/common/MyPoint';
 import Button from '@components/common/Button';
@@ -12,25 +12,39 @@ import { usePostPayPrice } from '@api/hooks/usePostpayPrice';
 
 const PaymentPage: React.FC = () => {
   const location = useLocation();
-  const [paymentAmount, setPaymentAmount] = useState(location.state.price);
   const { mutate: postIsPayed } = usePostIsPayed();
   const { mutate: postPayPrice } = usePostPayPrice();
+  const [paymentAmount, setPaymentAmount] = useState<number>(
+    location.state.price || 0,
+  );
+  const [loading, setLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPaymentAmount(e.target.value);
+    const { value } = e.target;
+    if (!Number.isNaN(Number(value))) {
+      setPaymentAmount(Number(value));
+    }
   };
 
   const handlePaymentSubmit = () => {
-    if (!paymentAmount) {
-      alert('결제 금액을 입력해주세요.');
+    if (!paymentAmount || paymentAmount <= 0) {
+      alert('유효한 결제 금액을 입력해주세요.');
       return;
     }
 
     const token = Cookies.get('access_token');
+    if (!token) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    setLoading(true);
     fetchInstance
       .put(
         '/points',
         {
-          paymentPoint: parseInt(paymentAmount, 10),
+          paymentPoint: paymentAmount,
         },
         {
           headers: {
@@ -46,37 +60,47 @@ const PaymentPage: React.FC = () => {
           orderId: location.state.orderId,
           price: location.state.price,
         });
-        setPaymentAmount('');
+        setPaymentAmount(0);
+        setRefreshKey((prev) => prev + 1);
       })
       .catch((error) => {
         console.error('결제 실패:', error);
         alert('결제에 실패했습니다. 다시 시도해주세요.');
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
+
+  useEffect(() => {
+    setRefreshKey((prev) => prev + 1);
+  }, []);
 
   return (
     <Container>
       <Title>결제하기</Title>
-      <MyPoint showRechargeButton />
+
+      <MyPoint showRechargeButton refreshKey={refreshKey} />
       <PaymentSection>
         <Label>결제 금액</Label>
         <InputWrapper>
           <StyledInputField
             type="text"
-            disabled
             value={paymentAmount}
             onChange={handlePaymentChange}
             width="80%"
             bgColor="#ededed"
+            disabled={loading}
           />
           <Currency>원</Currency>
         </InputWrapper>
         <Button
-          label="결제하기"
+          label={loading ? '결제 중...' : '결제하기'}
           bgColor={Common.colors.primary}
           radius="20px"
           padding="12px 24px"
           onClick={handlePaymentSubmit}
+          disabled={loading}
         />
       </PaymentSection>
     </Container>
