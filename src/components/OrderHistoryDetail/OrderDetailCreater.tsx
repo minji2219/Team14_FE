@@ -16,16 +16,6 @@ import { fetchAuthInstance, fetchInstance } from '@api/instance';
 import { RouterPath } from '@routes/path';
 import { useNavigate } from 'react-router-dom';
 
-const modifyData = {
-  category: '분식',
-  storeName: '이삭토스트',
-  minimumOrderAmount: 10000,
-  pickUpLocation: '전남대학교',
-  deadlineTime: '02:05:59',
-  togetherOrderLink: 'http://localhost:3000',
-  lat: 35.1766787,
-  lng: 126.9054188,
-};
 interface OrderDetailCreaterProps {
   spotId: number;
 }
