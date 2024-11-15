@@ -8,11 +8,13 @@ import { fetchInstance } from '@api/instance/index';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
 import { usePostIsPayed } from '@api/hooks/usePostIspayed';
+import { usePostPayPrice } from '@api/hooks/usePostpayPrice';
 
 const PaymentPage: React.FC = () => {
   const location = useLocation();
   const [paymentAmount, setPaymentAmount] = useState(location.state.price);
-  const { mutate } = usePostIsPayed();
+  const { mutate: postIsPayed } = usePostIsPayed();
+  const { mutate: postPayPrice } = usePostPayPrice();
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentAmount(e.target.value);
   };
@@ -37,9 +39,13 @@ const PaymentPage: React.FC = () => {
           },
         },
       )
-      .then(() => {
+      .then(async () => {
         alert('결제가 완료되었습니다.');
-        mutate(location.state.spotId);
+        postIsPayed({ orderId: location.state.orderId });
+        await postPayPrice({
+          orderId: location.state.orderId,
+          price: location.state.price,
+        });
         setPaymentAmount('');
       })
       .catch((error) => {

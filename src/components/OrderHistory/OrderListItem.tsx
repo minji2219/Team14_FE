@@ -16,7 +16,7 @@ const OrderListItem = ({
   pickUpLocation,
   price,
   deliveryStatus,
-  date = [24, 11, 5],
+  date,
 }: Props) => {
   return (
     <Wrapper>
@@ -34,7 +34,7 @@ const OrderListItem = ({
           주문 날짜: {date[0]}-{date[1]}-{date[2]} <br />
           픽업장소: {pickUpLocation}
           <br />
-          {price !== -1 ? `결제금액: ${price}P` : null}
+          {price ? `결제금액: ${price}P` : ''}
         </span>
       </Container>
     </Wrapper>

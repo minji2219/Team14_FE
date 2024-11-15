@@ -5,12 +5,12 @@ const getPath = () => {
   return `/orders/complete`;
 };
 
-const postIsPayed = async (spotId: number) => {
-  return await fetchAuthInstance.post(getPath(), spotId);
+const postIsPayed = async (orderId: { orderId: number }) => {
+  return await fetchAuthInstance.post(getPath(), orderId);
 };
 
 export const usePostIsPayed = () => {
   return useMutation({
-    mutationFn: (spotId: number) => postIsPayed(spotId),
+    mutationFn: (orderId: { orderId: number }) => postIsPayed(orderId),
   });
 };

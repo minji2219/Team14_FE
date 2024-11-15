@@ -18,7 +18,6 @@ const OrderDetailMember = () => {
   const { data } = useGetOrderDetailMemeber(Number(orderId));
   const [price, setPrice] = useState<number>(0);
   const navigate = useNavigate();
-
   const deleteSpot = () => {
     fetchAuthInstance.delete(`/orders/${orderId}`).then((response) => {
       if (response.status === 200) {
@@ -84,7 +83,7 @@ const OrderDetailMember = () => {
         bgColor={Common.colors.primary}
         onClick={() => {
           navigate(RouterPath.payment, {
-            state: { price: price + 500, spotId: orderId },
+            state: { price: price + 500, orderId: data?.orderId },
           });
         }}
       />

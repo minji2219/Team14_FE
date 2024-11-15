@@ -2,6 +2,7 @@ import { fetchAuthInstance } from '@api/instance';
 import { useQuery } from '@tanstack/react-query';
 
 export interface OrderDetail {
+  orderId: number;
   category: string;
   storeName: string;
   minimumOrderAmount: number;
